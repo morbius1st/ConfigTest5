@@ -22,14 +22,5 @@ namespace ConfigTest2.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("This is a test")]
-        public string AppConfigInfo {
-            get {
-                return ((string)(this["AppConfigInfo"]));
-            }
-        }
     }
 }

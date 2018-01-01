@@ -22,19 +22,16 @@ using ConfigTest2.Properties;
 
 namespace ConfigTest2
 {
-	public class Config<U, T> where T: new() where U : ConfigPathData, new() 
-	{
-		internal readonly FileData<U> FileData;
 
+	public class Config<T> where T : ASetting, new()
+	{
 		internal T Settings { get; private set; }
 
 		internal string ConfigFileName { get; private set; }
 
 		public Config()
 		{
-			FileData = new FileData<U>();
-
-			ConfigFileName = FileData.ConfigFileName;
+			ConfigFileName = (new T()).SettingFileAndPath;
 		}
 
 		internal void GetConfigData()
@@ -50,11 +47,9 @@ namespace ConfigTest2
 						XmlSerializer xs = new XmlSerializer(typeof(T));
 						Settings = (T) xs.Deserialize(fs);
 					}
-
 				}
 				catch (Exception e)
 				{
-					
 					throw new Exception("Cannot get configuration data for file:\n"
 						+ ConfigFileName + "\n"
 						+ e.Message);
@@ -62,15 +57,13 @@ namespace ConfigTest2
 			}
 			else
 			{
-				CreateConfigFile();
-
-//				// file does not exist - create file and save default values
-//				using (FileStream fs = new FileStream(ConfigFileName, FileMode.Create, FileAccess.ReadWrite))
-//				{
-//					XmlSerializer xs = new XmlSerializer(typeof(T));
-//					Settings = new T();
-//					xs.Serialize(fs, Settings);
-//				}
+				// file does not exist - create file and save default values
+				using (FileStream fs = new FileStream(ConfigFileName, FileMode.Create, FileAccess.ReadWrite))
+				{
+					XmlSerializer xs = new XmlSerializer(typeof(T));
+					Settings = new T();
+					xs.Serialize(fs, Settings);
+				}
 			}
 		}
 
@@ -84,119 +77,31 @@ namespace ConfigTest2
 					XmlSerializer xs = new XmlSerializer(typeof(T));
 					xs.Serialize(fs, Settings);
 				}
-
 				return true;
 			}
-
 			return false;
 		}
-
-		private void CreateConfigFile()
-		{
-			// file does not exist - create file and save default values
-			using (FileStream fs = new FileStream(ConfigFileName, FileMode.Create, FileAccess.ReadWrite))
-			{
-				XmlSerializer xs = new XmlSerializer(typeof(T));
-				Settings = new T();
-				xs.Serialize(fs, Settings);
-			}
-		}
-	}
-	
-
-	public class FileData<T> where T : ConfigPathData, new()
-	{
-		internal readonly T ConfigPathInfo;
-
-		public FileData()
-		{
-			ConfigPathInfo = new T();
-		}
-
-		internal string ConfigFileName
-		{
-			get
-			{
-				if (!Directory.Exists(ConfigPathInfo.ConfigPath))
-				{
-					if (!ConfigPathInfo.CreateUserConfigFolder())
-					{
-						throw new DirectoryNotFoundException("configuration file path");
-					}
-				}
-				return ConfigPathInfo.ConfigFileName();
-			}
-		}
 	}
 
-	class CfgPathUser : ConfigPathData
+	public static class ConfigUtil
 	{
-		public string AssemblyName { get; }
-		public string CompanyName { get; }
-
-		public CfgPathUser()
+		internal static string GetAssemblyName()
 		{
-			fileName = @"user.config.xml";
+			return typeof(Program).Assembly.GetName().Name;
+		}
 
-			rootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			AssemblyName = typeof(Program).Assembly.GetName().Name;
-
+		internal static string GetCompanyName()
+		{
 			object[] att = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
 			if (att.Length > 0)
 			{
-				CompanyName = ((AssemblyCompanyAttribute) att[0]).Company;
-			}
-			else
-			{
-				throw new MissingFieldException("Company is Missing from Assembly Information");
+				return ((AssemblyCompanyAttribute) att[0]).Company;
 			}
 
-			subFolders = new[] { CompanyName, AssemblyName};
+			throw new MissingFieldException("Company is Missing from Assembly Information");
 		}
 
-		public override string ConfigFileName()
-		{
-			return ConfigPath + "\\" + fileName;
-		}
-
-		public override bool CreateUserConfigFolder()
-		{
-			if (!Directory.Exists(rootPath)) { return false; }
-
-			for (int i = 0; i < subFolders.Length; i++)
-			{
-				string path = SubFolder(i);
-
-				if (!Directory.Exists(path))
-				{
-					Directory.CreateDirectory(path);
-				}
-			}
-
-			return true;
-		}
-
-	}
-
-	class CfgPathApp : ConfigPathData
-	{
-		public CfgPathApp()
-		{
-			fileName = @"app.config.xml";
-			rootPath = AssemblyDirectory;
-			subFolders = null;
-		}
-
-		public override string ConfigFileName()
-		{
-			if (Directory.Exists(ConfigPath))
-			{
-				return ConfigPath + "\\" + fileName;
-			}
-			return "";
-		}
-
-		private string AssemblyDirectory
+		internal static string AssemblyDirectory
 		{
 			get
 			{
@@ -206,13 +111,72 @@ namespace ConfigTest2
 				return Path.GetDirectoryName(path);
 			}
 		}
+	}
 
-		public override bool CreateUserConfigFolder()
+	public abstract class AConfigPathData
+	{
+		protected string FileName;
+
+		protected string RootPath;
+		protected string[] SubFolders;
+
+		private int SubFolderCount => SubFolders.Length;
+
+		protected string SubFolder(int i)
 		{
-			return true;
+			if (i < 0 ||
+				i >= SubFolderCount) return null;
+
+			string path = RootPath;
+			for (int j = 0; j < i + 1; j++)
+			{
+				path += "\\" + SubFolders[j];
+			}
+
+			return path;
+		}
+
+		protected abstract string ConfigFileName();
+
+		protected abstract bool CreateUserConfigFolder();
+
+		protected string ConfigPath
+		{
+			get
+			{
+				if (SubFolders == null)
+				{
+					return RootPath;
+				}
+
+				return SubFolder(SubFolders.Length - 1);
+			}
+		}
+
+		public string FileNameAndPath
+		{
+			get
+			{
+				if (!Directory.Exists(ConfigPath))
+				{
+					if (!CreateUserConfigFolder())
+					{
+						throw new DirectoryNotFoundException("configuration file path");
+					}
+				}
+
+				return ConfigFileName();
+			}
 		}
 	}
-	
-	
+
+	public abstract class ASetting
+	{
+		protected abstract AConfigPathData CfgFile { get; }
+
+		public abstract string SettingFileAndPath { get; }
+	}
+
+
 }
 

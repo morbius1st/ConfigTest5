@@ -39,14 +39,15 @@
 			this.tbxMessasge.Location = new System.Drawing.Point(0, 0);
 			this.tbxMessasge.Multiline = true;
 			this.tbxMessasge.Name = "tbxMessasge";
-			this.tbxMessasge.Size = new System.Drawing.Size(282, 259);
+			this.tbxMessasge.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+			this.tbxMessasge.Size = new System.Drawing.Size(446, 625);
 			this.tbxMessasge.TabIndex = 0;
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(282, 259);
+			this.ClientSize = new System.Drawing.Size(446, 625);
 			this.Controls.Add(this.tbxMessasge);
 			this.Name = "Form1";
 			this.Text = "Form1";

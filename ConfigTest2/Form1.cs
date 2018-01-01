@@ -32,23 +32,25 @@ namespace ConfigTest2
 			}
 		}
 
+		private const int v = 8;
+
 		private void ProcessAppConfig()
 		{
-			Config<CfgPathApp, SettingsApp> cfgApp = new Config<CfgPathApp, SettingsApp>();
+			Config<SettingsApp> cfgApp = new Config<SettingsApp>();
 
 			tbxMessasge.AppendText(" app path| " + cfgApp.ConfigFileName + nl);
 
-			tbxMessasge.AppendText("app before" + nl);
+			tbxMessasge.AppendText(nl + "app before" + nl);
 
 			cfgApp.GetConfigData();
 
 			DisplayAppConfigData(cfgApp);
 
-			cfgApp.Settings.AppS = "generic app data 2";
+			cfgApp.Settings.AppS = "generic app data " + v;
 			cfgApp.Settings.AppB = false;
-			cfgApp.Settings.AppD = 2.1;
-			cfgApp.Settings.AppI = 2;
-			cfgApp.Settings.AppIs[0] = 2;
+			cfgApp.Settings.AppD = v + 0.1;
+			cfgApp.Settings.AppI = v;
+			cfgApp.Settings.AppIs[0] = v;
 
 			cfgApp.SetConfigData();
 
@@ -58,7 +60,7 @@ namespace ConfigTest2
 
 		}
 
-		private void DisplayAppConfigData(Config<CfgPathApp, SettingsApp> cfgApp)
+		private void DisplayAppConfigData(Config<SettingsApp> cfgApp)
 		{
 			StringBuilder sb = new StringBuilder();
 
@@ -75,23 +77,25 @@ namespace ConfigTest2
 
 		private void ProcessUserConfig()
 		{
-			Config<CfgPathUser, SettingsUser> cfgUser = new Config<CfgPathUser, SettingsUser>();
+			Config<SettingsUser> cfgUser = new Config<SettingsUser>();
 
 			tbxMessasge.AppendText("user path| " + cfgUser.ConfigFileName + nl);
 
-			tbxMessasge.AppendText(" asm name| " + cfgUser.FileData.ConfigPathInfo.AssemblyName + nl);
-			tbxMessasge.AppendText("  co name| " + cfgUser.FileData.ConfigPathInfo.CompanyName + nl);
-
-			tbxMessasge.AppendText("user before" + nl);
+			tbxMessasge.AppendText(nl + "user before" + nl);
 
 			cfgUser.GetConfigData();
 
 			DisplayUserConfigData(cfgUser);
 
-			cfgUser.Settings.TestB = true;
-			cfgUser.Settings.TestD = 4.0;
-			cfgUser.Settings.TestS = "using generic setting file 4";
-			cfgUser.Settings.TestSs[1] = "generic 4";
+			cfgUser.Settings.GeneralValues.TestB = true;
+			cfgUser.Settings.GeneralValues.TestD = v + 0.2;
+			cfgUser.Settings.GeneralValues.TestS = "using generic setting file " + v;
+			cfgUser.Settings.GeneralValues.TestI = v;
+			cfgUser.Settings.GeneralValues.TestIs[1] = v;
+			cfgUser.Settings.GeneralValues.TestSs[1] = "generic " + v;
+			cfgUser.Settings.UnCategorizedValue = v;
+			cfgUser.Settings.MainWindow.height = v * 50;
+			cfgUser.Settings.MainWindow.widht = v * 100;
 
 			cfgUser.SetConfigData();
 
@@ -100,22 +104,25 @@ namespace ConfigTest2
 			DisplayUserConfigData(cfgUser);
 		}
 
-
-
-		private void DisplayUserConfigData(Config<CfgPathUser, SettingsUser> cfgUser)
+		private void DisplayUserConfigData(Config<SettingsUser> cfgUser)
 		{
 			StringBuilder sb = new StringBuilder();
 
 			sb.Append("file name   | ").AppendLine(cfgUser.ConfigFileName);
-			sb.Append("test int    | ").AppendLine(cfgUser.Settings.TestI.ToString());
-			sb.Append("test bool   | ").AppendLine(cfgUser.Settings.TestB.ToString());
-			sb.Append("test double | ").AppendLine(cfgUser.Settings.TestD.ToString());
-			sb.Append("test string | ").AppendLine(cfgUser.Settings.TestS);
-			sb.Append("test int[0] | ").AppendLine(cfgUser.Settings.TestIs[0].ToString());
-			sb.Append("test int[1] | ").AppendLine(cfgUser.Settings.TestIs[1].ToString());
-			sb.Append("test str[0] | ").AppendLine(cfgUser.Settings.TestSs[0]);
-			sb.Append("test str[1] | ").AppendLine(cfgUser.Settings.TestSs[1]);
-			sb.Append("test str[2] | ").AppendLine(cfgUser.Settings.TestSs[2]);
+			sb.Append("test int    | ").AppendLine(cfgUser.Settings.GeneralValues.TestI.ToString());
+			sb.Append("test bool   | ").AppendLine(cfgUser.Settings.GeneralValues.TestB.ToString());
+			sb.Append("test double | ").AppendLine(cfgUser.Settings.GeneralValues.TestD.ToString());
+			sb.Append("test string | ").AppendLine(cfgUser.Settings.GeneralValues.TestS);
+			sb.Append("test int[0] | ").AppendLine(cfgUser.Settings.GeneralValues.TestIs[0].ToString());
+			sb.Append("test int[1] | ").AppendLine(cfgUser.Settings.GeneralValues.TestIs[1].ToString());
+			sb.Append("test str[0] | ").AppendLine(cfgUser.Settings.GeneralValues.TestSs[0]);
+			sb.Append("test str[1] | ").AppendLine(cfgUser.Settings.GeneralValues.TestSs[1]);
+			sb.Append("test str[2] | ").AppendLine(cfgUser.Settings.GeneralValues.TestSs[2]);
+			sb.Append("uncat value | ").AppendLine(cfgUser.Settings.UnCategorizedValue.ToString());
+			sb.Append("win height  | ").AppendLine(cfgUser.Settings.MainWindow.height.ToString());
+			sb.Append("win width   | ").AppendLine(cfgUser.Settings.MainWindow.widht.ToString());
+			
+			
 			sb.Append(nl).Append(nl);
 
 			tbxMessasge.AppendText(sb.ToString());
