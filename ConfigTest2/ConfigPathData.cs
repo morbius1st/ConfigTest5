@@ -24,14 +24,25 @@ namespace ConfigTest2
 //		}
 //	}
 
-	public class ConfigPathData
+	public abstract class ConfigPathData
 	{
+		protected string fileName;
+
 		protected string rootPath;
 		protected string[] subFolders;
 
 		public string RootPath => rootPath;
-
 		public int SubFolderCount => subFolders.Length;
+
+		public string FileName => fileName;
+
+		public ConfigPathData() { }
+
+		public ConfigPathData(string rPath, string[] sFolders)
+		{
+			rootPath = rPath;
+			subFolders = sFolders;
+		}
 
 		public string SubFolder(int i)
 		{
@@ -47,6 +58,10 @@ namespace ConfigTest2
 			return path;
 		}
 
+		public abstract string ConfigFileName();
+
+		public abstract bool CreateUserConfigFolder();
+
 		public string ConfigPath
 		{
 			get
@@ -59,14 +74,6 @@ namespace ConfigTest2
 				return SubFolder(subFolders.Length - 1);
 			}
 		}
-
-		public ConfigPathData(string rPath, string[] sFolders)
-		{
-			rootPath = rPath;
-			subFolders = sFolders;
-		}
-
-		public ConfigPathData() { }
 
 	}
 	

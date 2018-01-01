@@ -23,21 +23,9 @@ namespace ConfigTest2
 		public int[] TestIs { get; set; } = new[] { 20, 30 };
 		public string[] TestSs { get; set; } = new[] { "user 1", "user 2", "user 3" };
 
-		private static string UserFileName = "adf";
-
 		public SettingsUser()
 		{
 			
-		}
-
-		public void methodA()
-		{
-			
-		}
-
-		public bool methodB()
-		{
-			return true;
 		}
 	}
 }

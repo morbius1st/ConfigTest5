@@ -16,7 +16,7 @@ using System.Xml.Serialization;
 
 namespace ConfigTest2
 {
-	class SettingsApp
+	public class SettingsApp
 	{
 		public int AppI { get; set; } = 0;
 		public bool AppB { get; set; } = false;
@@ -24,56 +24,10 @@ namespace ConfigTest2
 		public string AppS { get; set; } = "this is a App";
 		public int[] AppIs { get; set; } = new[] { 20, 30 };
 
-		private static string ConfigFileName = "adf";
-
 		public SettingsApp()
 		{
 
 		}
-
-		internal static SettingsApp GetConfigData()
-		{
-			// does the file already exist?
-			if (File.Exists(ConfigFileName))
-			{
-				// file exists - get the current values
-				using (FileStream fs = new FileStream(ConfigFileName, FileMode.Open))
-				{
-					XmlSerializer xs = new XmlSerializer(typeof(SettingsApp));
-					SettingsApp cd = (SettingsApp) xs.Deserialize(fs);
-
-					return cd;
-				}
-			}
-			else
-			{
-				// file does not exist - create file and save default values
-				using (FileStream fs = new FileStream(ConfigFileName, FileMode.Create))
-				{
-					XmlSerializer xs = new XmlSerializer(typeof(SettingsApp));
-					SettingsApp cd = new SettingsApp();
-					xs.Serialize(fs, cd);
-
-					return cd;
-				}
-			}
-		}
-
-		public static bool SetConfigData(SettingsApp cd)
-		{
-			if (File.Exists(ConfigFileName))
-			{
-				// file exists - process
-				using (FileStream fs = new FileStream(ConfigFileName, FileMode.Open))
-				{
-					XmlSerializer xs = new XmlSerializer(typeof(SettingsApp));
-					xs.Serialize(fs, cd);
-				}
-
-				return true;
-			}
-
-			return false;
-		}
+		
 	}
 }
