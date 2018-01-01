@@ -32,7 +32,7 @@ namespace ConfigTest2
 			}
 		}
 
-		private const int v = 8;
+		private const int v = 9;
 
 		private void ProcessAppConfig()
 		{
