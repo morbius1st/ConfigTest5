@@ -35,6 +35,7 @@ namespace ConfigTest2
 			settingsUser.TestB = false;
 			settingsUser.TestD = 2.0;
 			settingsUser.TestS = "testing 1, 2, 3, 4, 5, 6, 7";
+			settingsUser.TestSs[1] = "revision 1";
 
 			Config.SetConfigData(settingsUser);
 
@@ -63,6 +64,9 @@ namespace ConfigTest2
 			sb.Append("test string | ").AppendLine(cd.TestS);
 			sb.Append("test int[0] | ").AppendLine(cd.TestIs[0].ToString());
 			sb.Append("test int[1] | ").AppendLine(cd.TestIs[1].ToString());
+			sb.Append("test str[0] | ").AppendLine(cd.TestSs[0]);
+			sb.Append("test str[1] | ").AppendLine(cd.TestSs[1]);
+			sb.Append("test str[2] | ").AppendLine(cd.TestSs[2]);
 			sb.Append(nl).Append(nl);
 
 			tbxMessasge.AppendText(sb.ToString());
