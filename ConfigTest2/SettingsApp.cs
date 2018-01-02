@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,44 +16,20 @@ using System.Xml.Serialization;
 
 namespace ConfigTest2
 {
-	public class SettingsApp : ASetting
+	[XmlRootAttribute("AppSettings")]
+	public class SettingsApp : SettingsBase
 	{
+		public override string SETTINGFILEVERSION { get; } = "0.0.0.1";
+
 		public int AppI { get; set; } = 0;
 		public bool AppB { get; set; } = false;
 		public double AppD { get; set; } = 0.0;
 		public string AppS { get; set; } = "this is a App";
 		public int[] AppIs { get; set; } = new[] {20, 30};
 
-		public SettingsApp()
-		{
-		}
-
-		protected override AConfigPathData CfgFile { get; } = new CfgPathApp();
-
-		public override string SettingFileAndPath => CfgFile.FileNameAndPath;
-
-		class CfgPathApp : AConfigPathData
-		{
-			public CfgPathApp()
-			{
-				FileName = ConfigUtil.GetAssemblyName() + @".config.xml";
-				RootPath = ConfigUtil.AssemblyDirectory;
-				SubFolders = null;
-			}
-
-			protected override string ConfigFileName()
-			{
-				if (Directory.Exists(ConfigPath))
-				{
-					return ConfigPath + "\\" + FileName;
-				}
-				return "";
-			}
-
-			protected override bool CreateUserConfigFolder()
-			{
-				return true;
-			}
-		}
+		// read only properties are not serialized
+		[XmlIgnore]
+		public override SettingsPathBase SettingsPath { get; } = new SettingsPathApp();
+		
 	}
 }
