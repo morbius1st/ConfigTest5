@@ -6,6 +6,7 @@ using ConfigTest2;
 
 namespace ConfigTest2
 {
+	// version 1.0.1.1 - at xml save changed "file.open" to "file.create"
 	static class Program
 	{
 		

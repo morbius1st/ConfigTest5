@@ -13,18 +13,11 @@ using System.Xml.Serialization;
 
 namespace ConfigTest2
 {
-	[XmlRootAttribute("UserSettings")]
-	public class SettingsUser : SettingsBase
+	public class UserSettings : SettingsPathFileUserBase
 	{
-		public override string SETTINGFILEVERSION { get; } = "0.0.0.1";
-
 		public int UnCategorizedValue = 10;
 		public generalValues GeneralValues = new generalValues();
 		public window1 MainWindow { get; set; } = new window1();
-
-		// read only property does not get serialized
-		[XmlIgnore]
-		public override SettingsPathBase SettingsPath { get; } = new SettingsPathUser();
 	}
 
 	public class window1

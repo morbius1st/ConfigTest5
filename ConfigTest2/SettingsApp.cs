@@ -16,20 +16,13 @@ using System.Xml.Serialization;
 
 namespace ConfigTest2
 {
-	[XmlRootAttribute("AppSettings")]
-	public class SettingsApp : SettingsBase
+	public class AppSettings : SettingsPathFileAppBase
 	{
-		public override string SETTINGFILEVERSION { get; } = "0.0.0.1";
-
 		public int AppI { get; set; } = 0;
 		public bool AppB { get; set; } = false;
 		public double AppD { get; set; } = 0.0;
 		public string AppS { get; set; } = "this is a App";
 		public int[] AppIs { get; set; } = new[] {20, 30};
-
-		// read only properties are not serialized
-		[XmlIgnore]
-		public override SettingsPathBase SettingsPath { get; } = new SettingsPathApp();
 		
 	}
 }

@@ -13,8 +13,55 @@ using System.Xml.Serialization;
 
 namespace ConfigTest2
 {
+	public class VersionInfo
+	{
+		public const string SETTINGSYSTEMVERSION = "1.0.1.0";
 
-	public class Settings<T> where T : SettingsBase, new()
+		[XmlAttribute]
+		public string SettingFileVersion = "0.0.0.0";
+		[XmlAttribute]
+		public string AssemblyVersion = SettingsUtil.AssemblyVersion;
+		[XmlAttribute]
+		public string SettingSystemVersion = SETTINGSYSTEMVERSION;
+	}
+
+	public static class SettingsUser
+	{
+		public static readonly Settings<UserSettings> USetting = SettingsUser.GetInstance();
+		public static UserSettings USet = USetting.Setting;
+
+		private static Settings<UserSettings> userSettings;
+
+		public static Settings<UserSettings> GetInstance()
+		{
+			if (userSettings == null)
+			{
+				userSettings = new Settings<UserSettings>();
+			}
+
+			return userSettings;
+		}
+	}
+
+	public static class SettingsApp
+	{
+		public static readonly Settings<AppSettings> ASetting = SettingsApp.GetInstance();
+		public static AppSettings ASet = ASetting.Setting;
+
+		private static Settings<AppSettings> appSettings;
+
+		public static Settings<AppSettings> GetInstance()
+		{
+			if (appSettings == null)
+			{
+				appSettings = new Settings<AppSettings>();
+			}
+
+			return appSettings;
+		}
+	}
+
+	public class Settings<T> where T : SettingsPathFileBase, new()
 	{
 		internal T Setting { get; private set; }
 
@@ -22,7 +69,7 @@ namespace ConfigTest2
 
 		public Settings()
 		{
-			SettingsPathAndFile = (new T()).SettingsPath.SettingsPathAndFile;
+			SettingsPathAndFile = (new T()).SettingsPathAndFile;
 			Read();
 		}
 
@@ -66,13 +113,13 @@ namespace ConfigTest2
 				throw new FileNotFoundException(SettingsPathAndFile);
 			}
 			// file exists - process
-			using (FileStream fs = new FileStream(SettingsPathAndFile, FileMode.Open))
+			using (FileStream fs = new FileStream(SettingsPathAndFile, FileMode.Create))
 			{
 				XmlSerializer xs = new XmlSerializer(typeof(T));
 
 				Setting.VersionInfo.AssemblyVersion = SettingsUtil.AssemblyVersion;
 				Setting.VersionInfo.SettingFileVersion = Setting.SETTINGFILEVERSION;
-				Setting.VersionInfo.SettingSystemVersion = versionInfo.SETTINGSYSTEMVERSION;
+				Setting.VersionInfo.SettingSystemVersion = VersionInfo.SETTINGSYSTEMVERSION;
 
 				xs.Serialize(fs, Setting);
 			}
@@ -81,7 +128,7 @@ namespace ConfigTest2
 
 	public static class SettingsUtil
 	{
-		internal static string AssemblyName => typeof(Program).Assembly.GetName().Name;
+		internal static string AssemblyName => typeof(SettingsUtil).Assembly.GetName().Name;
 
 		internal static string CompanyName
 		{
@@ -110,27 +157,30 @@ namespace ConfigTest2
 
 		internal static string AssemblyVersion
 		{
-			get
-			{
-				return typeof(Program).Assembly.GetName().Version.ToString();
-
-			}
+			get { return typeof(SettingsUtil).Assembly.GetName().Version.ToString(); }
 		}
-}
 
-	public abstract class SettingsPathBase
-	{
-		protected string FileName;
+		internal static bool CreateSubFolders(string RootPath, string[] SubFolders)
+		{
+			if (!Directory.Exists(RootPath)) { return false; }
 
-		protected string RootPath;
-		protected string[] SubFolders;
+			for (int i = 0; i < SubFolders.Length; i++)
+			{
+				string path = SubFolder(i, RootPath, SubFolders);
 
-		private int SubFolderCount => SubFolders.Length;
+				if (!Directory.Exists(path))
+				{
+					Directory.CreateDirectory(path);
+				}
+			}
 
-		protected string SubFolder(int i)
+			return true;
+		}
+
+		internal static string SubFolder(int i, string RootPath, string[] SubFolders)
 		{
 			if (i < 0 ||
-				i >= SubFolderCount) return null;
+				i >= SubFolders.Length) return null;
 
 			string path = RootPath;
 			for (int j = 0; j < i + 1; j++)
@@ -140,10 +190,32 @@ namespace ConfigTest2
 
 			return path;
 		}
+	}
 
-		protected abstract bool CreateFolders();
+	public abstract class SettingsPathFileBase
+	{
+		protected string FileName;
+		protected string RootPath;
+		protected string[] SubFolders;
 
-		protected string SettingsPath
+		public const string SETTINGFILEBASE = @".setting.xml";
+		public abstract string SETTINGFILEVERSION { get; }
+
+		public VersionInfo VersionInfo = new VersionInfo();
+
+		// create the folder path if needed
+		public virtual bool CreateFolders()
+		{
+			if (SubFolders == null) return true;
+
+			return SettingsUtil.CreateSubFolders(RootPath, SubFolders);
+		}
+
+		// get the count of sub-folders
+		private int SubFolderCount => SubFolders.Length;
+
+		// get the path to the setting file
+		public string SettingsPath
 		{
 			get
 			{
@@ -151,11 +223,12 @@ namespace ConfigTest2
 				{
 					return RootPath;
 				}
-
-				return SubFolder(SubFolders.Length - 1);
+				return SettingsUtil.SubFolder(SubFolders.Length - 1,
+					RootPath, SubFolders);
 			}
 		}
 
+		// get the path and the file name for the setting file
 		public string SettingsPathAndFile
 		{
 			get
@@ -167,83 +240,78 @@ namespace ConfigTest2
 						throw new DirectoryNotFoundException("setting file path");
 					}
 				}
-
 				return SettingsPath + "\\" + FileName;
 			}
 		}
 	}
 
-	public abstract class SettingsBase
+	public class SettingsPathFileUserBase : SettingsPathFileBase
 	{
-		public const string SETTINGFILEBASE = @".setting.xml";
-		public abstract string SETTINGFILEVERSION { get; }
-
-		public abstract SettingsPathBase SettingsPath { get; }
-
-		public versionInfo VersionInfo = new versionInfo();
-	}
-
-	public class versionInfo
-	{
-		public const string SETTINGSYSTEMVERSION = "1.0.0.0";
-
-		[XmlAttribute]
-		public string SettingFileVersion = "0.0.0.0";
-		[XmlAttribute]
-		public string AssemblyVersion = SettingsUtil.AssemblyVersion;
-		[XmlAttribute]
-		public string SettingSystemVersion = SETTINGSYSTEMVERSION;
-	}
-
-	// classes are not serialized
-	class SettingsPathApp : SettingsPathBase
-	{
-		public SettingsPathApp()
+		public override string SETTINGFILEVERSION { get; } = "0.0.0.1";
+	
+		public SettingsPathFileUserBase()
 		{
-			FileName = SettingsUtil.AssemblyName + SettingsBase.SETTINGFILEBASE;
+			FileName = @"user" + SETTINGFILEBASE;
+	
+			RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+	
+			SubFolders = new[] {
+				SettingsUtil.CompanyName,
+				SettingsUtil.AssemblyName };
+		}
+	}
+
+	public class SettingsPathFileAppBase : SettingsPathFileBase
+	{
+		public override string SETTINGFILEVERSION { get; } = "0.0.0.1";
+
+		public SettingsPathFileAppBase()
+		{
+			FileName = SettingsUtil.AssemblyName + SETTINGFILEBASE;
 			RootPath = SettingsUtil.AssemblyDirectory;
 			SubFolders = null;
 		}
-
-		protected override bool CreateFolders()
-		{
-			return true;
-		}
 	}
 
-	class SettingsPathUser : SettingsPathBase
-	{
-		public string AssemblyName { get; }
-		public string CompanyName { get; }
+	// sample setting clases
 
-		public SettingsPathUser()
-		{
-			FileName = @"user" + SettingsBase.SETTINGFILEBASE;
+	// sample user settings
+	//	public class UserSettings : SettingsPathFileUserBase
+	//	{
+	//		public int UnCategorizedValue = 10;
+	//		public generalValues GeneralValues = new generalValues();
+	//		public window1 MainWindow { get; set; } = new window1();
+	//	}
+	//
+	//	public class window1
+	//	{
+	//		[XmlAttribute]
+	//		public int height = 50;
+	//		[XmlAttribute]
+	//		public int width = 100;
+	//	}
+	//
+	//	public class generalValues
+	//	{
+	//		public int TestI = 0;
+	//		public bool TestB = false;
+	//		public double TestD = 0.0;
+	//		public string TestS = "this is a test";
+	//		public int[] TestIs = new[] { 20, 30 };
+	//		public string[] TestSs = new[] { "user 1", "user 2", "user 3" };
+	//	}
 
-			RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+	// sample app settings
+	//	public class AppSettings : SettingsPathFileAppBase
+	//	{
+	//		public int AppI { get; set; } = 0;
+	//		public bool AppB { get; set; } = false;
+	//		public double AppD { get; set; } = 0.0;
+	//		public string AppS { get; set; } = "this is a App";
+	//		public int[] AppIs { get; set; } = new[] { 20, 30 };
+	//
+	//	}
 
-			AssemblyName = SettingsUtil.AssemblyName;
-			CompanyName = SettingsUtil.CompanyName;
 
-			SubFolders = new[] { CompanyName, AssemblyName };
-		}
-
-		protected override bool CreateFolders()
-		{
-			if (!Directory.Exists(RootPath)) { return false; }
-
-			for (int i = 0; i < SubFolders.Length; i++)
-			{
-				string path = SubFolder(i);
-
-				if (!Directory.Exists(path))
-				{
-					Directory.CreateDirectory(path);
-				}
-			}
-
-			return true;
-		}
-	}
 }
 
