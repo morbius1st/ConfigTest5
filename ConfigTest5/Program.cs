@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ConfigTest2;
+using ConfigTest5;
 
-namespace ConfigTest2
+namespace ConfigTest5
 {
 	// version 1.0.1.1 - at xml save changed "file.open" to "file.create"
 	static class Program

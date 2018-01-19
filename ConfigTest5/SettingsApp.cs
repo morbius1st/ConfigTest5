@@ -14,7 +14,7 @@ using System.Xml.Serialization;
 // created:		12/31/2017 6:53:43 PM
 
 
-namespace ConfigTest2
+namespace ConfigTest5
 {
 	public class AppSettings : SettingsPathFileAppBase
 	{

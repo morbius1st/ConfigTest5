@@ -1,8 +1,11 @@
 ﻿#region Using directives
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Xml;
 
 #endregion
 
@@ -11,11 +14,13 @@ using System.Xml.Serialization;
 // created:		12/30/2017 4:42:00 PM
 
 
-namespace ConfigTest2
+namespace ConfigTest5
 {
 	public class VersionInfo
 	{
-		public const string SETTINGSYSTEMVERSION = "1.0.1.0";
+		
+
+		public const string SETTINGSYSTEMVERSION = "1.0.2.1";
 
 		[XmlAttribute]
 		public string SettingFileVersion = "0.0.0.0";
@@ -24,53 +29,106 @@ namespace ConfigTest2
 		[XmlAttribute]
 		public string SettingSystemVersion = SETTINGSYSTEMVERSION;
 	}
+//
+//	public static class SettingsUser
+//	{
+//		public static Settings<UserSettings> USetting { private set; get; }
+//			= GetInstance();
+//
+//		internal static UserSettings USet;
+//
+//		private static Settings<UserSettings> userSettings;
+//
+//		private static Settings<UserSettings> GetInstance()
+//		{
+//			if (userSettings == null)
+//			{
+//				userSettings = new Settings<UserSettings>();
+//			}
+//
+//			USet = userSettings.Setting;
+//
+//			return userSettings;
+//		}
+//
+//		public static void Reset(this Settings<UserSettings> user)
+//		{
+//			user.Setting = new UserSettings();
+//			user.Save();
+//			GetInstance();
+//		}
+//	}
 
-	public static class SettingsUser
+
+	public static class SettingsUser2
 	{
-		public static readonly Settings<UserSettings> USetting = SettingsUser.GetInstance();
-		public static UserSettings USet = USetting.Setting;
+		public static Settings<UserSettings2> USetting2 { private set; get; }
+			= GetInstance();
 
-		private static Settings<UserSettings> userSettings;
+		internal static UserSettings2 USet2;
 
-		public static Settings<UserSettings> GetInstance()
+		private static Settings<UserSettings2> userSettings2;
+
+		private static Settings<UserSettings2> GetInstance()
 		{
-			if (userSettings == null)
+			if (userSettings2 == null)
 			{
-				userSettings = new Settings<UserSettings>();
+				userSettings2 = new Settings<UserSettings2>();
 			}
 
-			return userSettings;
+			USet2 = userSettings2.Setting;
+
+			return userSettings2;
+		}
+
+		public static void Reset(this Settings<UserSettings2> user2)
+		{
+			user2.Setting = new UserSettings2();
+			user2.Save2();
+			GetInstance();
 		}
 	}
 
 	public static class SettingsApp
 	{
-		public static readonly Settings<AppSettings> ASetting = SettingsApp.GetInstance();
-		public static AppSettings ASet = ASetting.Setting;
+		public static Settings<AppSettings> ASetting { private set; get; }
+			= GetInstance();
+
+		internal static AppSettings ASet;
 
 		private static Settings<AppSettings> appSettings;
 
-		public static Settings<AppSettings> GetInstance()
+		private static Settings<AppSettings> GetInstance()
 		{
 			if (appSettings == null)
 			{
 				appSettings = new Settings<AppSettings>();
 			}
 
+			ASet = appSettings.Setting;
+
 			return appSettings;
+		}
+
+		public static void Reset(this Settings<AppSettings> app)
+		{
+			app.Setting = new AppSettings();
+			app.Save();
+			GetInstance();
 		}
 	}
 
 	public class Settings<T> where T : SettingsPathFileBase, new()
 	{
-		internal T Setting { get; private set; }
+		internal T Setting { get; set; }
 
 		internal string SettingsPathAndFile { get; private set; }
 
 		public Settings()
 		{
 			SettingsPathAndFile = (new T()).SettingsPathAndFile;
-			Read();
+
+			Read2();
 		}
 
 		private void Read()
@@ -106,6 +164,40 @@ namespace ConfigTest2
 			}
 		}
 
+		private void Read2()
+		{
+			// does the file already exist?
+			if (File.Exists(SettingsPathAndFile))
+			{
+				try
+				{
+					DataContractSerializer ds = new DataContractSerializer(typeof(T));
+
+					// file exists - get the current values
+					using (FileStream fs = new FileStream(SettingsPathAndFile, FileMode.Open))
+					{
+						Setting = (T) ds.ReadObject(fs);
+					}
+				}
+				catch (Exception e)
+				{
+					
+					throw new Exception("Cannot read setting data for file:\n"
+						+ SettingsPathAndFile + "\n"
+						+ e.Message);
+				}
+			}
+			else
+			{
+				Setting = new T();
+				Save2();
+			
+			}
+		}
+
+
+
+
 		public void Save()
 		{
 			if (!File.Exists(SettingsPathAndFile))
@@ -117,14 +209,26 @@ namespace ConfigTest2
 			{
 				XmlSerializer xs = new XmlSerializer(typeof(T));
 
-				Setting.VersionInfo.AssemblyVersion = SettingsUtil.AssemblyVersion;
-				Setting.VersionInfo.SettingFileVersion = Setting.SETTINGFILEVERSION;
-				Setting.VersionInfo.SettingSystemVersion = VersionInfo.SETTINGSYSTEMVERSION;
-
 				xs.Serialize(fs, Setting);
 			}
 		}
+
+		public void Save2()
+		{
+//			string file = SettingsPathFileBase.path + "\\" + @"user-test" + SettingsPathFileBase.SETTINGFILEBASE;
+
+			XmlWriterSettings xmlSettings = new XmlWriterSettings() { Indent = true };
+
+			DataContractSerializer ds = new DataContractSerializer(typeof(T));
+
+			using (XmlWriter w = XmlWriter.Create(SettingsPathAndFile, xmlSettings))
+			{
+				ds.WriteObject(w, Setting);
+			}
+		}
+
 	}
+
 
 	public static class SettingsUtil
 	{
@@ -192,8 +296,12 @@ namespace ConfigTest2
 		}
 	}
 
+	[DataContract]
 	public abstract class SettingsPathFileBase
 	{
+		public static string path
+				= @"B:\Programming\VisualStudioProjects\ConfigTest5-DataContract\ConfigTest5\data";
+
 		protected string FileName;
 		protected string RootPath;
 		protected string[] SubFolders;
@@ -245,22 +353,42 @@ namespace ConfigTest2
 		}
 	}
 
-	public class SettingsPathFileUserBase : SettingsPathFileBase
+	[DataContract]
+	public class SettingsPathFileUserBase2 : SettingsPathFileBase
 	{
 		public override string SETTINGFILEVERSION { get; } = "0.0.0.1";
 	
-		public SettingsPathFileUserBase()
+		public SettingsPathFileUserBase2()
 		{
-			FileName = @"user" + SETTINGFILEBASE;
+			FileName = @"user-test" + SETTINGFILEBASE;
 	
-			RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-	
-			SubFolders = new[] {
-				SettingsUtil.CompanyName,
-				SettingsUtil.AssemblyName };
+//			RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			RootPath = path;
+
+			SubFolders = null;
 		}
 	}
+//
+//	[DataContract]
+//	public class SettingsPathFileUserBase : SettingsPathFileBase
+//	{
+//		public override string SETTINGFILEVERSION { get; } = "0.0.0.1";
+//	
+//		public SettingsPathFileUserBase()
+//		{
+//			FileName = @"user" + SETTINGFILEBASE;
+//	
+//			RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+//
+//			RootPath = path;
+//	
+//			SubFolders = new[] {
+//				SettingsUtil.CompanyName,
+//				SettingsUtil.AssemblyName };
+//		}
+//	}
 
+	[DataContract]
 	public class SettingsPathFileAppBase : SettingsPathFileBase
 	{
 		public override string SETTINGFILEVERSION { get; } = "0.0.0.1";

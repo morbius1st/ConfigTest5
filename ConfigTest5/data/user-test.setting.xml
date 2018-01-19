@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UserSettings xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/ConfigTest5">
+  <DictionaryTest3>
+    <row>
+      <primary>one</primary>
+      <valuename>
+        <line1>1</line1>
+        <line2>2</line2>
+        <line3>3</line3>
+      </valuename>
+    </row>
+    <row>
+      <primary>two</primary>
+      <valuename>
+        <line1>1</line1>
+        <line2>2</line2>
+        <line3>3</line3>
+      </valuename>
+    </row>
+    <row>
+      <primary>three</primary>
+      <valuename>
+        <line1>1</line1>
+        <line2>2</line2>
+        <line3>3</line3>
+      </valuename>
+    </row>
+  </DictionaryTest3>
+  <GeneralValues>
+    <TestB>false</TestB>
+    <TestD>0</TestD>
+    <TestI>20000</TestI>
+    <TestIs xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+      <d3p1:int>20</d3p1:int>
+      <d3p1:int>30</d3p1:int>
+    </TestIs>
+    <TestS>this is a test</TestS>
+    <TestSs xmlns:d3p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+      <d3p1:string>user 1</d3p1:string>
+      <d3p1:string>user 2</d3p1:string>
+      <d3p1:string>user 3</d3p1:string>
+    </TestSs>
+  </GeneralValues>
+  <MainWindow>
+    <height>50</height>
+    <width>100</width>
+  </MainWindow>
+  <UnCategorizedValue>1000</UnCategorizedValue>
+  <UnCategorizedValue2>2000</UnCategorizedValue2>
+  <testDictionary xmlns:d2p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+    <d2p1:KeyValueOfstringint>
+      <d2p1:Key>one</d2p1:Key>
+      <d2p1:Value>1</d2p1:Value>
+    </d2p1:KeyValueOfstringint>
+    <d2p1:KeyValueOfstringint>
+      <d2p1:Key>two</d2p1:Key>
+      <d2p1:Value>2</d2p1:Value>
+    </d2p1:KeyValueOfstringint>
+    <d2p1:KeyValueOfstringint>
+      <d2p1:Key>three</d2p1:Key>
+      <d2p1:Value>3</d2p1:Value>
+    </d2p1:KeyValueOfstringint>
+  </testDictionary>
+</UserSettings>

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ConfigTest2.Properties
+namespace ConfigTest5.Properties
 {
 
 

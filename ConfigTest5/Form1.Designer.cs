@@ -1,4 +1,4 @@
-﻿namespace ConfigTest2
+﻿namespace ConfigTest5
 {
 	partial class Form1
 	{
