@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
 using System.Xml;
+using ConfigTest5;
 
 #endregion
 
@@ -28,138 +29,54 @@ namespace ConfigTest5
 		[DataMember(Order = 2)]
 		public string AssemblyVersion = SettingsUtil.AssemblyVersion;
 		[DataMember(Order = 3)]
-		public string SettingSystemVersion = "2.1";
+		public string SettingSystemVersion = "2.2";
 		[DataMember(Order = 4)]
 		public string SettingFileVersion;
 	}
-//
-//	public static class SettingsUser2
-//	{
-//		public static SettingsBase<UserSettings> USettingBase { private set; get; }
-//			= GetInstance();
-//
-//		internal static UserSettings USet;
-//
-//		private static SettingsBase<UserSettings> userSettings2;
-//
-//		private static SettingsBase<UserSettings> GetInstance()
-//		{
-//			if (userSettings2 == null)
-//			{
-//				userSettings2 = new SettingsBase<UserSettings>();
-//			}
-//
-//			USet = userSettings2.Settings;
-//
-//			return userSettings2;
-//		}
-//
-//		public static void Reset(this SettingsBase<UserSettings> user)
-//		{
-//			user.Settings = new UserSettings();
-//			user.Save();
-//			GetInstance();
-//		}
-//	}
+
 
 	public static class SettingsUser
 	{
-		public static readonly SettingsDefault<UserSettings> Usettings;
+		public static readonly SettingsBase<UserSettings> Usettings;
 
-//		public static SettingsBase<UserSettings> USettingBase => Usettings.Default;
-
-		public static UserSettings USet => Usettings.Default.Settings;
+		public static readonly UserSettings USet;
 
 		static SettingsUser()
 		{
-			Usettings = new SettingsDefault<UserSettings>();
+			Usettings = new SettingsBase<UserSettings>();
+			USet = Usettings.Settings;
 		}
-
-//		public static void Reset<UserSettings>(this UserSettings x)
-//		{
-//			Usettings.Reset();
-//		}
 	}
-
-//	public static class SettingsApp
-//	{
-//		public static SettingsBase<AppSettings> ASettings { private set; get; }
-//			= GetInstance();
-//
-//		internal static AppSettings ASet;
-//
-//		private static SettingsBase<AppSettings> appSettings;
-//
-//		private static SettingsBase<AppSettings> GetInstance()
-//		{
-//			if (appSettings == null)
-//			{
-//				appSettings = new SettingsBase<AppSettings>();
-//			}
-//
-//			ASet = appSettings.Setting;
-//
-//			return appSettings;
-//		}
-//
-//		public static void Reset(this SettingsBase<AppSettings> app)
-//		{
-//			app.Setting = new AppSettings();
-//			app.Save();
-//			GetInstance();
-//		}
-//	}
 
 	public static class SettingsApp
 	{
-		public static readonly SettingsDefault<AppSettings> ASettings;
+		public static readonly SettingsBase<AppSettings> ASettings;
 
-//		public static SettingsBase<AppSettings> ASettings => ASettings.Default;
-
-		public static AppSettings ASet => ASettings.Default.Settings;
+		public static readonly AppSettings ASet;
 
 		static SettingsApp()
 		{
-			ASettings = new SettingsDefault<AppSettings>();
-		}
-
-//		public static void Reset<AppSettings>(this AppSettings x)
-//		{
-//			ASettings.Reset();
-//		}
-	}
-
-	public class SettingsDefault<T> where T : SettingsPathFileBase, new()
-	{
-		public SettingsBase<T> Default { get; private set; }
-
-//		public T Settings { get; private set; }
-
-		public SettingsDefault()
-		{
-			Default = new SettingsBase<T>();
-//			Settings = Default.Settings;
-		}
-
-		public void Reset()
-		{
-			Default.Settings = new T();
-//			Settings = Default.Settings;
-			Default.Save();
+			ASettings = new SettingsBase<AppSettings>();
+			ASet = ASettings.Settings;
 		}
 	}
 
 	public class SettingsBase<T> where T : SettingsPathFileBase, new()
 	{
-		internal T Settings { get; set; }
+		public T Settings { get; private set; }
 
-		internal string SettingsPathAndFile { get; private set; }
+		public string SettingsPathAndFile { get; private set; }
 
 		public SettingsBase()
 		{
 			SettingsPathAndFile = (new T()).SettingsPathAndFile;
 
 			Read();
+		}
+
+		public void Reset()
+		{
+			Settings = new T();
 		}
 
 		private void Read()
@@ -336,7 +253,7 @@ namespace ConfigTest5
 		public SettingsPathFileUserBase()
 		{
 			FileName = @"user" + SETTINGFILEBASE;
-	
+
 			RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
 			SubFolders = new[] {
@@ -360,19 +277,82 @@ namespace ConfigTest5
 
 	// sample setting clases
 
-	// sample user Settings
+	// sample app Settings file:
+	//
+	//	[DataContract(Name = "AppSettings")]
+	//	public class AppSettings : SettingsPathFileAppBase
+	//	{
+	//		public const string APPSETTINGFILEVERSION = "2.0";
+	//
+	//		[DataMember(Order = 1)]
+	//		public int AppI { get; set; } = 0;
+	//
+	//		[DataMember(Order = 2)]
+	//		public bool AppB { get; set; } = false;
+	//
+	//		[DataMember(Order = 3)]
+	//		public double AppD { get; set; } = 0.0;
+	//
+	//		[DataMember(Order = 4)]
+	//		public string AppS { get; set; } = "this is an App";
+	//
+	//		[DataMember(Order = 5)]
+	//		public int[] AppIs { get; set; } = new[] { 20, 30 };
+	//
+	//	}
+	//
+	//
+	// sample user Settings file (complex)
+	//
+	//	[DataContract(Name = "UserSettings")]
 	//	public class UserSettings : SettingsPathFileUserBase
 	//	{
-	//		public int UnCategorizedValue = 10;
+	//		public const string USERSETTINGFILEVERSION = "2.0";
+	//
+	//		[DataMember]
+	//		public int UnCategorizedValue = 1000;
+	//		[DataMember]
+	//		public int UnCategorizedValue2 = 2000;
+	//		[DataMember]
 	//		public generalValues GeneralValues = new generalValues();
+	//		[DataMember]
 	//		public window1 MainWindow { get; set; } = new window1();
+	//
+	//		[DataMember(Name = "DictionaryTest3")]
+	//		public CustDict<string, testStruct> testDictionary3 =
+	//			new CustDict<string, testStruct>()
+	//			{
+	//				{"one", new testStruct(1, 2, 3)},
+	//				{"two", new testStruct(1, 2, 3)},
+	//				{"three", new testStruct(1, 2, 3)}
+	//			};
+	//	}
+	//
+	//	public struct testStruct
+	//	{
+	//		[DataMember(Name = "line1")]
+	//		public int intA;
+	//		[DataMember(Name = "line2")]
+	//		public int intB;
+	//		[DataMember(Name = "line3")]
+	//		public int intC;
+	//
+	//		public testStruct(int a, int b, int c)
+	//		{
+	//			intA = a;
+	//			intB = b;
+	//			intC = c;
+	//		}
+	//	}
+	//
+	//	[CollectionDataContract(Name = "CustomDict", KeyName = "key", ValueName = "data", ItemName = "row")]
+	//	public class CustDict<T1, T2> : Dictionary<T1, T2>
+	//	{
 	//	}
 	//
 	//	public class window1
 	//	{
-	//		[XmlAttribute]
 	//		public int height = 50;
-	//		[XmlAttribute]
 	//		public int width = 100;
 	//	}
 	//
@@ -385,18 +365,5 @@ namespace ConfigTest5
 	//		public int[] TestIs = new[] { 20, 30 };
 	//		public string[] TestSs = new[] { "user 1", "user 2", "user 3" };
 	//	}
-
-	// sample app Settings
-	//	public class AppSettings : SettingsPathFileAppBase
-	//	{
-	//		public int AppI { get; set; } = 0;
-	//		public bool AppB { get; set; } = false;
-	//		public double AppD { get; set; } = 0.0;
-	//		public string AppS { get; set; } = "this is a App";
-	//		public int[] AppIs { get; set; } = new[] { 20, 30 };
-	//
-	//	}
-
-
 }
 

@@ -15,34 +15,6 @@ using System.Xml.Serialization;
 
 namespace ConfigTest5
 {
-//	[DataContract]
-//	public class UserSettings : SettingsPathFileUserBase
-//	{
-//		[DataMember]
-//		public int UnCategorizedValue = 10;
-//		[DataMember]
-//		public generalValues GeneralValues = new generalValues();
-//		[DataMember]
-//		public window1 MainWindow { get; set; } = new window1();
-//
-//	}
-
-	public class window1
-	{
-		public int height = 50;
-		public int width = 100;
-	}
-
-	public class generalValues
-	{
-		public int TestI = 0;
-		public bool TestB = false;
-		public double TestD = 0.0;
-		public string TestS = "this is a test";
-		public int[] TestIs = new[] { 20, 30 };
-		public string[] TestSs = new[] { "user 1", "user 2", "user 3" };
-	}
-
 	[DataContract(Name = "UserSettings")]
 	public class UserSettings : SettingsPathFileUserBase
 	{
@@ -65,9 +37,7 @@ namespace ConfigTest5
 				{"two", new testStruct(1, 2, 3)},
 				{"three", new testStruct(1, 2, 3)}
 			};
-
 	}
-
 	
 	public struct testStruct
 	{
@@ -86,10 +56,25 @@ namespace ConfigTest5
 		}
 	}
 
-	[CollectionDataContract(Name = "CustomDict", KeyName = "primary", ValueName = "valuename", ItemName = "row")]
+	[CollectionDataContract(Name = "CustomDict", KeyName = "key", ValueName = "data", ItemName = "row")]
 	public class CustDict<T1, T2> : Dictionary<T1, T2>
 	{
-		public CustDict() : base() { }
+	}
+
+	public class window1
+	{
+		public int height = 50;
+		public int width = 100;
+	}
+
+	public class generalValues
+	{
+		public int TestI = 0;
+		public bool TestB = false;
+		public double TestD = 0.0;
+		public string TestS = "this is a test";
+		public int[] TestIs = new[] { 20, 30 };
+		public string[] TestSs = new[] { "user 1", "user 2", "user 3" };
 	}
 
 }

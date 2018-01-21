@@ -8,6 +8,7 @@ using System.Windows.Forms;
 //using static ConfigTest5.SettingsUser;
 using static ConfigTest5.SettingsUser;
 using static ConfigTest5.SettingsApp;
+//using static ConfigTest5.SettingsUsr;
 
 
 namespace ConfigTest5
@@ -21,14 +22,16 @@ namespace ConfigTest5
 			InitializeComponent();
 
 			tbxMessasge.Text = "setting info" + nl;
-			tbxMessasge.AppendText("file location| App| " + ASettings.Default.SettingsPathAndFile + nl);
-			tbxMessasge.AppendText("file location| Usr| " + Usettings.Default.SettingsPathAndFile + nl);
+						tbxMessasge.AppendText("file location| App| " + ASettings.SettingsPathAndFile + nl);
+						tbxMessasge.AppendText("file location| Usr| " + Usettings.SettingsPathAndFile + nl);
+
+//			ProcessUsrSettings();
 
 			try
 			{
-				ProcessUserSettings();
+				
 				ProcessAppSettings();
-
+				ProcessUserSettings();
 			}
 			catch (Exception e)
 			{
@@ -37,52 +40,11 @@ namespace ConfigTest5
 			}
 		}
 
-		private const int V = 2;
-		
-		private void ProcessAppSettings()
-		{
-			tbxMessasge.AppendText(" app path| " + ASettings.Default.SettingsPathAndFile + nl);
-
-			tbxMessasge.AppendText(nl + "app before" + nl);
-
-			DisplayAppSettingData();
-
-			ASet.AppS = "generic app data " + V;
-			ASet.AppB = false;
-			ASet.AppD = V + 0.1;
-			ASet.AppI = V;
-			ASet.AppIs[0] = V;
-
-			
-			ASettings.Reset();
-			ASettings.Default.Save();
-
-			tbxMessasge.AppendText("app after" + nl);
-
-			DisplayAppSettingData();
-
-			tbxMessasge.AppendText("app reset" + nl);
-			DisplayAppSettingData();
-		}
-
-		private void DisplayAppSettingData()
-		{
-			StringBuilder sb = new StringBuilder();
-
-			sb.Append("file name   | ").AppendLine(ASettings.Default.SettingsPathAndFile);
-			sb.Append("test string | ").AppendLine(ASet.AppS);
-			sb.Append("test bool   | ").AppendLine(ASet.AppB.ToString());
-			sb.Append("test double | ").AppendLine(ASet.AppD.ToString());
-			sb.Append("test int    | ").AppendLine(ASet.AppI.ToString());
-			sb.Append("test int[0] | ").AppendLine(ASet.AppIs[0].ToString());
-			sb.Append(nl).Append(nl);
-
-			tbxMessasge.AppendText(sb.ToString());
-		}
+		private const int V = 10;
 
 		private void ProcessUserSettings()
 		{
-			tbxMessasge.AppendText("user path| " + Usettings.Default.SettingsPathAndFile + nl);
+			tbxMessasge.AppendText("user path| " + Usettings.SettingsPathAndFile + nl);
 
 			tbxMessasge.AppendText(nl + "user before" + nl);
 
@@ -101,22 +63,24 @@ namespace ConfigTest5
 			USet.testDictionary3["two"] = new testStruct(V * 10 + 1, V * 10 + 2, V * 10 + 3);
 			USet.testDictionary3["three"] = new testStruct(V * 10 + 7, V * 10 + 8, V * 10 + 9);
 
-			Usettings.Default.Save();
+			Usettings.Save();
 
 			tbxMessasge.AppendText("user after" + nl);
 
 			DisplayUserSettingData();
 
-			Usettings.Reset();
-			tbxMessasge.AppendText("user reset" + nl);
-			DisplayUserSettingData();
+//			Usettings.Reset();
+//			Usettings.Save();
+//
+//			tbxMessasge.AppendText("user reset" + nl);
+//			DisplayUserSettingData();
 		}
 
 		private void DisplayUserSettingData()
 		{
 			StringBuilder sb = new StringBuilder();
 
-			sb.Append("file name   | ").AppendLine(Usettings.Default.SettingsPathAndFile);
+			sb.Append("file name   | ").AppendLine(Usettings.SettingsPathAndFile);
 			sb.Append("test int    | ").AppendLine(USet.GeneralValues.TestI.ToString());
 			sb.Append("test bool   | ").AppendLine(USet.GeneralValues.TestB.ToString());
 			sb.Append("test double | ").AppendLine(USet.GeneralValues.TestD.ToString());
@@ -136,7 +100,47 @@ namespace ConfigTest5
 			tbxMessasge.AppendText(sb.ToString());
 		}
 
-		
+
+		private void ProcessAppSettings()
+		{
+			tbxMessasge.AppendText(" app path| " + ASettings.SettingsPathAndFile + nl);
+
+			tbxMessasge.AppendText(nl + "app before" + nl);
+
+			DisplayAppSettingData();
+
+			ASet.AppS = "generic app data " + V;
+			ASet.AppB = false;
+			ASet.AppD = V + 0.1;
+			ASet.AppI = V;
+			ASet.AppIs[0] = V;
+
+			tbxMessasge.AppendText("app after" + nl);
+
+			DisplayAppSettingData();
+
+//			ASettings.Reset();
+//			ASettings.Save();
+//
+//			tbxMessasge.AppendText("app reset" + nl);
+//			DisplayAppSettingData();
+		}
+
+		private void DisplayAppSettingData()
+		{
+			StringBuilder sb = new StringBuilder();
+
+			sb.Append("file name   | ").AppendLine(ASettings.SettingsPathAndFile);
+			sb.Append("test string | ").AppendLine(ASet.AppS);
+			sb.Append("test bool   | ").AppendLine(ASet.AppB.ToString());
+			sb.Append("test double | ").AppendLine(ASet.AppD.ToString());
+			sb.Append("test int    | ").AppendLine(ASet.AppI.ToString());
+			sb.Append("test int[0] | ").AppendLine(ASet.AppIs[0].ToString());
+			sb.Append(nl).Append(nl);
+
+			tbxMessasge.AppendText(sb.ToString());
+		}
+
 	}
 
 }
