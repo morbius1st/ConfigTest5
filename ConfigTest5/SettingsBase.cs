@@ -16,155 +16,153 @@ using System.Xml;
 
 namespace ConfigTest5
 {
-	public class VersionInfo
+	[DataContract]
+	public class Header
 	{
-		
-
-		public const string SETTINGSYSTEMVERSION = "1.0.2.1";
-
-		[XmlAttribute]
-		public string SettingFileVersion = "0.0.0.0";
-		[XmlAttribute]
+		public Header(string settingFileVersion)
+		{
+			SettingFileVersion = settingFileVersion;
+		}
+		[DataMember(Order = 1)]
+		public string SaveDateTime = System.DateTime.Today.ToString("G");
+		[DataMember(Order = 2)]
 		public string AssemblyVersion = SettingsUtil.AssemblyVersion;
-		[XmlAttribute]
-		public string SettingSystemVersion = SETTINGSYSTEMVERSION;
+		[DataMember(Order = 3)]
+		public string SettingSystemVersion = "2.1";
+		[DataMember(Order = 4)]
+		public string SettingFileVersion;
 	}
 //
-//	public static class SettingsUser
+//	public static class SettingsUser2
 //	{
-//		public static Settings<UserSettings> USetting { private set; get; }
+//		public static SettingsBase<UserSettings> USettingBase { private set; get; }
 //			= GetInstance();
 //
 //		internal static UserSettings USet;
 //
-//		private static Settings<UserSettings> userSettings;
+//		private static SettingsBase<UserSettings> userSettings2;
 //
-//		private static Settings<UserSettings> GetInstance()
+//		private static SettingsBase<UserSettings> GetInstance()
 //		{
-//			if (userSettings == null)
+//			if (userSettings2 == null)
 //			{
-//				userSettings = new Settings<UserSettings>();
+//				userSettings2 = new SettingsBase<UserSettings>();
 //			}
 //
-//			USet = userSettings.Setting;
+//			USet = userSettings2.Settings;
 //
-//			return userSettings;
+//			return userSettings2;
 //		}
 //
-//		public static void Reset(this Settings<UserSettings> user)
+//		public static void Reset(this SettingsBase<UserSettings> user)
 //		{
-//			user.Setting = new UserSettings();
+//			user.Settings = new UserSettings();
 //			user.Save();
 //			GetInstance();
 //		}
 //	}
 
-
-	public static class SettingsUser2
+	public static class SettingsUser
 	{
-		public static Settings<UserSettings2> USetting2 { private set; get; }
-			= GetInstance();
+		public static readonly SettingsDefault<UserSettings> Usettings;
 
-		internal static UserSettings2 USet2;
+//		public static SettingsBase<UserSettings> USettingBase => Usettings.Default;
 
-		private static Settings<UserSettings2> userSettings2;
+		public static UserSettings USet => Usettings.Default.Settings;
 
-		private static Settings<UserSettings2> GetInstance()
+		static SettingsUser()
 		{
-			if (userSettings2 == null)
-			{
-				userSettings2 = new Settings<UserSettings2>();
-			}
-
-			USet2 = userSettings2.Setting;
-
-			return userSettings2;
+			Usettings = new SettingsDefault<UserSettings>();
 		}
 
-		public static void Reset(this Settings<UserSettings2> user2)
-		{
-			user2.Setting = new UserSettings2();
-			user2.Save2();
-			GetInstance();
-		}
+//		public static void Reset<UserSettings>(this UserSettings x)
+//		{
+//			Usettings.Reset();
+//		}
 	}
+
+//	public static class SettingsApp
+//	{
+//		public static SettingsBase<AppSettings> ASettings { private set; get; }
+//			= GetInstance();
+//
+//		internal static AppSettings ASet;
+//
+//		private static SettingsBase<AppSettings> appSettings;
+//
+//		private static SettingsBase<AppSettings> GetInstance()
+//		{
+//			if (appSettings == null)
+//			{
+//				appSettings = new SettingsBase<AppSettings>();
+//			}
+//
+//			ASet = appSettings.Setting;
+//
+//			return appSettings;
+//		}
+//
+//		public static void Reset(this SettingsBase<AppSettings> app)
+//		{
+//			app.Setting = new AppSettings();
+//			app.Save();
+//			GetInstance();
+//		}
+//	}
 
 	public static class SettingsApp
 	{
-		public static Settings<AppSettings> ASetting { private set; get; }
-			= GetInstance();
+		public static readonly SettingsDefault<AppSettings> ASettings;
 
-		internal static AppSettings ASet;
+//		public static SettingsBase<AppSettings> ASettings => ASettings.Default;
 
-		private static Settings<AppSettings> appSettings;
+		public static AppSettings ASet => ASettings.Default.Settings;
 
-		private static Settings<AppSettings> GetInstance()
+		static SettingsApp()
 		{
-			if (appSettings == null)
-			{
-				appSettings = new Settings<AppSettings>();
-			}
-
-			ASet = appSettings.Setting;
-
-			return appSettings;
+			ASettings = new SettingsDefault<AppSettings>();
 		}
 
-		public static void Reset(this Settings<AppSettings> app)
+//		public static void Reset<AppSettings>(this AppSettings x)
+//		{
+//			ASettings.Reset();
+//		}
+	}
+
+	public class SettingsDefault<T> where T : SettingsPathFileBase, new()
+	{
+		public SettingsBase<T> Default { get; private set; }
+
+//		public T Settings { get; private set; }
+
+		public SettingsDefault()
 		{
-			app.Setting = new AppSettings();
-			app.Save();
-			GetInstance();
+			Default = new SettingsBase<T>();
+//			Settings = Default.Settings;
+		}
+
+		public void Reset()
+		{
+			Default.Settings = new T();
+//			Settings = Default.Settings;
+			Default.Save();
 		}
 	}
 
-	public class Settings<T> where T : SettingsPathFileBase, new()
+	public class SettingsBase<T> where T : SettingsPathFileBase, new()
 	{
-		internal T Setting { get; set; }
+		internal T Settings { get; set; }
 
 		internal string SettingsPathAndFile { get; private set; }
 
-		public Settings()
+		public SettingsBase()
 		{
 			SettingsPathAndFile = (new T()).SettingsPathAndFile;
 
-			Read2();
+			Read();
 		}
 
 		private void Read()
-		{
-			// does the file already exist?
-			if (File.Exists(SettingsPathAndFile))
-			{
-				try
-				{
-					// file exists - get the current values
-					using (FileStream fs = new FileStream(SettingsPathAndFile, FileMode.Open))
-					{
-						XmlSerializer xs = new XmlSerializer(typeof(T));
-						Setting = (T) xs.Deserialize(fs);
-					}
-				}
-				catch (Exception e)
-				{
-					throw new Exception("Cannot read setting data for file:\n"
-						+ SettingsPathAndFile + "\n"
-						+ e.Message);
-				}
-			}
-			else
-			{
-				// file does not exist - create file and save default values
-				using (FileStream fs = new FileStream(SettingsPathAndFile, FileMode.Create, FileAccess.ReadWrite))
-				{
-					XmlSerializer xs = new XmlSerializer(typeof(T));
-					Setting = new T();
-					xs.Serialize(fs, Setting);
-				}
-			}
-		}
-
-		private void Read2()
 		{
 			// does the file already exist?
 			if (File.Exists(SettingsPathAndFile))
@@ -176,7 +174,7 @@ namespace ConfigTest5
 					// file exists - get the current values
 					using (FileStream fs = new FileStream(SettingsPathAndFile, FileMode.Open))
 					{
-						Setting = (T) ds.ReadObject(fs);
+						Settings = (T) ds.ReadObject(fs);
 					}
 				}
 				catch (Exception e)
@@ -189,44 +187,23 @@ namespace ConfigTest5
 			}
 			else
 			{
-				Setting = new T();
-				Save2();
+				Settings = new T();
+				Save();
 			
 			}
 		}
 
-
-
-
 		public void Save()
 		{
-			if (!File.Exists(SettingsPathAndFile))
-			{
-				throw new FileNotFoundException(SettingsPathAndFile);
-			}
-			// file exists - process
-			using (FileStream fs = new FileStream(SettingsPathAndFile, FileMode.Create))
-			{
-				XmlSerializer xs = new XmlSerializer(typeof(T));
-
-				xs.Serialize(fs, Setting);
-			}
-		}
-
-		public void Save2()
-		{
-//			string file = SettingsPathFileBase.path + "\\" + @"user-test" + SettingsPathFileBase.SETTINGFILEBASE;
-
 			XmlWriterSettings xmlSettings = new XmlWriterSettings() { Indent = true };
 
 			DataContractSerializer ds = new DataContractSerializer(typeof(T));
 
 			using (XmlWriter w = XmlWriter.Create(SettingsPathAndFile, xmlSettings))
 			{
-				ds.WriteObject(w, Setting);
+				ds.WriteObject(w, Settings);
 			}
 		}
-
 	}
 
 
@@ -281,15 +258,23 @@ namespace ConfigTest5
 			return true;
 		}
 
-		internal static string SubFolder(int i, string RootPath, string[] SubFolders)
+		// create the folder path if needed
+		public static bool CreateFolders(string rootPath, string[] subFolders)
+		{
+			if (subFolders == null) return true;
+
+			return SettingsUtil.CreateSubFolders(rootPath, subFolders);
+		}
+
+		internal static string SubFolder(int i, string rootPath, string[] subFolders)
 		{
 			if (i < 0 ||
-				i >= SubFolders.Length) return null;
+				i >= subFolders.Length) return null;
 
-			string path = RootPath;
+			string path = rootPath;
 			for (int j = 0; j < i + 1; j++)
 			{
-				path += "\\" + SubFolders[j];
+				path += "\\" + subFolders[j];
 			}
 
 			return path;
@@ -299,28 +284,18 @@ namespace ConfigTest5
 	[DataContract]
 	public abstract class SettingsPathFileBase
 	{
-		public static string path
-				= @"B:\Programming\VisualStudioProjects\ConfigTest5-DataContract\ConfigTest5\data";
-
 		protected string FileName;
 		protected string RootPath;
 		protected string[] SubFolders;
 
 		public const string SETTINGFILEBASE = @".setting.xml";
-		public abstract string SETTINGFILEVERSION { get; }
 
-		public VersionInfo VersionInfo = new VersionInfo();
-
-		// create the folder path if needed
-		public virtual bool CreateFolders()
-		{
-			if (SubFolders == null) return true;
-
-			return SettingsUtil.CreateSubFolders(RootPath, SubFolders);
-		}
+		[DataMember]
+		public abstract Header Header { get; set; }
 
 		// get the count of sub-folders
 		private int SubFolderCount => SubFolders.Length;
+
 
 		// get the path to the setting file
 		public string SettingsPath
@@ -343,7 +318,7 @@ namespace ConfigTest5
 			{
 				if (!Directory.Exists(SettingsPath))
 				{
-					if (!CreateFolders())
+					if (!SettingsUtil.CreateFolders(RootPath, SubFolders))
 					{
 						throw new DirectoryNotFoundException("setting file path");
 					}
@@ -354,44 +329,26 @@ namespace ConfigTest5
 	}
 
 	[DataContract]
-	public class SettingsPathFileUserBase2 : SettingsPathFileBase
+	public class SettingsPathFileUserBase : SettingsPathFileBase
 	{
-		public override string SETTINGFILEVERSION { get; } = "0.0.0.1";
-	
-		public SettingsPathFileUserBase2()
-		{
-			FileName = @"user-test" + SETTINGFILEBASE;
-	
-//			RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			RootPath = path;
+		public override Header Header { get; set; } = new Header(UserSettings.USERSETTINGFILEVERSION);
 
-			SubFolders = null;
+		public SettingsPathFileUserBase()
+		{
+			FileName = @"user" + SETTINGFILEBASE;
+	
+			RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+			SubFolders = new[] {
+				SettingsUtil.CompanyName,
+				SettingsUtil.AssemblyName };
 		}
 	}
-//
-//	[DataContract]
-//	public class SettingsPathFileUserBase : SettingsPathFileBase
-//	{
-//		public override string SETTINGFILEVERSION { get; } = "0.0.0.1";
-//	
-//		public SettingsPathFileUserBase()
-//		{
-//			FileName = @"user" + SETTINGFILEBASE;
-//	
-//			RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-//
-//			RootPath = path;
-//	
-//			SubFolders = new[] {
-//				SettingsUtil.CompanyName,
-//				SettingsUtil.AssemblyName };
-//		}
-//	}
 
 	[DataContract]
 	public class SettingsPathFileAppBase : SettingsPathFileBase
 	{
-		public override string SETTINGFILEVERSION { get; } = "0.0.0.1";
+		public override Header Header { get; set; } = new Header(AppSettings.APPSETTINGFILEVERSION);
 
 		public SettingsPathFileAppBase()
 		{
@@ -403,7 +360,7 @@ namespace ConfigTest5
 
 	// sample setting clases
 
-	// sample user settings
+	// sample user Settings
 	//	public class UserSettings : SettingsPathFileUserBase
 	//	{
 	//		public int UnCategorizedValue = 10;
@@ -429,7 +386,7 @@ namespace ConfigTest5
 	//		public string[] TestSs = new[] { "user 1", "user 2", "user 3" };
 	//	}
 
-	// sample app settings
+	// sample app Settings
 	//	public class AppSettings : SettingsPathFileAppBase
 	//	{
 	//		public int AppI { get; set; } = 0;

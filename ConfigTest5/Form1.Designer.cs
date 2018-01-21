@@ -40,14 +40,14 @@
 			this.tbxMessasge.Multiline = true;
 			this.tbxMessasge.Name = "tbxMessasge";
 			this.tbxMessasge.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.tbxMessasge.Size = new System.Drawing.Size(446, 625);
+			this.tbxMessasge.Size = new System.Drawing.Size(778, 625);
 			this.tbxMessasge.TabIndex = 0;
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(446, 625);
+			this.ClientSize = new System.Drawing.Size(778, 625);
 			this.Controls.Add(this.tbxMessasge);
 			this.Name = "Form1";
 			this.Text = "Form1";

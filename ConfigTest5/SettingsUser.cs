@@ -29,9 +29,7 @@ namespace ConfigTest5
 
 	public class window1
 	{
-		[XmlAttribute]
 		public int height = 50;
-		[XmlAttribute]
 		public int width = 100;
 	}
 
@@ -45,12 +43,11 @@ namespace ConfigTest5
 		public string[] TestSs = new[] { "user 1", "user 2", "user 3" };
 	}
 
-
-
-
 	[DataContract(Name = "UserSettings")]
-	public class UserSettings2 : SettingsPathFileUserBase2
+	public class UserSettings : SettingsPathFileUserBase
 	{
+		public const string USERSETTINGFILEVERSION = "2.0";
+
 		[DataMember]
 		public int UnCategorizedValue = 1000;
 		[DataMember]
@@ -59,15 +56,6 @@ namespace ConfigTest5
 		public generalValues GeneralValues = new generalValues();
 		[DataMember]
 		public window1 MainWindow { get; set; } = new window1();
-
-		[DataMember]
-		public Dictionary<string, int> testDictionary =
-			new Dictionary<string, int>()
-			{
-				{"one", 1},
-				{"two", 2},
-				{"three", 3}
-			};
 
 		[DataMember(Name = "DictionaryTest3")]
 		public CustDict<string, testStruct> testDictionary3 =
@@ -80,21 +68,21 @@ namespace ConfigTest5
 
 	}
 
-	[DataContract]
+	
 	public struct testStruct
 	{
 		[DataMember(Name = "line1")]
-		public int structA;
+		public int intA;
 		[DataMember(Name = "line2")]
-		public int structB;
+		public int intB;
 		[DataMember(Name = "line3")]
-		public int structC;
+		public int intC;
 
 		public testStruct(int a, int b, int c)
 		{
-			structA = a;
-			structB = b;
-			structC = c;
+			intA = a;
+			intB = b;
+			intC = c;
 		}
 	}
 

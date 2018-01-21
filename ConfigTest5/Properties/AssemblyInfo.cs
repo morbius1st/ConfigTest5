@@ -6,11 +6,11 @@ using ConfigTest5;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ConfigTest2")]
+[assembly: AssemblyTitle("ConfigTest5")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("CyberStudio")]
-[assembly: AssemblyProduct("ConfigTest2")]
+[assembly: AssemblyProduct("ConfigTest5")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
