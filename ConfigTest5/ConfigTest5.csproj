@@ -44,6 +44,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\CsUtilities.cs">
+      <Link>CsUtilities.cs</Link>
+    </Compile>
     <Compile Include="SettingsBase.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

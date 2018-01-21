@@ -1,18 +1,20 @@
 ﻿#region Using directives
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Reflection;
-using System.Xml.Serialization;
 using System.Runtime.Serialization;
 using System.Xml;
-using ConfigTest5;
+using UtilityLibrary;
 
 #endregion
 
 // itemname:	Config
 // username:	jeffs
 // created:		12/30/2017 4:42:00 PM
+
+//	version 1.0		initial version
+//	version 2.0		revise to use DataContract
+//	version 2.1		refine use fewer classes / abstract classes
+//	version 2.2		refine move utility methods to library file
 
 
 namespace ConfigTest5
@@ -25,11 +27,11 @@ namespace ConfigTest5
 			SettingFileVersion = settingFileVersion;
 		}
 		[DataMember(Order = 1)]
-		public string SaveDateTime = System.DateTime.Today.ToString("G");
+		public string SaveDateTime = DateTime.Today.ToString("G");
 		[DataMember(Order = 2)]
-		public string AssemblyVersion = SettingsUtil.AssemblyVersion;
+		public string AssemblyVersion = CsUtilities.AssemblyVersion;
 		[DataMember(Order = 3)]
-		public string SettingSystemVersion = "2.2";
+		public string SettingSystemVersion = "2.3";
 		[DataMember(Order = 4)]
 		public string SettingFileVersion;
 	}
@@ -123,81 +125,6 @@ namespace ConfigTest5
 		}
 	}
 
-
-	public static class SettingsUtil
-	{
-		internal static string AssemblyName => typeof(SettingsUtil).Assembly.GetName().Name;
-
-		internal static string CompanyName
-		{
-			get
-			{
-				object[] att = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
-				if (att.Length > 0)
-				{
-					return ((AssemblyCompanyAttribute) att[0]).Company;
-				}
-
-				throw new MissingFieldException("Company is Missing from Assembly Information");
-			}
-		}
-
-		internal static string AssemblyDirectory
-		{
-			get
-			{
-				string codebase = Assembly.GetExecutingAssembly().CodeBase;
-				UriBuilder uri = new UriBuilder(codebase);
-				string path = Uri.UnescapeDataString(uri.Path);
-				return Path.GetDirectoryName(path);
-			}
-		}
-
-		internal static string AssemblyVersion
-		{
-			get { return typeof(SettingsUtil).Assembly.GetName().Version.ToString(); }
-		}
-
-		internal static bool CreateSubFolders(string RootPath, string[] SubFolders)
-		{
-			if (!Directory.Exists(RootPath)) { return false; }
-
-			for (int i = 0; i < SubFolders.Length; i++)
-			{
-				string path = SubFolder(i, RootPath, SubFolders);
-
-				if (!Directory.Exists(path))
-				{
-					Directory.CreateDirectory(path);
-				}
-			}
-
-			return true;
-		}
-
-		// create the folder path if needed
-		public static bool CreateFolders(string rootPath, string[] subFolders)
-		{
-			if (subFolders == null) return true;
-
-			return SettingsUtil.CreateSubFolders(rootPath, subFolders);
-		}
-
-		internal static string SubFolder(int i, string rootPath, string[] subFolders)
-		{
-			if (i < 0 ||
-				i >= subFolders.Length) return null;
-
-			string path = rootPath;
-			for (int j = 0; j < i + 1; j++)
-			{
-				path += "\\" + subFolders[j];
-			}
-
-			return path;
-		}
-	}
-
 	[DataContract]
 	public abstract class SettingsPathFileBase
 	{
@@ -205,14 +132,10 @@ namespace ConfigTest5
 		protected string RootPath;
 		protected string[] SubFolders;
 
-		public const string SETTINGFILEBASE = @".setting.xml";
+		protected const string SETTINGFILEBASE = @".setting.xml";
 
 		[DataMember]
 		public abstract Header Header { get; set; }
-
-		// get the count of sub-folders
-		private int SubFolderCount => SubFolders.Length;
-
 
 		// get the path to the setting file
 		public string SettingsPath
@@ -223,7 +146,7 @@ namespace ConfigTest5
 				{
 					return RootPath;
 				}
-				return SettingsUtil.SubFolder(SubFolders.Length - 1,
+				return CsUtilities.SubFolder(SubFolders.Length - 1,
 					RootPath, SubFolders);
 			}
 		}
@@ -235,7 +158,7 @@ namespace ConfigTest5
 			{
 				if (!Directory.Exists(SettingsPath))
 				{
-					if (!SettingsUtil.CreateFolders(RootPath, SubFolders))
+					if (!CsUtilities.CreateSubFolders(RootPath, SubFolders))
 					{
 						throw new DirectoryNotFoundException("setting file path");
 					}
@@ -257,8 +180,8 @@ namespace ConfigTest5
 			RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
 			SubFolders = new[] {
-				SettingsUtil.CompanyName,
-				SettingsUtil.AssemblyName };
+				CsUtilities.CompanyName,
+				CsUtilities.AssemblyName };
 		}
 	}
 
@@ -269,8 +192,8 @@ namespace ConfigTest5
 
 		public SettingsPathFileAppBase()
 		{
-			FileName = SettingsUtil.AssemblyName + SETTINGFILEBASE;
-			RootPath = SettingsUtil.AssemblyDirectory;
+			FileName = CsUtilities.AssemblyName + SETTINGFILEBASE;
+			RootPath = CsUtilities.AssemblyDirectory;
 			SubFolders = null;
 		}
 	}
