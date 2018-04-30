@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ConfigTest5;
+using static ConfigTest5.Test;
 
 namespace ConfigTest5
 {
@@ -18,7 +19,12 @@ namespace ConfigTest5
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
+
+			// run the app - test settings usage
 			Application.Run(new Form1());
+
+//			Test t = new Test();
+//			t.GetTypeInfo();
 		}
 	}
 }

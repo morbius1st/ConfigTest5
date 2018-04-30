@@ -1,14 +1,14 @@
 ﻿using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
-//using static ConfigTest5.SettingsUser;
 using static ConfigTest5.SettingsUser;
 using static ConfigTest5.SettingsApp;
-//using static ConfigTest5.SettingsUsr;
+
 
 
 namespace ConfigTest5
@@ -20,35 +20,56 @@ namespace ConfigTest5
 		public Form1()
 		{
 			InitializeComponent();
-
 			tbxMessasge.Text = "setting info" + nl;
-						tbxMessasge.AppendText("file location| App| " + ASettings.SettingsPathAndFile + nl);
-						tbxMessasge.AppendText("file location| Usr| " + Usettings.SettingsPathAndFile + nl);
+			tbxMessasge.Select(0,0);
 
-//			ProcessUsrSettings();
-
-			try
-			{
-				
-				ProcessAppSettings();
-				ProcessUserSettings();
-			}
-			catch (Exception e)
-			{
-				MessageBox.Show(e.Message, "Config Test 2");
-				Application.Exit();
-			}
 		}
 
-		private const int V = 10;
+		private const int V = 40;
 
 		private void ProcessUserSettings()
 		{
-			tbxMessasge.AppendText("user path| " + Usettings.SettingsPathAndFile + nl);
+			tbxMessasge.AppendText("user path| " + USettings.SettingsPathAndFile + nl);
 
 			tbxMessasge.AppendText(nl + "user before" + nl);
 
 			DisplayUserSettingData();
+
+			ModifyAndSaveUserSettings();
+
+//			ResetUserSettings();
+
+		}
+
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				ProcessAppSettings();
+//				ProcessUserSettings();
+
+			}
+			catch (Exception ex)
+			{
+				tbxMessasge.AppendText(nl + "EXCEPTION" + nl);
+				tbxMessasge.AppendText(ex.Message + nl);
+				tbxMessasge.AppendText(ex.InnerException + nl);
+			}
+		}
+
+		private void ResetUserSettings()
+		{
+			USettings.Reset();
+			USettings.Save();
+
+			tbxMessasge.AppendText("user reset" + nl);
+			DisplayUserSettingData();
+		}
+
+
+		private void ModifyAndSaveUserSettings()
+		{
 
 			USet.GeneralValues.TestB = true;
 			USet.GeneralValues.TestD = V + 0.2;
@@ -57,30 +78,24 @@ namespace ConfigTest5
 			USet.GeneralValues.TestIs[1] = V;
 			USet.GeneralValues.TestSs[1] = "generic " + V;
 			USet.UnCategorizedValue = V;
-			USet.MainWindow.height = V * 50;
-			USet.MainWindow.width = V * 100;
-			USet.testDictionary3["one"] = new testStruct(V * 10 + 4, V * 10 + 5, V * 10 + 6);
-			USet.testDictionary3["two"] = new testStruct(V * 10 + 1, V * 10 + 2, V * 10 + 3);
-			USet.testDictionary3["three"] = new testStruct(V * 10 + 7, V * 10 + 8, V * 10 + 9);
+			USet.MainWindow.Height = V * 50;
+			USet.MainWindow.Width = V * 100;
+			USet.TestDictionary3["one"] = new TestStruct(V * 10 + 4, V * 10 + 5, V * 10 + 6);
+			USet.TestDictionary3["two"] = new TestStruct(V * 10 + 1, V * 10 + 2, V * 10 + 3);
+			USet.TestDictionary3["three"] = new TestStruct(V * 10 + 7, V * 10 + 8, V * 10 + 9);
 
-			Usettings.Save();
+			USettings.Save();
 
 			tbxMessasge.AppendText("user after" + nl);
-
 			DisplayUserSettingData();
-
-//			Usettings.Reset();
-//			Usettings.Save();
-//
-//			tbxMessasge.AppendText("user reset" + nl);
-//			DisplayUserSettingData();
 		}
+
 
 		private void DisplayUserSettingData()
 		{
 			StringBuilder sb = new StringBuilder();
 
-			sb.Append("file name   | ").AppendLine(Usettings.SettingsPathAndFile);
+			sb.Append("file name   | ").AppendLine(USettings.SettingsPathAndFile);
 			sb.Append("test int    | ").AppendLine(USet.GeneralValues.TestI.ToString());
 			sb.Append("test bool   | ").AppendLine(USet.GeneralValues.TestB.ToString());
 			sb.Append("test double | ").AppendLine(USet.GeneralValues.TestD.ToString());
@@ -90,11 +105,12 @@ namespace ConfigTest5
 			sb.Append("test str[0] | ").AppendLine(USet.GeneralValues.TestSs[0]);
 			sb.Append("test str[1] | ").AppendLine(USet.GeneralValues.TestSs[1]);
 			sb.Append("test str[2] | ").AppendLine(USet.GeneralValues.TestSs[2]);
-			sb.Append("win height  | ").AppendLine(USet.MainWindow.height.ToString());
-			sb.Append("win width   | ").AppendLine(USet.MainWindow.width.ToString());
+			sb.Append("win height  | ").AppendLine(USet.MainWindow.Height.ToString());
+			sb.Append("win width   | ").AppendLine(USet.MainWindow.Width.ToString());
 			sb.Append("uncat value | ").AppendLine(USet.UnCategorizedValue.ToString());
-			
-			
+			sb.Append("uncat value2| ").AppendLine(USet.UnCategorizedValue2.ToString());
+
+
 			sb.Append(nl).Append(nl);
 
 			tbxMessasge.AppendText(sb.ToString());
@@ -109,21 +125,9 @@ namespace ConfigTest5
 
 			DisplayAppSettingData();
 
-			ASet.AppS = "generic app data " + V;
-			ASet.AppB = false;
-			ASet.AppD = V + 0.1;
-			ASet.AppI = V;
-			ASet.AppIs[0] = V;
+			ModifyAndSaveAppSettings();
 
-			tbxMessasge.AppendText("app after" + nl);
-
-			DisplayAppSettingData();
-
-//			ASettings.Reset();
-//			ASettings.Save();
-//
-//			tbxMessasge.AppendText("app reset" + nl);
-//			DisplayAppSettingData();
+//			ResetAndSaveAppSettings();
 		}
 
 		private void DisplayAppSettingData()
@@ -141,6 +145,29 @@ namespace ConfigTest5
 			tbxMessasge.AppendText(sb.ToString());
 		}
 
-	}
+		private void ModifyAndSaveAppSettings()
+		{
+			ASet.AppS = "generic app data " + V;
+			ASet.AppB = false;
+			ASet.AppD = V + 0.1;
+			ASet.AppI = V;
+			ASet.AppIs[0] = V;
 
+			ASettings.Save();
+
+			tbxMessasge.AppendText("app after" + nl);
+
+			DisplayAppSettingData();
+		}
+
+		private void ResetAndSaveAppSettings()
+		{
+			ASettings.Reset();
+			ASettings.Save();
+			
+			tbxMessasge.AppendText("app reset" + nl);
+			DisplayAppSettingData();
+		}
+
+	}
 }

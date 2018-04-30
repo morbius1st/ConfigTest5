@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
 using UtilityLibrary;
+using static UtilityLibrary.MessageUtilities;
 
 #endregion
 
@@ -11,14 +12,63 @@ using UtilityLibrary;
 // username:	jeffs
 // created:		12/30/2017 4:42:00 PM
 
-//	version 1.0		initial version
-//	version 2.0		revise to use DataContract
-//	version 2.1		refine use fewer classes / abstract classes
-//	version 2.2		refine move utility methods to library file
+//	ver 1.0		initial version
+//	ver 2.0		revise to use DataContract
+//	ver 2.1		refine use fewer classes / abstract classes
+//	ver	2.2		refine
+//	ver 2.3		refine move utility methods to library file
+//	ver 2.4		move setting file specific info out of base file
+//	ver 2.4.1	revise date format
 
 
 namespace ConfigTest5
 {
+	public static class SettingsUser
+	{
+		// this is the primary data structure - it holds the settings
+		// configuration information as well as the setting data
+		public static SettingsBase<UserSettings> USettings { get; private set; }
+
+		// this is just the setting data - this is a shortcut to
+		// the setting data
+		public static UserSettings USet { get; private set; }
+
+		// initalize and create the setting objects
+		static SettingsUser()
+		{
+			USettings = new SettingsBase<UserSettings>();
+			USet = USettings.Settings;
+			USet.Header = new Header(ConfigTest5.UserSettings.USERSETTINGFILEVERSION);
+			USettings.ResetClass = ResetClass;
+		}
+
+		public static void ResetClass()
+		{
+			USet = USettings.Settings;
+		}
+
+	}
+
+	public static class SettingsApp
+	{
+		public static SettingsBase<AppSettings> ASettings { get; private set; }
+
+		public static AppSettings ASet { get; private set; }
+
+		static SettingsApp()
+		{
+			ASettings = new SettingsBase<AppSettings>();
+			ASet = ASettings.Settings;
+			ASet.Header = new Header(AppSettings.APPSETTINGFILEVERSION);
+			ASettings.ResetClass = ResetClass;
+		}
+
+		public static void ResetClass()
+		{
+			ASet = ASettings.Settings;
+		}
+	}
+
 	[DataContract]
 	public class Header
 	{
@@ -27,49 +77,22 @@ namespace ConfigTest5
 			SettingFileVersion = settingFileVersion;
 		}
 		[DataMember(Order = 1)]
-		public string SaveDateTime = DateTime.Today.ToString("G");
+		public string SaveDateTime = DateTime.Now.ToString("yyyy-MM-dd - HH:mm zzz");
 		[DataMember(Order = 2)]
 		public string AssemblyVersion = CsUtilities.AssemblyVersion;
 		[DataMember(Order = 3)]
-		public string SettingSystemVersion = "2.3";
+		public string SettingSystemVersion = "2.4.1";
 		[DataMember(Order = 4)]
 		public string SettingFileVersion;
 	}
 
-
-	public static class SettingsUser
-	{
-		public static readonly SettingsBase<UserSettings> Usettings;
-
-		public static readonly UserSettings USet;
-
-		static SettingsUser()
-		{
-			Usettings = new SettingsBase<UserSettings>();
-			USet = Usettings.Settings;
-		}
-	}
-
-	public static class SettingsApp
-	{
-		public static readonly SettingsBase<AppSettings> ASettings;
-
-		public static readonly AppSettings ASet;
-
-		static SettingsApp()
-		{
-			ASettings = new SettingsBase<AppSettings>();
-			ASet = ASettings.Settings;
-		}
-	}
-
-	public class SettingsBase<T> where T : SettingsPathFileBase, new()
+	public class SettingsBase2<T> where T : SettingsPathFileBase, new()
 	{
 		public T Settings { get; private set; }
 
 		public string SettingsPathAndFile { get; private set; }
 
-		public SettingsBase()
+		public SettingsBase2()
 		{
 			SettingsPathAndFile = (new T()).SettingsPathAndFile;
 
@@ -125,6 +148,96 @@ namespace ConfigTest5
 		}
 	}
 
+	public delegate void RstClass();
+
+	public class SettingsBase<T> where T : SettingsPathFileBase, new()
+	{
+		public T Settings { get; private set; }
+
+		public string SettingsPathAndFile { get; private set; }
+
+		public RstClass ResetClass { private get; set; }
+
+		public SettingsBase()
+		{
+			SettingsPathAndFile = (new T()).SettingsPathAndFile;
+
+			Read();
+		}
+
+		public void Reset()
+		{
+			Settings = new T();
+
+			ResetClass?.Invoke();
+		}
+
+		private void Read()
+		{
+			// does the file already exist?
+			if (File.Exists(SettingsPathAndFile))
+			{
+				try
+				{
+
+					DataContractSerializer ds = new DataContractSerializer(typeof(T));
+
+					// file exists - get the current values
+					using (FileStream fs = new FileStream(SettingsPathAndFile, FileMode.Open))
+					{
+						Settings = (T) ds.ReadObject(fs);
+					}
+				}
+				catch (Exception e)
+				{
+					throw new MessageException("Cannot read setting data for file:" + nl
+						+ SettingsPathAndFile, e);
+				}
+			}
+			else
+			{
+				Settings = new T();
+				Save();
+
+			}
+		}
+
+		// using DataContractSerializer
+		public void Save()
+		{
+			XmlWriterSettings xmlSettings = new XmlWriterSettings() { Indent = true };
+
+			DataContractSerializer ds = new DataContractSerializer(typeof(T));
+
+			using (XmlWriter w = XmlWriter.Create(SettingsPathAndFile, xmlSettings))
+			{
+				ds.WriteObject(w, Settings);
+			}
+		}
+
+
+		// using NetDataContractSerializer
+		public void Save2()
+		{
+			using (FileStream fs = new FileStream(SettingsPathAndFile, FileMode.Create))
+			{
+				XmlWriterSettings s = new XmlWriterSettings();
+				s.Indent = true;
+				XmlWriter w = XmlDictionaryWriter.Create(fs, s);
+
+				NetDataContractSerializer ns = new NetDataContractSerializer();
+
+				logMsgFmtln("max items| ", ns.MaxItemsInObjectGraph);
+
+				ns.WriteObject(w, Settings);
+				w.Flush();
+				w.Close();
+			}
+		}
+	}
+
+
+
 	[DataContract]
 	public abstract class SettingsPathFileBase
 	{
@@ -135,7 +248,7 @@ namespace ConfigTest5
 		protected const string SETTINGFILEBASE = @".setting.xml";
 
 		[DataMember]
-		public abstract Header Header { get; set; }
+		public Header Header { get; set; }
 
 		// get the path to the setting file
 		public string SettingsPath
@@ -171,7 +284,7 @@ namespace ConfigTest5
 	[DataContract]
 	public class SettingsPathFileUserBase : SettingsPathFileBase
 	{
-		public override Header Header { get; set; } = new Header(UserSettings.USERSETTINGFILEVERSION);
+//		public override Header Header { get; set; } = new Header(UserSettings.USERSETTINGFILEVERSION);
 
 		public SettingsPathFileUserBase()
 		{
@@ -188,7 +301,7 @@ namespace ConfigTest5
 	[DataContract]
 	public class SettingsPathFileAppBase : SettingsPathFileBase
 	{
-		public override Header Header { get; set; } = new Header(AppSettings.APPSETTINGFILEVERSION);
+//		public override Header Header { get; set; } = new Header(AppSettings.APPSETTINGFILEVERSION);
 
 		public SettingsPathFileAppBase()
 		{
