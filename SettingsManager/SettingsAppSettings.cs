@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace ConfigTest5
+namespace SettingsManager
 {
 	[DataContract(Name = "AppSettings")]
 	public class AppSettings : SettingsPathFileAppBase

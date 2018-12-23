@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ConfigTest5.Properties {
+namespace SettingsManager.Properties {
     using System;
     
     

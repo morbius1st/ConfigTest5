@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace ConfigTest5
+namespace SettingsManager
 {
 	// just a test routine
 	public class Test

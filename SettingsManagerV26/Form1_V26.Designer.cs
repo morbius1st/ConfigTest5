@@ -1,6 +1,6 @@
-﻿namespace ConfigTest5
+﻿namespace SettingsManagerV26
 {
-	partial class Form1
+	partial class Form1_V26
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -38,31 +38,34 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tbxMessasge.Location = new System.Drawing.Point(0, 0);
+			this.tbxMessasge.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.tbxMessasge.Multiline = true;
 			this.tbxMessasge.Name = "tbxMessasge";
 			this.tbxMessasge.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.tbxMessasge.Size = new System.Drawing.Size(778, 625);
+			this.tbxMessasge.Size = new System.Drawing.Size(1036, 768);
 			this.tbxMessasge.TabIndex = 0;
 			// 
 			// button1
 			// 
-			this.button1.Location = new System.Drawing.Point(658, 569);
+			this.button1.Location = new System.Drawing.Point(877, 700);
+			this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(95, 40);
+			this.button1.Size = new System.Drawing.Size(127, 49);
 			this.button1.TabIndex = 1;
 			this.button1.Text = "Drink Me";
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.button1_Click);
 			// 
-			// Form1
+			// Form1_V26
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(778, 625);
+			this.ClientSize = new System.Drawing.Size(1037, 769);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.tbxMessasge);
-			this.Name = "Form1";
-			this.Text = "Form1";
+			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.Name = "Form1_V26";
+			this.Text = "Settings Manager V26";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

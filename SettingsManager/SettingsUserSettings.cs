@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace ConfigTest5
+namespace SettingsManager
 {
 	// this is the actual data set saved to the user's configuration file
 	// this is unique for each program

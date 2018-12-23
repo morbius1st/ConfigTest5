@@ -6,18 +6,17 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
-using static ConfigTest5.SettingsUser;
-using static ConfigTest5.SettingsApp;
+using static SettingsManagerV26.SettingsUser;
+using static SettingsManagerV26.SettingsApp;
 
 
-
-namespace ConfigTest5
+namespace SettingsManagerV26
 {
-	public partial class Form1 : Form
+	public partial class Form1_V26 : Form
 	{
 		public static string nl = Environment.NewLine;
 
-		public Form1()
+		public Form1_V26()
 		{
 			InitializeComponent();
 			tbxMessasge.Text = "setting info" + nl;
@@ -26,6 +25,24 @@ namespace ConfigTest5
 		}
 
 		private const int V = 40;
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				ProcessAppSettings();
+				ProcessUserSettings();
+
+			}
+			catch (Exception ex)
+			{
+				tbxMessasge.AppendText(nl + "EXCEPTION" + nl);
+				tbxMessasge.AppendText(ex.Message + nl);
+				tbxMessasge.AppendText(ex.InnerException + nl);
+			}
+		}
+
+
 
 		private void ProcessUserSettings()
 		{
@@ -41,22 +58,6 @@ namespace ConfigTest5
 
 		}
 
-
-		private void button1_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				ProcessAppSettings();
-//				ProcessUserSettings();
-
-			}
-			catch (Exception ex)
-			{
-				tbxMessasge.AppendText(nl + "EXCEPTION" + nl);
-				tbxMessasge.AppendText(ex.Message + nl);
-				tbxMessasge.AppendText(ex.InnerException + nl);
-			}
-		}
 
 		private void ResetUserSettings()
 		{

@@ -21,7 +21,7 @@ using static UtilityLibrary.MessageUtilities;
 //	ver 2.4.1	revise date format
 
 
-namespace ConfigTest5
+namespace SettingsManager
 {
 	public static class SettingsUser
 	{
@@ -38,7 +38,7 @@ namespace ConfigTest5
 		{
 			USettings = new SettingsBase<UserSettings>();
 			USet = USettings.Settings;
-			USet.Header = new Header(ConfigTest5.UserSettings.USERSETTINGFILEVERSION);
+			USet.Header = new Header(UserSettings.USERSETTINGFILEVERSION);
 			USettings.ResetClass = ResetClass;
 		}
 
@@ -227,7 +227,7 @@ namespace ConfigTest5
 
 				NetDataContractSerializer ns = new NetDataContractSerializer();
 
-				logMsgFmtln("max items| ", ns.MaxItemsInObjectGraph);
+				logMsgDbLn2("max items| ", ns.MaxItemsInObjectGraph);
 
 				ns.WriteObject(w, Settings);
 				w.Flush();
