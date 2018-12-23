@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using SettingManager;
 
-using static UtilityLibrary.MessageUtilities2;
 
 namespace SettingsManagerV30
 {
@@ -12,7 +10,7 @@ namespace SettingsManagerV30
 	[DataContract(Name = "UserSettings")]
 	public class UserSettings : UserSettingBase
 	{
-		public const string USERSETTINGFILEVERSION = "2.2";
+		protected override string FILEVERSION => "2.2";
 
 		[DataMember]
 		public int UnCategorizedValue = 1000;
@@ -40,15 +38,13 @@ namespace SettingsManagerV30
 				{"three", new TestStruct(1, 2, 3)}
 			};
 
-		public override string FileVersion { get; set; } = USERSETTINGFILEVERSION;
-
 		// upgrade the prior version to the new version
 		public override void Upgrade(UserSettingBase prior)
 		{
 			UserSettings21 p = (UserSettings21)prior;
 
-			this.Heading.SettingFileVersion = this.FileVersion;
-			this.Heading.SettingFileNotes += nl + "Upgraded to v" + USERSETTINGFILEVERSION;
+			this.Header.SettingFileNotes =
+				p.Header.SettingFileNotes + " :: updated to v" + FileVersion;
 
 			this.UnCategorizedValue = p.UnCategorizedValue;
 			this.UnCategorizedValue2 = p.UnCategorizedValue2;

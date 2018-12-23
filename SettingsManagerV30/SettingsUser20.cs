@@ -36,7 +36,9 @@ namespace SettingsManagerV30
 	[DataContract(Name = "UserSettings20")]
 	public class UserSettings20 : UserSettingBase
 	{
-		public const string USERSETTINGFILEVERSION = "2.0";
+		protected override string FILEVERSION => "2.0";
+
+//		private const string USERSETTINGFILEVERSION = "2.0";
 
 		[DataMember]
 		public int UnCategorizedValue = 1000;
@@ -56,7 +58,11 @@ namespace SettingsManagerV30
 				{"three", new TestStruct(1, 2, 3)}
 			};
 
-		public override string FileVersion { get; set; } = USERSETTINGFILEVERSION;
+//		public override string FileVersion
+//		{
+//			get => USERSETTINGFILEVERSION;
+//			set { }
+//		}
 
 		// this is the base of the chain - this has nothing to upgrade from
 		public override void Upgrade(UserSettingBase prior)

@@ -51,13 +51,13 @@ namespace SettingManager
 		public static UserSettings USetgData { get; private set; }
 
 		public static SettingMgrStatus Status => USetgAdmin.Status;
+		public static bool Exists => USetgAdmin.Exists;
 
 		// initalize and create the setting objects
 		static SettingsUser()
 		{
 			USetgAdmin        = new SettingsMgr<UserSettings>(ResetClass);
 			USetgData         = USetgAdmin.Settings;
-			USetgData.Heading = new Header(USetgData.FileVersion);
 		}
 
 		public static void ResetClass()
@@ -85,7 +85,7 @@ namespace SettingManager
 		[DataMember(Order = 2)] public string AssemblyVersion      = CsUtilities.AssemblyVersion;
 		[DataMember(Order = 3)] public string SettingSystemVersion = "3.0";
 		[DataMember(Order = 4)] public string SettingFileVersion;
-		[DataMember(Order = 5)] public string SettingFileNotes = "created as v3.0";
+		[DataMember(Order = 5)] public string SettingFileNotes = "created by v3.0";
 
 	}
 
@@ -105,7 +105,7 @@ namespace SettingManager
 
 	public delegate void RstData();
 
-	public class SettingsMgr<T> where T : SettingsPathFileBase, new()
+	public class SettingsMgr<T> where T : SettingsPathFileBase,  new()
 	{
 		#region + Constructor
 
@@ -123,13 +123,14 @@ namespace SettingManager
 				if (FileExists())
 				{
 					Status = EXISTS;
+					Exists = true;
 
 					if ( !FileVersionsMatch())
 					{
 						Status = VERSIONMISMATCH;
 //						logMsgLn2("file versions do not match", " memory vs file" +
 //							Settings.FileVersion + "  vs  " +
-//							GetFileVersion()
+//							ReadFileVersion()
 //							);
 					}
 				}
@@ -147,6 +148,8 @@ namespace SettingManager
 		#region + Properties
 
 		public SettingMgrStatus Status { get; private set; } = CREATED;
+
+		public bool Exists { get; private set; } = false;
 
 		public T Settings { get; private set; } = new T();
 
@@ -287,17 +290,19 @@ namespace SettingManager
 
 
 		// report whether the setting file does exist
-		public bool FileExists()
+		private bool FileExists()
 		{
 			bool result = FileExists(SettingsPathAndFile);
 
 			if (result)
 			{
 				Status = EXISTS;
+				Exists = true;
 			}
 			else
 			{
 				Status = DOESNOTEXIST;
+				Exists = false;
 			}
 
 			return result;
@@ -312,11 +317,11 @@ namespace SettingManager
 		public bool FileVersionsMatch()
 		{
 			return
-				(GetFileVersion()?.Equals(Settings.FileVersion) ?? false);
+				(ReadFileVersion()?.Equals(Settings.FileVersion) ?? false);
 		}
 
 
-		public string GetFileVersion()
+		public string ReadFileVersion()
 		{
 			if (!FileExists())
 			{

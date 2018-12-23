@@ -8,13 +8,59 @@ using static UtilityLibrary.MessageUtilities2;
 namespace SettingsManagerV30
 {
 	[DataContract]
-	public abstract class UserSettingBase : SettingsPathFileUserBase
+	public abstract class UserSettingBase : SettingsPathFileUserBase, IComparable<UserSettingBase>
 	{
-		public override string FileVersion { get; set; }
+		protected abstract string FILEVERSION { get; }
 
-		public Header Header => Heading;
+		public UserSettingBase()
+		{
+			Heading = new Header(FileVersion);
+			Heading.SettingFileNotes = "Created in Version " + FileVersion;
+		}
+
+		public Header Header
+		{
+			get => Heading;
+			set => Heading = value;
+		}
 
 		public abstract void Upgrade(UserSettingBase prior);
+
+		public int CompareTo(UserSettingBase other)
+		{
+			return String.Compare(FileVersion, other.FileVersion, StringComparison.Ordinal);
+		}
+
+		public override string FileVersion
+		{
+			get => FILEVERSION;
+			set { }
+		}
+	}
+
+
+	[DataContract]
+	public abstract class AppSettingBase : SettingsPathFileAppBase, IComparable<AppSettingBase>
+	{
+		public AppSettingBase()
+		{
+			Heading = new Header(FileVersion);
+		}
+
+//		public abstract override string FileVersion { get; set; }
+
+		public Header Header
+		{
+			get => Heading;
+			set => Heading = value;
+		}
+
+		public abstract void Upgrade(AppSettingBase prior);
+
+		public int CompareTo(AppSettingBase other)
+		{
+			return String.Compare(FileVersion, other.FileVersion, StringComparison.Ordinal);
+		}
 	}
 
 
@@ -29,9 +75,11 @@ namespace SettingsManagerV30
 			{
 				List<UserSettingBase> Us1 = USetgBase;
 
+				USetgBase.Add(USetgData);
 				USetgBase.Add(new UserSettings20());
 				USetgBase.Add(new UserSettings21());
-				USetgBase.Add(USetgData);
+
+				USetgBase.Sort();
 
 				Upgrade();
 
@@ -45,7 +93,7 @@ namespace SettingsManagerV30
 
 			for (int i = 0; i < USetgBase.Count; i++)
 			{
-				int j = String.Compare(USetgBase[i].FileVersion, USetgAdmin.GetFileVersion(), StringComparison.Ordinal);
+				int j = String.Compare(USetgBase[i].FileVersion, USetgAdmin.ReadFileVersion(), StringComparison.Ordinal);
 
 				if (j == 0)
 				{

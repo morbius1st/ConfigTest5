@@ -27,7 +27,7 @@ namespace SettingsManagerV30
 
 
 	[DataContract(Name = "AppSettings")]
-	public class AppSettings : SettingsPathFileAppBase
+	public class AppSettings : AppSettingBase
 	{
 		public const string APPSETTINGFILEVERSION = "2.1";
 
@@ -47,5 +47,9 @@ namespace SettingsManagerV30
 		public int[] AppIs { get; set; } = new[] {20, 30};
 
 		public override string FileVersion { get; set; } = APPSETTINGFILEVERSION;
+
+		public override void Upgrade(AppSettingBase prior)
+		{
+		}
 	}
 }

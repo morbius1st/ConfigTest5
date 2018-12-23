@@ -65,7 +65,7 @@ namespace SettingsManagerV30
 			logMsgLn2("status", SettingsUser.USetgAdmin.Status);
 			logMsg2(nl);
 			logMsgLn2("file versions match", SettingsUser.USetgAdmin.FileVersionsMatch());
-			logMsgLn2("file version (in file)", SettingsUser.USetgAdmin.GetFileVersion() ?? "does not exist");
+			logMsgLn2("file version (in file)", SettingsUser.USetgAdmin.ReadFileVersion() ?? "does not exist");
 			logMsgLn2("file version (in memory)", SettingsUser.USetgData.FileVersion);
 			logMsgLn2("save date time", SettingsUser.USetgAdmin.SaveDateTime);
 			logMsgLn2("assembly version", SettingsUser.USetgAdmin.AssemblyVersion);
@@ -79,12 +79,12 @@ namespace SettingsManagerV30
 			SettingsUser.USetgAdmin.Save();
 			logMsgLn2("status", SettingsUser.USetgAdmin.Status);
 			logMsgLn2("system version", SettingsUser.USetgAdmin.GetSystemVersion());
-			logMsgLn2("file version", SettingsUser.USetgAdmin.GetFileVersion());
+			logMsgLn2("file version", SettingsUser.USetgAdmin.ReadFileVersion());
 			logMsg2("\n");
 			logMsgLn2("path", SettingsApp.ASettings.SettingsPathAndFile);
 			SettingsApp.ASettings.Save();
 			logMsgLn2("status", SettingsApp.ASettings.Status);
-			logMsgLn2("file version", SettingsApp.ASettings.GetFileVersion());
+			logMsgLn2("file version", SettingsApp.ASettings.ReadFileVersion());
 			logMsgLn2("system version", SettingsApp.ASettings.GetSystemVersion());
 			logMsg2("\n");
 		}
@@ -113,16 +113,26 @@ namespace SettingsManagerV30
 
 			logMsgLn2(nl + "user before");
 
-			DisplayUserSettingData();
-			if (modify)
-			{
-				ModifyAndSaveUserSettings();
 
-				logMsgLn2(nl + "user after");
+			if (SettingsUser.Exists)
+			{
+				SettingsUser.USetgAdmin.Read();
 				DisplayUserSettingData();
+
+				if (modify)
+				{
+					ModifyAndSaveUserSettings();
+
+					logMsgLn2(nl + "user after");
+					DisplayUserSettingData();
+				}
+			}
+			else
+			{
+				logMsgLn2("user setting file", "does not exist");
 			}
 		}
-		
+
 
 		private void ResetUserSettings()
 		{
@@ -158,11 +168,21 @@ namespace SettingsManagerV30
 			logMsgLn2("system version", SettingsUser.USetgAdmin.Settings.Heading.SettingSystemVersion);
 			logMsgLn2("status", SettingsUser.USetgAdmin.Status);
 			logMsgLn2("file name", SettingsUser.USetgAdmin.SettingsPathAndFile);
-			logMsgLn2("file version (in file)", SettingsUser.USetgAdmin.GetFileVersion() ?? "does not exist");
+			logMsgLn2("file version (in file)", SettingsUser.USetgAdmin.ReadFileVersion() ?? "does not exist");
 			logMsgLn2("file version (in memory)", SettingsUser.USetgData.FileVersion);
+			logMsgLn2("save date time", SettingsUser.USetgAdmin.SaveDateTime);
+			logMsgLn2("assembly version", SettingsUser.USetgAdmin.AssemblyVersion);
+			logMsgLn2("file notes", SettingsUser.USetgAdmin.SettingFileNotes);
 
-			if ((int)SettingsUser.USetgAdmin.Status > 0)
+			logMsgLn2("file notes", SettingsUser.USetgAdmin.Status);
+
+			
 			{
+				logMsgLn2("test dict one/IntA", SettingsUser.USetgData.TestDictionary3["one"].IntA.ToString());
+				logMsgLn2("test dict one/IntB", SettingsUser.USetgData.TestDictionary3["one"].IntB.ToString());
+				logMsgLn2("test dict one/IntC", SettingsUser.USetgData.TestDictionary3["one"].IntC.ToString());
+
+
 				logMsgLn2("test int", SettingsUser.USetgData.GeneralValues.TestI.ToString());
 				logMsgLn2("test bool", SettingsUser.USetgData.GeneralValues.TestB.ToString());
 				logMsgLn2("test double", SettingsUser.USetgData.GeneralValues.TestD.ToString());
@@ -200,7 +220,7 @@ namespace SettingsManagerV30
 		private void DisplayAppSettingData()
 		{
 			logMsgLn2("file name",SettingsApp.ASettings.SettingsPathAndFile);
-			logMsgLn2("file version",SettingsApp.ASettings.GetFileVersion());
+			logMsgLn2("file version",SettingsApp.ASettings.ReadFileVersion());
 			logMsgLn2("system version",SettingsApp.ASettings.Settings.Heading.SettingSystemVersion);
 			logMsgLn2("test string",SettingsApp.ASet.AppS);
 			logMsgLn2("test bool",SettingsApp.ASet.AppB.ToString());
