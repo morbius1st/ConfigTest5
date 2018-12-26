@@ -59,6 +59,8 @@
     <Compile Include="..\..\UtilityLibrary\UtilityLibrary\MessageUtilities.cs">
       <Link>Referenced\MessageUtilities.cs</Link>
     </Compile>
+    <Compile Include="AppSettings21.cs" />
+    <Compile Include="AppSettings20.cs" />
     <Compile Include="Form1_V30.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -68,11 +70,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingManager\SettingsMgr.cs" />
-    <Compile Include="SettingsApp.cs" />
+    <Compile Include="AppSettings22.cs" />
     <Compile Include="SettingsU.cs" />
     <Compile Include="SettingsUser20.cs" />
     <Compile Include="SettingsUser21.cs" />
-    <Compile Include="SettingsUser.cs" />
+    <Compile Include="SettingsUser22.cs" />
     <EmbeddedResource Include="Form1_V30.resx">
       <DependentUpon>Form1_V30.cs</DependentUpon>
     </EmbeddedResource>

@@ -26,76 +26,45 @@ namespace SettingsManagerV30
 			MessageUtilities.OutLocation = MessageUtilities.OutputLocation.TEXT_BOX;
 			MessageUtilities.RichTxtBox = rtbMessasge;
 
-			//			SettingsUserX<UserSettings21> ver21 = new SettingsUserX<UserSettings21>();
-			//			ver21.Init(UserSettings21.USERSETTINGFILEVERSION);
-			//
-			//			SetCtrl.Add(UserSettings21.USERSETTINGFILEVERSION, ver21);
-			//
-			//			List<Setg> Y = SetCtrl.SetList;
-			//
-			//			dynamic curr = SetCtrl.Find(SettingsUser.)
 
-			// this just sets up the system / structure but does not read the data
-//			SettingsUser Current = new SettingsUser();
-//			SettingsUser.Init(UserSettings.USERSETTINGFILEVERSION);
+			if (UserSettings.Exists)
+			{
+				UserSettingUpgrade uSup = new UserSettingUpgrade();
 
+				List<SettingBase> Us = uSup.su.SetgClasses;
 
-//			dynamic x = Current.UxSettings.Read(typeof(UserSettings20)) as UserSettings20;
+				uSup.Upgrade();
+			}
+			else
+			{
+				UserSettings.Admin.Save();
+			}
 
-			List<UserSettingBase> Us = USetgUpgrade.USetgBase;
+			if (AppSettings.Exists)
+			{
+				AppSettingUpgrade aSup = new AppSettingUpgrade();
 
-			//			Init1();
+				List<SettingBase> As = aSup.su.SetgClasses;
 
-			InitCurr();
+				aSup.Upgrade();
+			}
+			else
+			{
+				AppSettings.Admin.Save();
+			}
 
-//			Test1();
+			InitAp();
 
+			InitUs();
+
+			//			Test1();
 		}
-
-		private void Test1()
-		{
-			DisplayUserSettingData();
-		}
-
-		private void InitCurr()
-		{
-			logMsgLn2("class", "SetttingsUser");
-
-			logMsgLn2("path", SettingsUser.USetgAdmin.SettingsPathAndFile);
-			logMsgLn2("status", SettingsUser.USetgAdmin.Status);
-			logMsg2(nl);
-			logMsgLn2("file versions match", SettingsUser.USetgAdmin.FileVersionsMatch());
-			logMsgLn2("file version (in file)", SettingsUser.USetgAdmin.ReadFileVersion() ?? "does not exist");
-			logMsgLn2("file version (in memory)", SettingsUser.USetgData.FileVersion);
-			logMsgLn2("save date time", SettingsUser.USetgAdmin.SaveDateTime);
-			logMsgLn2("assembly version", SettingsUser.USetgAdmin.AssemblyVersion);
-			logMsgLn2("file notes", SettingsUser.USetgAdmin.SettingFileNotes);
-			logMsg2(nl);
-		}
-
-		private void Init1()
-		{
-			logMsgLn2("path", SettingsUser.USetgAdmin.SettingsPathAndFile);
-			SettingsUser.USetgAdmin.Save();
-			logMsgLn2("status", SettingsUser.USetgAdmin.Status);
-			logMsgLn2("system version", SettingsUser.USetgAdmin.GetSystemVersion());
-			logMsgLn2("file version", SettingsUser.USetgAdmin.ReadFileVersion());
-			logMsg2("\n");
-			logMsgLn2("path", SettingsApp.ASettings.SettingsPathAndFile);
-			SettingsApp.ASettings.Save();
-			logMsgLn2("status", SettingsApp.ASettings.Status);
-			logMsgLn2("file version", SettingsApp.ASettings.ReadFileVersion());
-			logMsgLn2("system version", SettingsApp.ASettings.GetSystemVersion());
-			logMsg2("\n");
-		}
-
-		private const int V = 40;
 
 		private void button1_Click(object sender, EventArgs e)
 		{
 			try
 			{
-				ProcessAppSettings();
+				ProcessAppSettings(false);
 				ProcessUserSettings(false);
 
 			}
@@ -107,16 +76,47 @@ namespace SettingsManagerV30
 			}
 		}
 
+		private void InitUs()
+		{
+			logMsgLn2("class", "SetttingsUser");
+
+			logMsgLn2("path"                    , UserSettings.Admin.SettingsPathAndFile);
+			logMsgLn2("status"                  , UserSettings.Admin.Status);
+			logMsg2(nl);
+			logMsgLn2("file versions match"     , UserSettings.Admin.VersionsMatch());
+			logMsgLn2("file version (in file)"  , UserSettings.Admin.GetFileClassVersion() ?? "does not exist");
+			logMsgLn2("file version (in memory)", UserSettings.Info.ClassVersion);
+			logMsgLn2("save date time"          , UserSettings.Admin.SaveDateTime);
+			logMsgLn2("assembly version"        , UserSettings.Admin.AssemblyVersion);
+			logMsgLn2("file notes"              , UserSettings.Admin.SettingFileNotes);
+			logMsg2(nl);
+		}
+
+		private void InitAp()
+		{
+			logMsgLn2("path"					, AppSettings.Admin.SettingsPathAndFile);
+			logMsgLn2("status"					, AppSettings.Admin.Status);
+			logMsg2(nl);
+			logMsgLn2("file versions match"		, AppSettings.Admin.VersionsMatch());
+			logMsgLn2("file version (in file)"	, AppSettings.Admin.GetFileClassVersion() ?? "does not exist");
+			logMsgLn2("file version (in memory)", AppSettings.Info.ClassVersion);
+			logMsgLn2("save date time"          , AppSettings.Admin.SaveDateTime);
+			logMsgLn2("assembly version"        , AppSettings.Admin.AssemblyVersion);
+			logMsgLn2("file notes"              , AppSettings.Admin.SettingFileNotes);
+			logMsg2(nl);
+		}
+
+		private const int V = 40;
+
 		private void ProcessUserSettings(bool modify)
 		{
-			logMsgLn2(nl + "user path", SettingsUser.USetgAdmin.SettingsPathAndFile + nl);
+			logMsgLn2(nl);
+			logMsgLn2("user path", UserSettings.Admin.SettingsPathAndFile);
+			logMsgLn2("user before");
 
-			logMsgLn2(nl + "user before");
-
-
-			if (SettingsUser.Exists)
+			if (UserSettings.Exists)
 			{
-				SettingsUser.USetgAdmin.Read();
+				UserSettings.Admin.Read();
 				DisplayUserSettingData();
 
 				if (modify)
@@ -133,11 +133,10 @@ namespace SettingsManagerV30
 			}
 		}
 
-
 		private void ResetUserSettings()
 		{
-			SettingsUser.USetgAdmin.Reset();
-			SettingsUser.USetgAdmin.Save();
+			UserSettings.Admin.Reset();
+			UserSettings.Admin.Save();
 
 			logMsgLn2(nl + "user reset");
 			DisplayUserSettingData();
@@ -146,105 +145,120 @@ namespace SettingsManagerV30
 
 		private void ModifyAndSaveUserSettings()
 		{
+			UserSettings.Data.GeneralValues.TestB = true;
+			UserSettings.Data.GeneralValues.TestD = V + 0.2;
+			UserSettings.Data.GeneralValues.TestS = "using generic setting file " + V;
+			UserSettings.Data.GeneralValues.TestI = V;
+			UserSettings.Data.GeneralValues.TestIs[1] = V;
+			UserSettings.Data.GeneralValues.TestSs[1] = "generic " + V;
+			UserSettings.Data.UnCategorizedValue = V;
+			UserSettings.Data.MainWindow.Height = V * 50;
+			UserSettings.Data.MainWindow.Width = V * 100;
+			UserSettings.Data.TestDictionary3["one"] = new TestStruct(V * 10 + 4, V * 10 + 5, V * 10 + 6);
+			UserSettings.Data.TestDictionary3["two"] = new TestStruct(V * 10 + 1, V * 10 + 2, V * 10 + 3);
+			UserSettings.Data.TestDictionary3["three"] = new TestStruct(V * 10 + 7, V * 10 + 8, V * 10 + 9);
 
-			SettingsUser.USetgData.GeneralValues.TestB = true;
-			SettingsUser.USetgData.GeneralValues.TestD = V + 0.2;
-			SettingsUser.USetgData.GeneralValues.TestS = "using generic setting file " + V;
-			SettingsUser.USetgData.GeneralValues.TestI = V;
-			SettingsUser.USetgData.GeneralValues.TestIs[1] = V;
-			SettingsUser.USetgData.GeneralValues.TestSs[1] = "generic " + V;
-			SettingsUser.USetgData.UnCategorizedValue = V;
-			SettingsUser.USetgData.MainWindow.Height = V * 50;
-			SettingsUser.USetgData.MainWindow.Width = V * 100;
-			SettingsUser.USetgData.TestDictionary3["one"] = new TestStruct(V * 10 + 4, V * 10 + 5, V * 10 + 6);
-			SettingsUser.USetgData.TestDictionary3["two"] = new TestStruct(V * 10 + 1, V * 10 + 2, V * 10 + 3);
-			SettingsUser.USetgData.TestDictionary3["three"] = new TestStruct(V * 10 + 7, V * 10 + 8, V * 10 + 9);
-
-			SettingsUser.USetgAdmin.Save();
+			UserSettings.Admin.Save();
 		}
 
 		private void DisplayUserSettingData()
 		{
-			logMsgLn2("system version", SettingsUser.USetgAdmin.Settings.Heading.SettingSystemVersion);
-			logMsgLn2("status", SettingsUser.USetgAdmin.Status);
-			logMsgLn2("file name", SettingsUser.USetgAdmin.SettingsPathAndFile);
-			logMsgLn2("file version (in file)", SettingsUser.USetgAdmin.ReadFileVersion() ?? "does not exist");
-			logMsgLn2("file version (in memory)", SettingsUser.USetgData.FileVersion);
-			logMsgLn2("save date time", SettingsUser.USetgAdmin.SaveDateTime);
-			logMsgLn2("assembly version", SettingsUser.USetgAdmin.AssemblyVersion);
-			logMsgLn2("file notes", SettingsUser.USetgAdmin.SettingFileNotes);
 
-			logMsgLn2("file notes", SettingsUser.USetgAdmin.Status);
+			logMsgLn2("system version"          , UserSettings.Admin.Info.Heading.SystemVersion);
+			logMsgLn2("status"                  , UserSettings.Admin.Status);
+			logMsgLn2("file name"               , UserSettings.Admin.SettingsPathAndFile);
+			logMsgLn2("file version (in file)"  , UserSettings.Admin.GetFileClassVersion() ?? "does not exist");
+			logMsgLn2("class version (in memory)", UserSettings.Info.ClassVersion);
+			logMsgLn2("save date time"          , UserSettings.Admin.SaveDateTime);
+			logMsgLn2("assembly version"        , UserSettings.Admin.AssemblyVersion);
+			logMsgLn2("file notes"              , UserSettings.Admin.SettingFileNotes);
 
 			
-			{
-				logMsgLn2("test dict one/IntA", SettingsUser.USetgData.TestDictionary3["one"].IntA.ToString());
-				logMsgLn2("test dict one/IntB", SettingsUser.USetgData.TestDictionary3["one"].IntB.ToString());
-				logMsgLn2("test dict one/IntC", SettingsUser.USetgData.TestDictionary3["one"].IntC.ToString());
+			logMsgLn2("test dict one/IntA"      , UserSettings.Info.Data.TestDictionary3["one"].IntA.ToString());
+			logMsgLn2("test dict one/IntB"      , UserSettings.Info.Data.TestDictionary3["one"].IntB.ToString());
+			logMsgLn2("test dict one/IntC"      , UserSettings.Info.Data.TestDictionary3["one"].IntC.ToString());
 
 
-				logMsgLn2("test int", SettingsUser.USetgData.GeneralValues.TestI.ToString());
-				logMsgLn2("test bool", SettingsUser.USetgData.GeneralValues.TestB.ToString());
-				logMsgLn2("test double", SettingsUser.USetgData.GeneralValues.TestD.ToString());
-				logMsgLn2("test string", SettingsUser.USetgData.GeneralValues.TestS);
-				logMsgLn2("test int[0]", SettingsUser.USetgData.GeneralValues.TestIs[0].ToString());
-				logMsgLn2("test int[1]", SettingsUser.USetgData.GeneralValues.TestIs[1].ToString());
-				logMsgLn2("test str[0]", SettingsUser.USetgData.GeneralValues.TestSs[0]);
-				logMsgLn2("test str[1]", SettingsUser.USetgData.GeneralValues.TestSs[1]);
-				logMsgLn2("test str[2]", SettingsUser.USetgData.GeneralValues.TestSs[2]);
-				logMsgLn2("win height", SettingsUser.USetgData.MainWindow.Height.ToString());
-				logMsgLn2("win width", SettingsUser.USetgData.MainWindow.Width.ToString());
-				logMsgLn2("uncat value", SettingsUser.USetgData.UnCategorizedValue.ToString());
-				logMsgLn2("uncat value2", SettingsUser.USetgData.UnCategorizedValue2.ToString());
-			}
+			logMsgLn2("test int"                , UserSettings.Info.Data.GeneralValues.TestI.ToString());
+			logMsgLn2("test bool"               , UserSettings.Info.Data.GeneralValues.TestB.ToString());
+			logMsgLn2("test double"             , UserSettings.Info.Data.GeneralValues.TestD.ToString());
+			logMsgLn2("test string"             , UserSettings.Info.Data.GeneralValues.TestS);
+			logMsgLn2("test int[0]"             , UserSettings.Info.Data.GeneralValues.TestIs[0].ToString());
+			logMsgLn2("test int[1]"             , UserSettings.Info.Data.GeneralValues.TestIs[1].ToString());
+			logMsgLn2("test str[0]"             , UserSettings.Info.Data.GeneralValues.TestSs[0]);
+			logMsgLn2("test str[1]"             , UserSettings.Info.Data.GeneralValues.TestSs[1]);
+			logMsgLn2("test str[2]"             , UserSettings.Info.Data.GeneralValues.TestSs[2]);
+			logMsgLn2("win height"              , UserSettings.Info.Data.MainWindow.Height.ToString());
+			logMsgLn2("win width"               , UserSettings.Info.Data.MainWindow.Width.ToString());
+			logMsgLn2("uncat value"             , UserSettings.Info.Data.UnCategorizedValue.ToString());
 
-			logMsgLn2(nl);
+			logMsgLn2();
 		}
 
 
-		private void ProcessAppSettings()
+		private void ProcessAppSettings(bool modify)
 		{
-			logMsgLn2(nl + "app path",SettingsApp.ASettings.SettingsPathAndFile + nl);
-			logMsgLn2(nl + "app before");
+			logMsg2(nl);
+			logMsgLn2("app path",AppSettings.Admin.SettingsPathAndFile);
+			logMsgLn2("app before");
 
-			DisplayAppSettingData();
+			if (AppSettings.Exists)
+			{
+				AppSettings.Admin.Read();
 
-			ModifyAndSaveAppSettings();
+				DisplayAppSettingData();
 
-			logMsgLn2(nl + "app after");
-			DisplayAppSettingData();
+				if (modify)
+				{
+					ModifyAndSaveAppSettings();
+
+					logMsgLn2(nl + "app after");
+					DisplayAppSettingData();
+				}
+			}
+			else
+			{
+				logMsgLn2("app setting file", "does not exist");
+			}
 
 //			ResetAndSaveAppSettings();
 		}
 
 		private void DisplayAppSettingData()
 		{
-			logMsgLn2("file name",SettingsApp.ASettings.SettingsPathAndFile);
-			logMsgLn2("file version",SettingsApp.ASettings.ReadFileVersion());
-			logMsgLn2("system version",SettingsApp.ASettings.Settings.Heading.SettingSystemVersion);
-			logMsgLn2("test string",SettingsApp.ASet.AppS);
-			logMsgLn2("test bool",SettingsApp.ASet.AppB.ToString());
-			logMsgLn2("test double",SettingsApp.ASet.AppD.ToString());
-			logMsgLn2("test int",SettingsApp.ASet.AppI.ToString());
-			logMsgLn2("test int[0]",SettingsApp.ASet.AppIs[0].ToString());
-			logMsgLn2(nl);
+			logMsgLn2("system version"          , AppSettings.Admin.Info.Heading.SystemVersion);
+			logMsgLn2("status"                  , AppSettings.Admin.Status);
+			logMsgLn2("file name"               , AppSettings.Admin.SettingsPathAndFile);
+			logMsgLn2("file version (in file)"  , AppSettings.Admin.GetFileClassVersion() ?? "does not exist");
+			logMsgLn2("class version (in memory)", AppSettings.Info.ClassVersion);
+			logMsgLn2("save date time"          , AppSettings.Admin.SaveDateTime);
+			logMsgLn2("assembly version"        , AppSettings.Admin.AssemblyVersion);
+			logMsgLn2("file notes"              , AppSettings.Admin.SettingFileNotes);
+			logMsg2(nl);
+			logMsgLn2("test string"             , AppSettings.Data.AppS);
+			logMsgLn2("test bool"               , AppSettings.Data.AppB.ToString());
+			logMsgLn2("test double"             , AppSettings.Data.AppD.ToString());
+			logMsgLn2("test int"                , AppSettings.Data.AppI.ToString());
+			logMsgLn2("test int[0]"             , AppSettings.Data.AppIs[0].ToString());
+			logMsgLn2("test AppI20"             , AppSettings.Data.AppI20.ToString());
+			logMsg2(nl);
 		}
 
 		private void ModifyAndSaveAppSettings()
 		{
-			SettingsApp.ASet.AppS = "generic app data " + V;
-			SettingsApp.ASet.AppB = false;
-			SettingsApp.ASet.AppD = V + 0.1;
-			SettingsApp.ASet.AppI = V;
-			SettingsApp.ASet.AppIs[0] = V;
+			AppSettings.Data.AppS = "generic app data " + V;
+			AppSettings.Data.AppB = false;
+			AppSettings.Data.AppD = V + 0.1;
+			AppSettings.Data.AppI = V;
+			AppSettings.Data.AppIs[0] = V;
 
-			SettingsApp.ASettings.Save();
+			AppSettings.Admin.Save();
 		}
 
 		private void ResetAndSaveAppSettings()
 		{
-			SettingsApp.ASettings.Reset();
-			SettingsApp.ASettings.Save();
+			AppSettings.Admin.Reset();
+			AppSettings.Admin.Save();
 
 			logMsgLn2(nl + "app reset");
 			DisplayAppSettingData();

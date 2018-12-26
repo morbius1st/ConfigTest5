@@ -5,6 +5,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Windows.Forms.VisualStyles;
 using System.Xml;
 using SettingsManagerV30;
 using UtilityLibrary;
@@ -38,55 +39,38 @@ using static SettingManager.SettingMgrStatus;
 
 namespace SettingManager
 {
-	#region + Settings User
-
-	public static class SettingsUser
-	{
-		// this is the primary data structure - it holds the settings
-		// configuration information as well as the setting data
-		public static SettingsMgr<UserSettings> USetgAdmin { get; private set; }
-
-		// this is just the setting data - this is a shortcut to
-		// the setting data
-		public static UserSettings USetgData { get; private set; }
-
-		public static SettingMgrStatus Status => USetgAdmin.Status;
-		public static bool Exists => USetgAdmin.Exists;
-
-		// initalize and create the setting objects
-		static SettingsUser()
-		{
-			USetgAdmin        = new SettingsMgr<UserSettings>(ResetClass);
-			USetgData         = USetgAdmin.Settings;
-		}
-
-		public static void ResetClass()
-		{
-			USetgData = USetgAdmin.Settings;
-		}
-	}
-
-	#endregion
-
 	#region + Header
 
 	[DataContract(Namespace = NSpace)]
 	//	[DataContract]
 	public class Header
 	{
+		public enum SettingFileType
+		{
+			APP = 0,
+			USER = 1,
+			LENGTH = 2
+		}
+
 		public const string NSpace = "";
 
-		public Header(string settingFileVersion)
+		public Header(string classVersion)
 		{
-			SettingFileVersion = settingFileVersion;
+			ClassVersion = classVersion;
 		}
 
 		[DataMember(Order = 1)] public string SaveDateTime         = DateTime.Now.ToString("yyyy-MM-dd - HH:mm zzz");
 		[DataMember(Order = 2)] public string AssemblyVersion      = CsUtilities.AssemblyVersion;
-		[DataMember(Order = 3)] public string SettingSystemVersion = "3.0";
-		[DataMember(Order = 4)] public string SettingFileVersion;
-		[DataMember(Order = 5)] public string SettingFileNotes = "created by v3.0";
+		[DataMember(Order = 3)] public string SystemVersion = "3.0";
+		[DataMember(Order = 4)] public string ClassVersion;
+		[DataMember(Order = 5)] public string Notes = "created by v3.0";
 
+
+		public static string[] ClassVersionOfFile = 
+			new string[(int) SettingFileType.LENGTH];
+		
+		public static bool[] ClassVersionsMatch = 
+			new bool[(int) SettingFileType.LENGTH];
 	}
 
 	#endregion
@@ -103,15 +87,22 @@ namespace SettingManager
 		EXISTS = 4,
 	}
 
+	public interface ITest
+	{
+		void Read();
+		dynamic Read(Type type);
+		void Save();
+	}
+
 	public delegate void RstData();
 
-	public class SettingsMgr<T> where T : SettingsPathFileBase,  new()
+	public class SettingsMgr<T> : ITest where T : SettingsPathFileBase,  new()
 	{
 		#region + Constructor
 
 		public SettingsMgr(RstData rst)
 		{
-			SettingsPathAndFile = Settings.SettingsPathAndFile;
+			SettingsPathAndFile = Info.SettingsPathAndFile;
 
 			if (String.IsNullOrWhiteSpace(SettingsPathAndFile))
 			{
@@ -125,12 +116,12 @@ namespace SettingManager
 					Status = EXISTS;
 					Exists = true;
 
-					if ( !FileVersionsMatch())
+					if ( !VersionsMatch())
 					{
 						Status = VERSIONMISMATCH;
 //						logMsgLn2("file versions do not match", " memory vs file" +
-//							Settings.FileVersion + "  vs  " +
-//							ReadFileVersion()
+//							Settings.ClassVersion + "  vs  " +
+//							GetFileClassVersion()
 //							);
 					}
 				}
@@ -151,13 +142,13 @@ namespace SettingManager
 
 		public bool Exists { get; private set; } = false;
 
-		public T Settings { get; private set; } = new T();
+		public T Info { get; private set; } = new T();
 
 		public string SettingsPathAndFile { get; private set; }
 
-		public string SaveDateTime => Settings?.Heading.SaveDateTime ?? "undefined";
-		public string AssemblyVersion => Settings?.Heading.AssemblyVersion ?? "undefined";
-		public string SettingFileNotes => Settings?.Heading.SettingFileNotes ?? "undefined";
+		public string SaveDateTime => Info?.Heading.SaveDateTime ?? "undefined";
+		public string AssemblyVersion => Info?.Heading.AssemblyVersion ?? "undefined";
+		public string SettingFileNotes => Info?.Heading.Notes ?? "undefined";
 
 		#endregion
 
@@ -175,7 +166,7 @@ namespace SettingManager
 					// file exists - get the current values
 					using (FileStream fs = new FileStream(SettingsPathAndFile, FileMode.Open))
 					{
-						Settings = (T) ds.ReadObject(fs);
+						Info = (T) ds.ReadObject(fs);
 						SyncData();
 					}
 
@@ -237,7 +228,7 @@ namespace SettingManager
 			// since the data is "new" and may not match what
 			// has been saved, not as not initalized
 
-			Settings = new T();
+			Info = new T();
 
 			Status = CREATED;
 		}
@@ -252,11 +243,11 @@ namespace SettingManager
 
 			DataContractSerializer ds = new DataContractSerializer(typeof(T));
 
-//			Settings.Heading = new Header(Settings.FileVersion);
+//			Settings.Heading = new Header(Settings.ClassVersion);
 
 			using (XmlWriter w = XmlWriter.Create(SettingsPathAndFile, xmlSettings))
 			{
-				ds.WriteObject(w, Settings);
+				ds.WriteObject(w, Info);
 			}
 
 			// since file and memory match
@@ -314,36 +305,37 @@ namespace SettingManager
 			return File.Exists(pathAndFile);
 		}
 
-		public bool FileVersionsMatch()
+		public bool VersionsMatch()
 		{
-			return
-				(ReadFileVersion()?.Equals(Settings.FileVersion) ?? false);
+			Header.ClassVersionsMatch[(int) Info.FileType] =
+				(GetFileClassVersion()?.Equals(Info.Heading.ClassVersion) ?? false);
+
+			return Header.ClassVersionsMatch[(int) Info.FileType];
 		}
 
-
-		public string ReadFileVersion()
+		// use xml reader to find the version from the file
+		public string GetFileClassVersion()
 		{
 			if (!FileExists())
 			{
 				return null;
 			}
 
-			// use xml reader to find the version from
-			// the file
 			using (XmlReader reader = XmlReader.Create(SettingsPathAndFile))
 			{
 				while (reader.Read())
 				{
 					if (reader.IsStartElement(nameof(
-						SettingsUser.USetgData.Heading.SettingFileVersion)))
+						Info.Heading.ClassVersion)))
 					{
-						return reader.ReadString();
+						Header.ClassVersionOfFile[(int)Info.FileType]
+							= reader.ReadString();
+						return Header.ClassVersionOfFile[(int) Info.FileType];
 					}
 				}
 			}
-			return null;
+			return "";
 		}
-
 
 		public string GetSystemVersion()
 		{
@@ -359,7 +351,7 @@ namespace SettingManager
 				while (reader.Read())
 				{
 					if (reader.IsStartElement(nameof(
-						SettingsUser.USetgData.Heading.SettingSystemVersion)))
+						UserSettings.Info.Heading.SystemVersion)))
 					{
 						return reader.ReadString();
 					}
@@ -380,13 +372,16 @@ namespace SettingManager
 	{
 		[DataMember] public Header Heading;
 
-		public abstract string FileVersion { get; set; }
+		public abstract string ClassVersion { get; }
+		public abstract Header.SettingFileType  FileType { get; }
 
 		protected string FileName;
 		protected string RootPath;
 		protected string[] SubFolders;
 
-		protected const string SETTINGFILEBASE = @".setting.xml";
+		public SettingsPathFileBase() { }
+
+		public const string SETTINGFILEBASE = @".setting.xml";
 
 		// get the path to the setting file
 		public string SettingsPath
@@ -397,7 +392,6 @@ namespace SettingManager
 				{
 					return RootPath;
 				}
-
 				return CsUtilities.SubFolder(SubFolders.Length - 1,
 					RootPath, SubFolders);
 			}
@@ -421,54 +415,71 @@ namespace SettingManager
 		}
 	}
 
-	// define the path and file for the
-	// user's setting file
+//	// define the path and file for the
+//	// user's setting file
+//	[DataContract(Namespace = Header.NSpace)]
+//	public abstract class SettingsPathFileUserBase : SettingsPathFileBase
+//	{
+//		protected SettingsPathFileUserBase()
+//		{
+//			FileName = @"user" + SETTINGFILEBASE;
+//			RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+//			SubFolders = new[]
+//			{
+//				CsUtilities.CompanyName,
+//				CsUtilities.AssemblyName
+//			};
+//		}
+//	}
+
 	[DataContract(Namespace = Header.NSpace)]
-	public abstract class SettingsPathFileUserBase : SettingsPathFileBase
+	public static class UserPathAndFile 
 	{
-		protected SettingsPathFileUserBase()
+
+		public static string FileName { get; private set; } = 
+			@"user" + SettingsPathFileBase.SETTINGFILEBASE;
+		public static string RootPath { get; private set; } =
+			Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+		public static string[] SubFolders { get; private set; } =
 		{
-			FileName = @"user" + SETTINGFILEBASE;
-			RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			SubFolders = new[]
-			{
-				CsUtilities.CompanyName,
-				CsUtilities.AssemblyName
-			};
-		}
+			CsUtilities.CompanyName,
+			CsUtilities.AssemblyName
+		};
 	}
 
 //	// define the path and file name for the 
-//	// application's setting file
+//	// application's setting file - revised location
 //	[DataContract(Namespace = Header.NSpace)]
 //	public abstract class SettingsPathFileAppBase : SettingsPathFileBase
 //	{
 //		protected SettingsPathFileAppBase()
 //		{
 //			FileName = CsUtilities.AssemblyName + SETTINGFILEBASE;
-//			RootPath = CsUtilities.AssemblyDirectory;
-//			SubFolders = null;
-//			
+//			RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+//			SubFolders = new[]
+//			{
+//				CsUtilities.CompanyName,
+//				CsUtilities.AssemblyName,
+//				"AppSettings"
+//			};
+//
 //		}
 //	}
 
-	// define the path and file name for the 
-	// application's setting file - revised location
 	[DataContract(Namespace = Header.NSpace)]
-	public abstract class SettingsPathFileAppBase : SettingsPathFileBase
+	public static class AppPathAndFile
 	{
-		protected SettingsPathFileAppBase()
-		{
-			FileName = CsUtilities.AssemblyName + SETTINGFILEBASE;
-			RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			SubFolders = new[]
-			{
-				CsUtilities.CompanyName,
-				CsUtilities.AssemblyName,
-				"AppSettings"
-			};
+		public static string FileName { get; private set; } =
+			CsUtilities.AssemblyName + SettingsPathFileBase.SETTINGFILEBASE;
+		public static string RootPath { get; private set; } =
+			Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
-		}
+		public static string[] SubFolders { get; private set; } =
+		{
+			CsUtilities.CompanyName,
+			CsUtilities.AssemblyName,
+			"AppSettings"
+		};
 	}
 
 	#endregion
@@ -482,30 +493,30 @@ namespace SettingManager
 
 
 
-//	#region Settings User
+//	#region Info User
 //	
 //	public static class SettingsUser
 //	{
 //		// this is the primary data structure - it holds the settings
 //		// configuration information as well as the setting data
-//		public static SettingsMgr<UserSettings> USetgAdmin { get; private set; }
+//		public static SettingsMgr<UserSettingInfo22> Admin { get; private set; }
 //
 //		// this is just the setting data - this is a shortcut to
 //		// the setting data
-//		public static UserSettings USetgData { get; private set; }
+//		public static UserSettingInfo22 Info { get; private set; }
 //
 //		// initalize and create the setting objects
 //		static SettingsUser()
 //		{
-//			USetgAdmin = new SettingsMgr<UserSettings>();
-//			USetgData = USetgAdmin.Settings;
-//			USetgAdmin.ResetData = ResetData;
+//			Admin = new SettingsMgr<UserSettingInfo22>();
+//			Info = Admin.Info;
+//			Admin.ResetData = ResetData;
 //		}
 //
 //		// reset the settings data to their current value
 //		public static void ResetData()
 //		{
-//			USetgData = USetgAdmin.Settings;
+//			Info = Admin.Info;
 //		}
 //	}
 
@@ -513,30 +524,30 @@ namespace SettingManager
 //	#endregion
 
 //	
-//	#region Settings App
+//	#region Info App
 //	
-//	public static class SettingsApp
+//	public static class AppSettings
 //	{
 //		// this is the primary data structure - it holds the settings
 //		// configuration information as well as the setting data
-//		public static SettingsMgr<AppSettings> ASettings { get; private set; }
+//		public static SettingsMgr<AppSettingData22> Admin { get; private set; }
 //
 //		// this is just the setting data - this is a shortcut to
 //		// the setting data
-//		public static AppSettings ASet { get; private set; }
+//		public static AppSettingData22 Info { get; private set; }
 //
 //		// initalize and create the setting objects
-//		static SettingsApp()
+//		static AppSettings()
 //		{
-//			ASettings = new SettingsMgr<AppSettings>();
-//			ASet = ASettings.Settings;
-//			ASettings.ResetData = ResetData;
+//			Admin = new SettingsMgr<AppSettingData22>();
+//			Info = Admin.Info;
+//			Admin.ResetData = ResetData;
 //		}
 //
 //		// reset the settings data to their current value
 //		public static void ResetData()
 //		{
-//			ASet = ASettings.Settings;
+//			Info = Admin.Info;
 //		}
 //	}
 //	
@@ -551,20 +562,20 @@ namespace SettingManager
 //
 // access thus:
 // for file configuration info:
-// USetgAdmin.SettingsPathAndFile (for example)
+// Admin.SettingsPathAndFile (for example)
 //
 // for the individual fields:
-// USetgData.UnCategorizedValue  (for example)
-// USetgData.GeneralValues.TestI  (for example)
+// Info.UnCategorizedValue  (for example)
+// Info.GeneralValues.TestI  (for example)
 //
 
 //	// this is the actual data set saved to the user's configuration file
 //	// this is unique for each program
-//	[DataContract(Name = "UserSettings")]
-//	public class UserSettings : SettingsPathFileUserBase
+//	[DataContract(Name = "UserSettingInfo22")]
+//	public class UserSettingInfo22 : SettingsPathFileUserBase
 //	{
 //		// this is just the version of this class
-//		public override string FileVersion { get; }
+//		public override string ClassVersion { get; }
 //
 //		[DataMember] public int UnCategorizedValue = 1000;
 //		[DataMember] public int UnCategorizedValue2 = 2000;
@@ -584,13 +595,13 @@ namespace SettingManager
 //	// provide all of the default values hee
 //	private void SetDefaultValues()
 //	{
-//		FileVersion = "2.0";
+//		ClassVersion = "2.0";
 //		UnCategorizedValue = 1000;
 //		UnCategorizedValue2 = 2000;
 //	}
 //
 //
-//	public UserSettings()
+//	public UserSettingInfo22()
 //	{
 //		SetDefaultValues();
 //	}
@@ -649,17 +660,17 @@ namespace SettingManager
 //
 // access thus:
 // for file configuration info:
-// ASettings.SettingsPathAndFile (for example)
+// Admin.SettingsPathAndFile (for example)
 //
 // for the individual fields:
-// ASet.AppI  (for example)
+// Info.AppI  (for example)
 //
 
-//	[DataContract(Name = "AppSettings")]
-//	public class AppSettings : SettingsPathFileAppBase
+//	[DataContract(Name = "AppSettingData22")]
+//	public class AppSettingData22 : SettingsPathFileAppBase
 //	{
 //		// this is the version of this class
-//		public override string FileVersion { get; } = "1.0";
+//		public override string ClassVersion { get; } = "1.0";
 //
 //		[DataMember(Order = 1)]
 //		public int AppI { get; set; } = 0;

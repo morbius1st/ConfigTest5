@@ -5,10 +5,12 @@ using System.Runtime.Serialization;
 namespace SettingsManagerV30
 {
 
+	
+
 	// this is the actual data set saved to the user's configuration file
 	// this is unique for each program
 	[DataContract(Name = "UserSettings")]
-	public class UserSettings : UserSettingBase
+	public class UserSettings_old : UserSetgBase
 	{
 		protected override string FILEVERSION => "2.2";
 
@@ -39,12 +41,12 @@ namespace SettingsManagerV30
 			};
 
 		// upgrade the prior version to the new version
-		public override void Upgrade(UserSettingBase prior)
+		public override void Upgrade(UserSetgBase prior)
 		{
 			UserSettings21 p = (UserSettings21)prior;
 
-			this.Header.SettingFileNotes =
-				p.Header.SettingFileNotes + " :: updated to v" + FileVersion;
+			Heading.SettingFileNotes =
+				p.Heading.SettingFileNotes + " :: updated to v" + FileVersion;
 
 			this.UnCategorizedValue = p.UnCategorizedValue;
 			this.UnCategorizedValue2 = p.UnCategorizedValue2;

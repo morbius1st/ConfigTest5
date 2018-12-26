@@ -1,45 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
+using SettingManager;
+
+// projname: SettingsManagerV30
+// itemname: UserSettingInfo21
+// username: jeffs
 
 namespace SettingsManagerV30
 {
 
-// since this is inactive, no reason to create the access objects
-//
-//	public static class SettingsUser21
-//	{
-//		// this is the primary data structure - it holds the settings
-//		// configuration information as well as the setting data
-//		public static SettingsMgr<UserSettings21> USetgAdmin { get; private set; }
-//
-//		// this is just the setting data - this is a shortcut to
-//		// the setting data
-//		public static UserSettings21 USetgData { get; private set; }
-//
-//		public static SettingMgrStatus Status => USetgAdmin.Status;
-//
-//		// initalize and create the setting objects
-//		static SettingsUser21()
-//		{
-//			USetgAdmin = new SettingsMgr<UserSettings21>(ResetClass);
-//			USetgData = USetgAdmin.Settings;
-//			USetgData.Heading = new Header(UserSettings21.USERSETTINGFILEVERSION);
-//		}
-//
-//		public static void ResetClass()
-//		{
-//			USetgData = USetgAdmin.Settings;
-//		}
-//	}
-//
-
 	// this is the actual data set saved to the user's configuration file
 	// this is unique for each program
-	[DataContract(Name = "UserSettings21")]
-	public class UserSettings21 : UserSettingBase
+	[DataContract(Name = "UserSettingData21")]
+	public class UserSettingData21
 	{
-		protected override string FILEVERSION => "2.1";
-
 		[DataMember]
 		public int UnCategorizedValue = 1000;
 
@@ -61,92 +35,50 @@ namespace SettingsManagerV30
 				{"two", new TestStruct(1, 2, 3)},
 				{"three", new TestStruct(1, 2, 3)}
 			};
+	}
 
-//		public override string FileVersion
-//		{
-//			get => USERSETTINGFILEVERSION;
-//			set { }
-//		}
+	[DataContract(Name = "UserSettingInfo21")]
+	public class UserSettingInfo21 : UsrSettingBase
+	{
+		[DataMember]
+		public UserSettingData21 Data = new UserSettingData21();
 
-		// upgrade the prior version to the new version
-		public override void Upgrade(UserSettingBase prior)
+		public override string ClassVersion => "2.1";
+		//		protected override string CLASSVERSION => "2.1";
+
+		// upgrade the prior version to this version
+		public override void Upgrade(SettingBase prior)
 		{
-			UserSettings20 p = (UserSettings20) prior;
+			UserSettingInfo20 p = (UserSettingInfo20) prior;
 
-			this.Header.SettingFileNotes = 
-				p.Header.SettingFileNotes + " :: updated to v" + FileVersion;
+			Heading.Notes = 
+				p.Heading.Notes + " :: updated to v" + ClassVersion;
 
-			this.UnCategorizedValue   = p.UnCategorizedValue;
-			this.GeneralValues.TestB  = p.GeneralValues.TestB;
-			this.GeneralValues.TestD  = p.GeneralValues.TestD ;
-			this.GeneralValues.TestI  = p.GeneralValues.TestI ;
-			this.GeneralValues.TestS  = p.GeneralValues.TestS ;
-			this.MainWindow.Height = p.MainWindow.Height;
-			this.MainWindow.Width = p.MainWindow.Width;
+			Data.UnCategorizedValue  = p.Data.UnCategorizedValue;
+			Data.GeneralValues.TestB = p.Data.GeneralValues.TestB;
+			Data.GeneralValues.TestD = p.Data.GeneralValues.TestD;
+			Data.GeneralValues.TestI = p.Data.GeneralValues.TestI;
+			Data.GeneralValues.TestS = p.Data.GeneralValues.TestS;
+			Data.MainWindow.Height   = p.Data.MainWindow.Height;
+			Data.MainWindow.Width    = p.Data.MainWindow.Width;
 
-			for (int i = 0; i < this.GeneralValues.TestIs.Length; i++)
+			for (int i = 0; i < Data.GeneralValues.TestIs.Length; i++)
 			{
-				this.GeneralValues.TestIs[i] =
-					p.GeneralValues.TestIs[i];
+				Data.GeneralValues.TestIs[i] =
+					p.Data.GeneralValues.TestIs[i];
 			}
 
-			p.GeneralValues.TestSs.CopyTo(this.GeneralValues.TestSs, 0);
+			p.Data.GeneralValues.TestSs.CopyTo(Data.GeneralValues.TestSs, 0);
 
-			foreach (KeyValuePair<string, TestStruct> kvp in p.TestDictionary3)
+			foreach (KeyValuePair<string, TestStruct> kvp in p.Data.TestDictionary3)
 			{
-				if (TestDictionary3.ContainsKey(kvp.Key))
+				if (Data.TestDictionary3.ContainsKey(kvp.Key))
 				{
-					this.TestDictionary3[kvp.Key] =
-						p.TestDictionary3[kvp.Key];
+					Data.TestDictionary3[kvp.Key] =
+						p.Data.TestDictionary3[kvp.Key];
 				}
 			}
 		}
 	}
 
-	// the below is defined on the current setting file version has not changed
-
-//	// sample sub-class of dictionary to provide names to elements
-//	[CollectionDataContract(Name = "CustomDict", KeyName = "key", ValueName = "data", ItemName = "row")]
-//	public class CustDict<T1, T2> : Dictionary<T1, T2>
-//	{
-//	}
-//	// sample struct / data
-//	public struct TestStruct
-//	{
-//		[DataMember(Name = "line1")]
-//		public int IntA;
-//
-//		[DataMember(Name = "line2")]
-//		public int IntB;
-//
-//		[DataMember(Name = "line3")]
-//		public int IntC;
-//
-//		public TestStruct(int a,
-//			int b,
-//			int c)
-//		{
-//			IntA = a;
-//			IntB = b;
-//			IntC = c;
-//		}
-//	}
-//
-//	// sample class / data
-//	public class GeneralValues
-//	{
-//		public int TestI = 0;
-//		public bool TestB = false;
-//		public double TestD = 0.0;
-//		public string TestS = "this is a test";
-//		public int[] TestIs = new[] {20, 30};
-//		public string[] TestSs = new[] {"user 1", "user 2", "user 3"};
-//	}
-//
-//	// sample class / data
-//	public class Window1
-//	{
-//		public int Height = 50;
-//		public int Width = 100;
-//	}
 }

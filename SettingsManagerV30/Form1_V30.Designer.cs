@@ -43,7 +43,7 @@ namespace SettingsManagerV30
 			this.rtbMessasge.Location = new System.Drawing.Point(0, 0);
 			this.rtbMessasge.Margin = new System.Windows.Forms.Padding(4);
 			this.rtbMessasge.Name = "rtbMessasge";
-			this.rtbMessasge.Size = new System.Drawing.Size(1651, 782);
+			this.rtbMessasge.Size = new System.Drawing.Size(1651, 1152);
 			this.rtbMessasge.TabIndex = 0;
 			this.rtbMessasge.Text = "";
 			// 
@@ -51,7 +51,7 @@ namespace SettingsManagerV30
 			// 
 			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.button1.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.button1.Location = new System.Drawing.Point(1512, 721);
+			this.button1.Location = new System.Drawing.Point(1488, 1074);
 			this.button1.Margin = new System.Windows.Forms.Padding(4);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(127, 49);
@@ -64,7 +64,7 @@ namespace SettingsManagerV30
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1652, 783);
+			this.ClientSize = new System.Drawing.Size(1652, 1153);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.rtbMessasge);
 			this.Margin = new System.Windows.Forms.Padding(4);
