@@ -94,6 +94,7 @@ namespace SettingsManagerV30
 
 		private void InitAp()
 		{
+			logMsgLn2("class", "AppSettings");
 			logMsgLn2("path"					, AppSettings.Admin.SettingsPathAndFile);
 			logMsgLn2("status"					, AppSettings.Admin.Status);
 			logMsg2(nl);
