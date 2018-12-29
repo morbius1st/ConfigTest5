@@ -1,82 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using SettingManager;
+
+using static UtilityLibrary.MessageUtilities2;
 
 
 namespace SettingsManagerV30
 {
-	[DataContract]
-	public abstract class SettingBase : SettingsPathFileBase, IComparable<SettingBase>
-	{
-		public abstract string ClassVersionOfFile { get; }
-		public abstract bool ClassVersionsMatch { get; }
-
-		public abstract bool IsUserSettings { get; set; }
-
-		public SettingBase()
-		{
-			Heading = new Header(ClassVersion);
-			Heading.Notes = "Created in Version " + ClassVersion;
-
-			if (IsUserSettings)
-			{
-				FileName   = UserPathAndFile.FileName;
-				RootPath   = UserPathAndFile.RootPath;
-				SubFolders = UserPathAndFile.SubFolders;
-			}
-			else
-
-			{
-				FileName   = AppPathAndFile.FileName;
-				RootPath   = AppPathAndFile.RootPath;
-				SubFolders = AppPathAndFile.SubFolders;
-			}
-		}
-
-//		protected abstract string CLASSVERSION { get; }
-
-		public int CompareTo(SettingBase other)
-		{
-			return String.Compare(ClassVersion, other.ClassVersion, StringComparison.Ordinal);
-		}
-
-//		public override string ClassVersion
+//	[DataContract]
+//	public abstract class SettingBase : SettingsPathFileBase, IComparable<SettingBase>
+//	{
+//
+//		public SettingBase()
 //		{
-//			get => CLASSVERSION;
-//			set { }
+//			Header = new Heading(ClassVersion);
+//			Header.Notes = "Created in Version " + ClassVersion;
+//
+//			if (IsUserSettings)
+//			{
+//				FileName   = UserPathAndFile.FileName;
+//				RootPath   = UserPathAndFile.RootPath;
+//				SubFolders = UserPathAndFile.SubFolders;
+//			}
+//			else
+//
+//			{
+//				FileName   = AppPathAndFile.FileName;
+//				RootPath   = AppPathAndFile.RootPath;
+//				SubFolders = AppPathAndFile.SubFolders;
+//			}
 //		}
-
-		public abstract void Upgrade(SettingBase prior);
-	}
+//
+//		public int CompareTo(SettingBase other)
+//		{
+//			return String.Compare(ClassVersion, other.ClassVersion, StringComparison.Ordinal);
+//		}
+//
+//		public abstract void Upgrade(SettingBase prior);
+//	}
 
 	[DataContract]
-	public abstract class UsrSettingBase : SettingBase
+	public abstract class UsrSettingBase : SettingsPathFileBase
 	{
-		public override Header.SettingFileType FileType =>
-			Header.SettingFileType.USER;
+		public override Heading.SettingFileType FileType =>
+			Heading.SettingFileType.USER;
 
 		public override bool IsUserSettings { get; set; } = true;
 
 		public override string ClassVersionOfFile => 
-			Header.ClassVersionOfFile[(int) FileType];
+			Heading.ClassVersionOfFile[(int) FileType];
 		public override bool ClassVersionsMatch => 
-			Header.ClassVersionsMatch[(int) FileType];
+			Heading.ClassVersionsMatch[(int) FileType];
 	}
 	
 	[DataContract]
-	public abstract class AppSettingBase : SettingBase
+	public abstract class AppSettingBase : SettingsPathFileBase
 	{
-		public override Header.SettingFileType FileType =>
-			Header.SettingFileType.APP;
+		public override Heading.SettingFileType FileType =>
+			Heading.SettingFileType.APP;
 
 		public override bool IsUserSettings { get; set; } = false;
 
 		public override string ClassVersionOfFile =>
-			Header.ClassVersionOfFile[(int) FileType];
+			Heading.ClassVersionOfFile[(int) FileType];
 		public override bool ClassVersionsMatch =>
-			Header.ClassVersionsMatch[(int) FileType];
+			Heading.ClassVersionsMatch[(int) FileType];
 	}
 
 
@@ -121,7 +110,7 @@ namespace SettingsManagerV30
 
 	public class SettingUpgrade
 	{
-		public List<SettingBase> SetgClasses = new List<SettingBase>();
+		public List<SettingsPathFileBase> SetgClasses = new List<SettingsPathFileBase>();
 
 		private ITest Admin;
 
@@ -134,7 +123,9 @@ namespace SettingsManagerV30
 		{
 			if (!SetgClasses[0].ClassVersionsMatch)
 			{
-				List<SettingBase> Us1 = SetgClasses;
+				logMsgLn2("upgrading", "class versions do not match - upgrade");
+
+				List<SettingsPathFileBase> Us1 = SetgClasses;
 
 				SetgClasses.Sort();
 
@@ -142,11 +133,15 @@ namespace SettingsManagerV30
 
 				Admin.Save();
 			}
+			else
+			{
+				logMsgLn2("upgrading", "class versions do match - do nothing");
+			}
 		}
 
 		private void Process(ITest Admin)
 		{
-			List<SettingBase> Us1 = SetgClasses;
+			List<SettingsPathFileBase> Us1 = SetgClasses;
 
 			for (int i = 0; i < SetgClasses.Count; i++)
 			{
@@ -154,10 +149,15 @@ namespace SettingsManagerV30
 
 				if (j == 0)
 				{
+					logMsgLn2("upgrading", "from this version: " +
+						SetgClasses[i].ClassVersion);
 					SetgClasses[i] = Admin.Read(SetgClasses[i].GetType());
 				} 
 				else if (j > 0)
 				{
+					logMsgLn2("upgrading", "to this version: " +
+						SetgClasses[i].ClassVersion);
+
 					SetgClasses[i].Upgrade(SetgClasses[i - 1]);
 				}
 			}

@@ -88,6 +88,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="ClassDiagrams1.tacls">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="ClassDiagrams1.tacls.diagram">
+      <DependentUpon>ClassDiagrams1.tacls</DependentUpon>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
