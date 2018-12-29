@@ -59,6 +59,9 @@ namespace SettingsManagerV30
 			{
 				if (UserSettings.Exists)
 				{
+//					SettingsMgr<UserSettingInfo22> x =
+//						UserSettings.Admin;
+
 					ReplaceTestFileUser();
 
 					TestUs();
@@ -165,7 +168,7 @@ namespace SettingsManagerV30
 			logMsgLn2("status"                  , UserSettings.Admin.Status);
 			logMsg2(nl);
 			logMsgLn2("file versions match"     , UserSettings.Admin.VersionsMatch());
-			logMsgLn2("file version (in file)"  , UserSettings.Admin.GetFileClassVersion() ?? "does not exist");
+			logMsgLn2("file version (in file)"  , UserSettings.Admin.GetVersionOfFile() ?? "does not exist");
 			logMsgLn2("file version (in memory)", UserSettings.Info.ClassVersion);
 			logMsgLn2("save date time"          , UserSettings.Admin.SaveDateTime);
 			logMsgLn2("assembly version"        , UserSettings.Admin.AssemblyVersion);
@@ -180,7 +183,7 @@ namespace SettingsManagerV30
 			logMsgLn2("status"					, AppSettings.Admin.Status);
 			logMsg2(nl);
 			logMsgLn2("file versions match"		, AppSettings.Admin.VersionsMatch());
-			logMsgLn2("file version (in file)"	, AppSettings.Admin.GetFileClassVersion() ?? "does not exist");
+			logMsgLn2("file version (in file)"	, AppSettings.Admin.GetVersionOfFile() ?? "does not exist");
 			logMsgLn2("file version (in memory)", AppSettings.Info.ClassVersion);
 			logMsgLn2("save date time"          , AppSettings.Admin.SaveDateTime);
 			logMsgLn2("assembly version"        , AppSettings.Admin.AssemblyVersion);
@@ -249,7 +252,7 @@ namespace SettingsManagerV30
 			logMsgLn2("system version"          , UserSettings.Admin.Info.Header.SystemVersion);
 			logMsgLn2("status"                  , UserSettings.Admin.Status);
 			logMsgLn2("file name"               , UserSettings.Admin.SettingsPathAndFile);
-			logMsgLn2("file version (in file)"  , UserSettings.Admin.GetFileClassVersion() ?? "does not exist");
+			logMsgLn2("file version (in file)"  , UserSettings.Admin.GetVersionOfFile() ?? "does not exist");
 			logMsgLn2("class version (in memory)", UserSettings.Info.ClassVersion);
 			logMsgLn2("save date time"          , UserSettings.Admin.SaveDateTime);
 			logMsgLn2("assembly version"        , UserSettings.Admin.AssemblyVersion);
@@ -311,7 +314,7 @@ namespace SettingsManagerV30
 			logMsgLn2("system version"          , AppSettings.Admin.Info.Header.SystemVersion);
 			logMsgLn2("status"                  , AppSettings.Admin.Status);
 			logMsgLn2("file name"               , AppSettings.Admin.SettingsPathAndFile);
-			logMsgLn2("file version (in file)"  , AppSettings.Admin.GetFileClassVersion() ?? "does not exist");
+			logMsgLn2("file version (in file)"  , AppSettings.Admin.GetVersionOfFile() ?? "does not exist");
 			logMsgLn2("class version (in memory)", AppSettings.Info.ClassVersion);
 			logMsgLn2("save date time"          , AppSettings.Admin.SaveDateTime);
 			logMsgLn2("assembly version"        , AppSettings.Admin.AssemblyVersion);

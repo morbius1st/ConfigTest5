@@ -44,18 +44,18 @@
         <elementListCompartment Id="3c7fb954-e2d8-4284-b59f-9c7d0b4bdf43" absoluteBounds="16.89, 9.1443896484375, 1.7200000000000002, 0.2493896484375" name="OperationsCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="996ab129-033f-4a31-899d-01413f9a9216" absoluteBounds="11.875, 7.25, 4.125, 1.8879850260416662">
+    <classShape Id="996ab129-033f-4a31-899d-01413f9a9216" absoluteBounds="11.875, 7.25, 4.125, 2.0802864583333331">
       <ModelClassMoniker Name="//abs: UsrSettingBase" />
       <nestedChildShapes>
         <elementListCompartment Id="71a4278a-8ba1-4a71-886f-b3d3dc8c95c9" absoluteBounds="11.89, 7.76, 4.0950000000000006, 1.0185953776041665" name="AttributesCompartment" titleTextColor="Black" itemTextColor="Black" />
-        <elementListCompartment Id="46ea96a0-a74c-4240-9249-02f96873f61a" absoluteBounds="11.89, 8.7885953776041674, 4.0950000000000006, 0.2493896484375" name="OperationsCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="46ea96a0-a74c-4240-9249-02f96873f61a" absoluteBounds="11.89, 8.7885953776041674, 4.0950000000000006, 0.44169108072916663" name="OperationsCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="753c1b59-e5f7-4601-925f-a8491def56e6" absoluteBounds="6.375, 7.25, 3.625, 1.8879850260416662">
+    <classShape Id="753c1b59-e5f7-4601-925f-a8491def56e6" absoluteBounds="6.375, 7.25, 3.625, 2.0802864583333331">
       <ModelClassMoniker Name="//abs: AppSettingBase" />
       <nestedChildShapes>
         <elementListCompartment Id="181e4c51-5f12-499f-944d-71a343559a94" absoluteBounds="6.39, 7.76, 3.5949999999999998, 1.0185953776041665" name="AttributesCompartment" titleTextColor="Black" itemTextColor="Black" />
-        <elementListCompartment Id="7c66b19f-317b-4d62-b1ed-d2fb3f10bcae" absoluteBounds="6.39, 8.7885953776041674, 3.5949999999999998, 0.2493896484375" name="OperationsCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="7c66b19f-317b-4d62-b1ed-d2fb3f10bcae" absoluteBounds="6.39, 8.7885953776041674, 3.5949999999999998, 0.44169108072916663" name="OperationsCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
     <generalizationConnector edgePoints="[(13.9375 : 7.25); (13.9375 : 6.69568359375)]" fixedFrom="Algorithm" fixedTo="Algorithm" TargetRelationshipDomainClassId="a480802d-882f-42b5-8a8b-9396f149c6f4">
@@ -151,7 +151,7 @@
         <classShapeMoniker Id="0c21d955-56c4-4b5b-a164-4e306c2912f9" />
       </nodes>
     </associationConnector>
-    <generalizationConnector edgePoints="[(8.1875 : 7.25); (8.1875 : 6.118779296875)]" fixedFrom="NotFixed" fixedTo="NotFixed" TargetRelationshipDomainClassId="a480802d-882f-42b5-8a8b-9396f149c6f4">
+    <generalizationConnector edgePoints="[(8.1875 : 7.25); (8.1875 : 6.118779296875)]" fixedFrom="Algorithm" fixedTo="Algorithm" TargetRelationshipDomainClassId="a480802d-882f-42b5-8a8b-9396f149c6f4">
       <nodes>
         <classShapeMoniker Id="753c1b59-e5f7-4601-925f-a8491def56e6" />
         <classShapeMoniker Id="0c21d955-56c4-4b5b-a164-4e306c2912f9" />
@@ -201,19 +201,19 @@
         <classShapeMoniker Id="43a3e6c3-b46a-4f79-b3d0-a1488fcf3dd5" />
       </nodes>
     </generalizationConnector>
-    <generalizationConnector edgePoints="[(16 : 8.75649251302083); (16.875 : 8.75649251302083)]" fixedFrom="Algorithm" fixedTo="Algorithm" TargetRelationshipDomainClassId="a480802d-882f-42b5-8a8b-9396f149c6f4">
+    <generalizationConnector edgePoints="[(16 : 8.85264322916667); (16.875 : 8.85264322916667)]" fixedFrom="Algorithm" fixedTo="Algorithm" TargetRelationshipDomainClassId="a480802d-882f-42b5-8a8b-9396f149c6f4">
       <nodes>
         <classShapeMoniker Id="996ab129-033f-4a31-899d-01413f9a9216" />
         <classShapeMoniker Id="525647d9-d8f2-494c-a2de-d4f61966d0b0" />
       </nodes>
     </generalizationConnector>
-    <generalizationConnector edgePoints="[(6.375 : 7.6218896484375); (5.5 : 7.6218896484375)]" fixedFrom="NotFixed" fixedTo="NotFixed" TargetRelationshipDomainClassId="a480802d-882f-42b5-8a8b-9396f149c6f4">
+    <generalizationConnector edgePoints="[(6.375 : 7.6218896484375); (5.5 : 7.6218896484375)]" fixedFrom="Algorithm" fixedTo="Algorithm" TargetRelationshipDomainClassId="a480802d-882f-42b5-8a8b-9396f149c6f4">
       <nodes>
         <classShapeMoniker Id="753c1b59-e5f7-4601-925f-a8491def56e6" />
         <classShapeMoniker Id="defd687c-8b55-4b4b-9273-4d7dbd11a8a1" />
       </nodes>
     </generalizationConnector>
-    <generalizationConnector edgePoints="[(6.375 : 8.75649251302083); (5.5 : 8.75649251302083)]" fixedFrom="NotFixed" fixedTo="NotFixed" TargetRelationshipDomainClassId="a480802d-882f-42b5-8a8b-9396f149c6f4">
+    <generalizationConnector edgePoints="[(6.375 : 8.85264322916667); (5.5 : 8.85264322916667)]" fixedFrom="Algorithm" fixedTo="Algorithm" TargetRelationshipDomainClassId="a480802d-882f-42b5-8a8b-9396f149c6f4">
       <nodes>
         <classShapeMoniker Id="753c1b59-e5f7-4601-925f-a8491def56e6" />
         <classShapeMoniker Id="03284441-67b1-46c8-bfd9-d5f1d40696d7" />
@@ -255,13 +255,13 @@
         <classShapeMoniker Id="acda426f-8aaf-4c39-b5a5-fadeac6b8dd1" />
       </nodes>
     </implementationConnector>
-    <generalizationConnector edgePoints="[(11.980716013554 : 10.375); (11.9821739501557 : 9.13798502604167)]" manuallyRouted="true" fixedFrom="Caller" fixedTo="Caller" TargetRelationshipDomainClassId="a480802d-882f-42b5-8a8b-9396f149c6f4">
+    <generalizationConnector edgePoints="[(12.1129866501536 : 10.375); (12.1114057221502 : 9.33028645833333)]" manuallyRouted="true" fixedFrom="Caller" fixedTo="Caller" TargetRelationshipDomainClassId="a480802d-882f-42b5-8a8b-9396f149c6f4">
       <nodes>
         <classShapeMoniker Id="9b125a1a-b5ea-4e30-9f20-94a01ae6ad40" />
         <classShapeMoniker Id="996ab129-033f-4a31-899d-01413f9a9216" />
       </nodes>
     </generalizationConnector>
-    <generalizationConnector edgePoints="[(9.75 : 10.375); (9.75 : 9.13798502604167)]" fixedFrom="Algorithm" fixedTo="Algorithm" TargetRelationshipDomainClassId="a480802d-882f-42b5-8a8b-9396f149c6f4">
+    <generalizationConnector edgePoints="[(9.75 : 10.375); (9.75 : 9.33028645833333)]" fixedFrom="Algorithm" fixedTo="Algorithm" TargetRelationshipDomainClassId="a480802d-882f-42b5-8a8b-9396f149c6f4">
       <nodes>
         <classShapeMoniker Id="9b125a1a-b5ea-4e30-9f20-94a01ae6ad40" />
         <classShapeMoniker Id="753c1b59-e5f7-4601-925f-a8491def56e6" />

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using SettingManager;
-
+using UtilityLibrary;
 using static UtilityLibrary.MessageUtilities2;
 
 
@@ -40,9 +40,28 @@ namespace SettingsManagerV30
 //		public abstract void Upgrade(SettingBase prior);
 //	}
 
+	// define file type specific information: User
 	[DataContract]
 	public abstract class UsrSettingBase : SettingsPathFileBase
 	{
+		public UsrSettingBase()
+		{
+//			FileName   = UserPathAndFile.FileName;
+//			RootPath   = UserPathAndFile.RootPath;
+//			SubFolders = UserPathAndFile.SubFolders;
+			
+			FileName   =@"user" + SettingsPathFileBase.SETTINGFILEBASE;
+			RootPath   = 
+				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			SubFolders = new string[]
+			{
+				CsUtilities.CompanyName,
+				CsUtilities.AssemblyName
+			};
+
+//			Header.VersionOfFile = UserSettings.Admin.GetVersionOfFile();
+		}
+
 		public override Heading.SettingFileType FileType =>
 			Heading.SettingFileType.USER;
 
@@ -52,11 +71,31 @@ namespace SettingsManagerV30
 			Heading.ClassVersionOfFile[(int) FileType];
 		public override bool ClassVersionsMatch => 
 			Heading.ClassVersionsMatch[(int) FileType];
+
+		
 	}
 	
+	// define file type specific information: App
 	[DataContract]
 	public abstract class AppSettingBase : SettingsPathFileBase
 	{
+		public AppSettingBase()
+		{
+//			FileName   = AppPathAndFile.FileName;
+//			RootPath   = AppPathAndFile.RootPath;
+//			SubFolders = AppPathAndFile.SubFolders;
+			
+			FileName   = 
+				CsUtilities.AssemblyName + SettingsPathFileBase.SETTINGFILEBASE;
+			RootPath   = 
+				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			SubFolders = new string[]
+			{
+				CsUtilities.CompanyName,
+				CsUtilities.AssemblyName,
+				"AppSettings"
+			};
+		}
 		public override Heading.SettingFileType FileType =>
 			Heading.SettingFileType.APP;
 
@@ -142,6 +181,8 @@ namespace SettingsManagerV30
 		private void Process(ITest Admin)
 		{
 			List<SettingsPathFileBase> Us1 = SetgClasses;
+
+			string v = SetgClasses[0].Header.VersionOfFile;
 
 			for (int i = 0; i < SetgClasses.Count; i++)
 			{

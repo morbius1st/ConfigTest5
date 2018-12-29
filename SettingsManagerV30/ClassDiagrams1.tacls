@@ -156,6 +156,11 @@
           <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
         </ModelAttribute>
       </Attributes>
+      <Operations>
+        <ClassOperation Name="(ctor) UsrSettingBase: void" IsAbstract="false">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ClassOperation>
+      </Operations>
       <Subtacls>
         <Generalization>
           <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
@@ -187,6 +192,11 @@
           <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
         </ModelAttribute>
       </Attributes>
+      <Operations>
+        <ClassOperation Name="(ctor) AppSettingBase: void" IsAbstract="false">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ClassOperation>
+      </Operations>
       <Subtacls>
         <Generalization>
           <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
@@ -349,7 +359,7 @@
         <ClassOperation Name="VersionsMatch(): bool" IsAbstract="false">
           <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
         </ClassOperation>
-        <ClassOperation Name="GetFileClassVersion(): string" IsAbstract="false">
+        <ClassOperation Name="GetVersionOfFile(): string" IsAbstract="false">
           <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
         </ClassOperation>
         <ClassOperation Name="GetSystemVersion(): string" IsAbstract="false">

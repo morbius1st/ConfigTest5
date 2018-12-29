@@ -59,6 +59,9 @@ namespace SettingManager
 		[DataMember(Order = 4)] public string ClassVersion;
 		[DataMember(Order = 5)] public string Notes = "created by v3.0";
 
+		public string VersionOfClass;
+		public string VersionOfFile;
+
 
 		public static string[] ClassVersionOfFile = 
 			new string[(int) SettingFileType.LENGTH];
@@ -321,14 +324,14 @@ namespace SettingManager
 		public bool VersionsMatch()
 		{
 			Heading.ClassVersionsMatch[(int) Info.FileType] =
-				(GetFileClassVersion()?.Equals(Info.Header.ClassVersion) ?? false);
+				(GetVersionOfFile()?.Equals(Info.Header.ClassVersion) ?? false);
 
 			return Heading.ClassVersionsMatch[(int) Info.FileType];
 		}
 
 		// use xml reader to find the version from the file before it
 		// gets read into memory
-		public string GetFileClassVersion()
+		public string GetVersionOfFile()
 		{
 			if (!FileExists())
 			{
@@ -402,20 +405,6 @@ namespace SettingManager
 		{
 			Header = new Heading(ClassVersion);
 			Header.Notes = "Created in Version " + ClassVersion;
-
-			if (IsUserSettings)
-			{
-				FileName   = UserPathAndFile.FileName;
-				RootPath   = UserPathAndFile.RootPath;
-				SubFolders = UserPathAndFile.SubFolders;
-			}
-			else
-
-			{
-				FileName   = AppPathAndFile.FileName;
-				RootPath   = AppPathAndFile.RootPath;
-				SubFolders = AppPathAndFile.SubFolders;
-			}
 		}
 
 		public const string SETTINGFILEBASE = @".setting.xml";
@@ -458,35 +447,35 @@ namespace SettingManager
 		public abstract void Upgrade(SettingsPathFileBase prior);
 	}
 
-	[DataContract(Namespace = Heading.NSpace)]
-	public static class UserPathAndFile 
-	{
-		public static string FileName { get; private set; } = 
-			@"user" + SettingsPathFileBase.SETTINGFILEBASE;
-		public static string RootPath { get; private set; } =
-			Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-		public static string[] SubFolders { get; private set; } =
-		{
-			CsUtilities.CompanyName,
-			CsUtilities.AssemblyName
-		};
-	}
+//	[DataContract(Namespace = Heading.NSpace)]
+//	public static class UserPathAndFile 
+//	{
+//		public static string FileName { get; private set; } = 
+//			@"user" + SettingsPathFileBase.SETTINGFILEBASE;
+//		public static string RootPath { get; private set; } =
+//			Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+//		public static string[] SubFolders { get; private set; } =
+//		{
+//			CsUtilities.CompanyName,
+//			CsUtilities.AssemblyName
+//		};
+//	}
 
-	[DataContract(Namespace = Heading.NSpace)]
-	public static class AppPathAndFile
-	{
-		public static string FileName { get; private set; } =
-			CsUtilities.AssemblyName + SettingsPathFileBase.SETTINGFILEBASE;
-		public static string RootPath { get; private set; } =
-			Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-
-		public static string[] SubFolders { get; private set; } =
-		{
-			CsUtilities.CompanyName,
-			CsUtilities.AssemblyName,
-			"AppSettings"
-		};
-	}
+//	[DataContract(Namespace = Heading.NSpace)]
+//	public static class AppPathAndFile
+//	{
+//		public static string FileName { get; private set; } =
+//			CsUtilities.AssemblyName + SettingsPathFileBase.SETTINGFILEBASE;
+//		public static string RootPath { get; private set; } =
+//			Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+//
+//		public static string[] SubFolders { get; private set; } =
+//		{
+//			CsUtilities.CompanyName,
+//			CsUtilities.AssemblyName,
+//			"AppSettings"
+//		};
+//	}
 
 	
 //	// define the path and file for the
