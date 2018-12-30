@@ -8,49 +8,13 @@ using static UtilityLibrary.MessageUtilities2;
 
 namespace SettingsManagerV30
 {
-//	[DataContract]
-//	public abstract class SettingBase : SettingsPathFileBase, IComparable<SettingBase>
-//	{
-//
-//		public SettingBase()
-//		{
-//			Header = new Heading(ClassVersion);
-//			Header.Notes = "Created in Version " + ClassVersion;
-//
-//			if (IsUserSettings)
-//			{
-//				FileName   = UserPathAndFile.FileName;
-//				RootPath   = UserPathAndFile.RootPath;
-//				SubFolders = UserPathAndFile.SubFolders;
-//			}
-//			else
-//
-//			{
-//				FileName   = AppPathAndFile.FileName;
-//				RootPath   = AppPathAndFile.RootPath;
-//				SubFolders = AppPathAndFile.SubFolders;
-//			}
-//		}
-//
-//		public int CompareTo(SettingBase other)
-//		{
-//			return String.Compare(ClassVersion, other.ClassVersion, StringComparison.Ordinal);
-//		}
-//
-//		public abstract void Upgrade(SettingBase prior);
-//	}
-
 	// define file type specific information: User
 	[DataContract]
-	public abstract class UsrSettingBase : SettingsPathFileBase
+	public abstract class UsrSettingBase : SettingBase
 	{
 		public UsrSettingBase()
 		{
-//			FileName   = UserPathAndFile.FileName;
-//			RootPath   = UserPathAndFile.RootPath;
-//			SubFolders = UserPathAndFile.SubFolders;
-			
-			FileName   =@"user" + SettingsPathFileBase.SETTINGFILEBASE;
+			FileName   =@"user" + SettingBase.SETTINGFILEBASE;
 			RootPath   = 
 				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 			SubFolders = new string[]
@@ -58,35 +22,25 @@ namespace SettingsManagerV30
 				CsUtilities.CompanyName,
 				CsUtilities.AssemblyName
 			};
-
-//			Header.VersionOfFile = UserSettings.Admin.GetVersionOfFile();
 		}
 
 		public override Heading.SettingFileType FileType =>
 			Heading.SettingFileType.USER;
 
-		public override bool IsUserSettings { get; set; } = true;
-
 		public override string ClassVersionOfFile => 
 			Heading.ClassVersionOfFile[(int) FileType];
 		public override bool ClassVersionsMatch => 
 			Heading.ClassVersionsMatch[(int) FileType];
-
-		
 	}
 	
 	// define file type specific information: App
 	[DataContract]
-	public abstract class AppSettingBase : SettingsPathFileBase
+	public abstract class AppSettingBase : SettingBase
 	{
 		public AppSettingBase()
 		{
-//			FileName   = AppPathAndFile.FileName;
-//			RootPath   = AppPathAndFile.RootPath;
-//			SubFolders = AppPathAndFile.SubFolders;
-			
 			FileName   = 
-				CsUtilities.AssemblyName + SettingsPathFileBase.SETTINGFILEBASE;
+				CsUtilities.AssemblyName + SettingBase.SETTINGFILEBASE;
 			RootPath   = 
 				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 			SubFolders = new string[]
@@ -98,8 +52,6 @@ namespace SettingsManagerV30
 		}
 		public override Heading.SettingFileType FileType =>
 			Heading.SettingFileType.APP;
-
-		public override bool IsUserSettings { get; set; } = false;
 
 		public override string ClassVersionOfFile =>
 			Heading.ClassVersionOfFile[(int) FileType];
@@ -149,7 +101,7 @@ namespace SettingsManagerV30
 
 	public class SettingUpgrade
 	{
-		public List<SettingsPathFileBase> SetgClasses = new List<SettingsPathFileBase>();
+		public List<SettingBase> SetgClasses = new List<SettingBase>();
 
 		private ITest Admin;
 
@@ -164,7 +116,7 @@ namespace SettingsManagerV30
 			{
 				logMsgLn2("upgrading", "class versions do not match - upgrade");
 
-				List<SettingsPathFileBase> Us1 = SetgClasses;
+				List<SettingBase> Us1 = SetgClasses;
 
 				SetgClasses.Sort();
 
@@ -180,7 +132,7 @@ namespace SettingsManagerV30
 
 		private void Process(ITest Admin)
 		{
-			List<SettingsPathFileBase> Us1 = SetgClasses;
+			List<SettingBase> Us1 = SetgClasses;
 
 			string v = SetgClasses[0].Header.VersionOfFile;
 

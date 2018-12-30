@@ -88,7 +88,7 @@ namespace SettingsManagerV30
 
 		public override string ClassVersion => "2.2";
 
-		public override void Upgrade(SettingsPathFileBase prior)
+		public override void Upgrade(SettingBase prior)
 		{
 			UserSettingInfo21 p = (UserSettingInfo21) prior;
 

@@ -93,7 +93,7 @@ namespace SettingManager
 
 	public delegate void RstData();
 
-	public class SettingsMgr<T> : ITest where T : SettingsPathFileBase,  new()
+	public class SettingsMgr<T> : ITest where T : SettingBase,  new()
 	{
 		#region + Constructor
 
@@ -281,9 +281,6 @@ namespace SettingManager
 			// set file exists status
 				if (FileExists())
 				{
-					Status = EXISTS;
-					Exists = true;
-
 					if ( !VersionsMatch())
 					{
 						Status = VERSIONMISMATCH;
@@ -294,7 +291,6 @@ namespace SettingManager
 					Status = DOESNOTEXIST;
 				}
 		}
-
 
 		// report whether the setting file does exist
 		private bool FileExists()
@@ -380,12 +376,11 @@ namespace SettingManager
 		#endregion
 	}
 
-
 	#region Support Classes
 
 	[DataContract(Namespace = Heading.NSpace)]
 	//	[DataContract]
-	public abstract class SettingsPathFileBase : IComparable<SettingsPathFileBase>
+	public abstract class SettingBase : IComparable<SettingBase>
 	{
 		[DataMember] public Heading Header;
 
@@ -395,13 +390,11 @@ namespace SettingManager
 		public abstract string ClassVersionOfFile { get; }
 		public abstract bool ClassVersionsMatch { get; }
 
-		public abstract bool IsUserSettings { get; set; }
-
 		protected string FileName;
 		protected string RootPath;
 		protected string[] SubFolders;
 
-		public SettingsPathFileBase()
+		public SettingBase()
 		{
 			Header = new Heading(ClassVersion);
 			Header.Notes = "Created in Version " + ClassVersion;
@@ -439,80 +432,13 @@ namespace SettingManager
 			}
 		}
 
-		public int CompareTo(SettingsPathFileBase other)
+		public int CompareTo(SettingBase other)
 		{
 			return String.Compare(ClassVersion, other.ClassVersion, StringComparison.Ordinal);
 		}
 
-		public abstract void Upgrade(SettingsPathFileBase prior);
+		public abstract void Upgrade(SettingBase prior);
 	}
-
-//	[DataContract(Namespace = Heading.NSpace)]
-//	public static class UserPathAndFile 
-//	{
-//		public static string FileName { get; private set; } = 
-//			@"user" + SettingsPathFileBase.SETTINGFILEBASE;
-//		public static string RootPath { get; private set; } =
-//			Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-//		public static string[] SubFolders { get; private set; } =
-//		{
-//			CsUtilities.CompanyName,
-//			CsUtilities.AssemblyName
-//		};
-//	}
-
-//	[DataContract(Namespace = Heading.NSpace)]
-//	public static class AppPathAndFile
-//	{
-//		public static string FileName { get; private set; } =
-//			CsUtilities.AssemblyName + SettingsPathFileBase.SETTINGFILEBASE;
-//		public static string RootPath { get; private set; } =
-//			Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-//
-//		public static string[] SubFolders { get; private set; } =
-//		{
-//			CsUtilities.CompanyName,
-//			CsUtilities.AssemblyName,
-//			"AppSettings"
-//		};
-//	}
-
-	
-//	// define the path and file for the
-//	// user's setting file
-//	[DataContract(Namespace = Header.NSpace)]
-//	public abstract class SettingsPathFileUserBase : SettingsPathFileBase
-//	{
-//		protected SettingsPathFileUserBase()
-//		{
-//			FileName = @"user" + SETTINGFILEBASE;
-//			RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-//			SubFolders = new[]
-//			{
-//				CsUtilities.CompanyName,
-//				CsUtilities.AssemblyName
-//			};
-//		}
-//	}
-
-//	// define the path and file name for the 
-//	// application's setting file - revised location
-//	[DataContract(Namespace = Header.NSpace)]
-//	public abstract class SettingsPathFileAppBase : SettingsPathFileBase
-//	{
-//		protected SettingsPathFileAppBase()
-//		{
-//			FileName = CsUtilities.AssemblyName + SETTINGFILEBASE;
-//			RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-//			SubFolders = new[]
-//			{
-//				CsUtilities.CompanyName,
-//				CsUtilities.AssemblyName,
-//				"AppSettings"
-//			};
-//
-//		}
-//	}
 
 	#endregion
 

@@ -68,7 +68,7 @@ namespace SettingsManagerV30
 
 					UserSettingUpgrade uSup = new UserSettingUpgrade();
 
-					List<SettingsPathFileBase> Us = uSup.su.SetgClasses;
+					List<SettingBase> Us = uSup.su.SetgClasses;
 
 					uSup.Upgrade();
 				}
@@ -88,7 +88,7 @@ namespace SettingsManagerV30
 
 					AppSettingUpgrade aSup = new AppSettingUpgrade();
 
-					List<SettingsPathFileBase> As = aSup.su.SetgClasses;
+					List<SettingBase> As = aSup.su.SetgClasses;
 
 					aSup.Upgrade();
 				}

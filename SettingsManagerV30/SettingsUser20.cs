@@ -41,7 +41,7 @@ namespace SettingsManagerV30
 		public override string ClassVersion => "2.0";
 
 		// this is the base of the chain - this has nothing to upgrade from
-		public override void Upgrade(SettingsPathFileBase prior)
+		public override void Upgrade(SettingBase prior)
 		{
 		}
 	}
