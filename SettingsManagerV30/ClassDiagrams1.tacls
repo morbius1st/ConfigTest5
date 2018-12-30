@@ -59,7 +59,7 @@
   </ArrayOfStereoType>
   <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
   <Types>
-    <ModelClass Name="abs: SettingsPathFileBase" IsAbstract="Abstract">
+    <ModelClass Name="abs: SettingsPathFileBase&#xD;&#xA;(IComparable)" IsAbstract="Abstract">
       <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
       <Attributes>
         <ModelAttribute Name="(abstract) ClassVersion" Type="string" nameAndType="(abstract) ClassVersion : string">
@@ -384,6 +384,15 @@
         <Implementation Id="b6e9ea9f-59a4-4287-9815-ca379a80770e">
           <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
           <ModelClassMoniker Name="//SettingMgr&lt;T&gt;" />
+        </Implementation>
+      </Implementors>
+    </ModelInterface>
+    <ModelInterface Name="IComparable">
+      <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+      <Implementors>
+        <Implementation Id="c03460cf-5ee3-4064-80e1-2ff42bc3ddb3">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <ModelClassMoniker Name="//abs: SettingsPathFileBase&#xD;&#xA;(IComparable)" />
         </Implementation>
       </Implementors>
     </ModelInterface>
