@@ -59,15 +59,12 @@ namespace SettingManager
 		[DataMember(Order = 4)] public string ClassVersion;
 		[DataMember(Order = 5)] public string Notes = "created by v3.0";
 
-		public string VersionOfClass;
-		public string VersionOfFile;
 
-
-		public static string[] ClassVersionOfFile = 
-			new string[(int) SettingFileType.LENGTH];
-		
-		public static bool[] ClassVersionsMatch = 
-			new bool[(int) SettingFileType.LENGTH];
+//		public static string[] ClassVersionFromFile;
+//		public static string[] SystemVersionFromFile;
+//
+//		public bool ClassVersionsMatch => 
+//			ClassVersion.Equals(ClassVersionFromFile[]);
 	}
 
 	#endregion
@@ -99,15 +96,15 @@ namespace SettingManager
 
 		public SettingsMgr(RstData rst)
 		{
-			SettingsPathAndFile = Info.SettingsPathAndFile;
+			SettingPathAndFile = Info.SettingPathAndFile;
 
-			if (String.IsNullOrWhiteSpace(SettingsPathAndFile))
+			if (String.IsNullOrWhiteSpace(SettingPathAndFile))
 			{
 				Status = NOPATH;
 			}
 			else
 			{
-				SetFileExistStatus();
+				SetFileStatus();
 
 //				// set file exists status
 //				if (FileExists())
@@ -133,17 +130,16 @@ namespace SettingManager
 
 		#region + Properties
 
+		public T Info { get; private set; } = new T();
+
 		public SettingMgrStatus Status { get; private set; } = CREATED;
 
 		public bool Exists { get; private set; } = false;
 
-		public T Info { get; private set; } = new T();
-
-		public string SettingsPathAndFile { get; private set; }
-
-		public string SaveDateTime => Info?.Header.SaveDateTime ?? "undefined";
-		public string AssemblyVersion => Info?.Header.AssemblyVersion ?? "undefined";
-		public string SettingFileNotes => Info?.Header.Notes ?? "undefined";
+		private string SettingPathAndFile { get; set; }
+//		public string SaveDateTime => Info?.Header.SaveDateTime ?? "undefined";
+//		public string AssemblyVersion => Info?.Header.AssemblyVersion ?? "undefined";
+//		public string SettingFileNotes => Info?.Header.Notes ?? "undefined";
 
 		#endregion
 
@@ -159,7 +155,7 @@ namespace SettingManager
 					DataContractSerializer ds = new DataContractSerializer(typeof(T));
 
 					// file exists - get the current values
-					using (FileStream fs = new FileStream(SettingsPathAndFile, FileMode.Open))
+					using (FileStream fs = new FileStream(SettingPathAndFile, FileMode.Open))
 					{
 						Info = (T) ds.ReadObject(fs);
 						SyncData();
@@ -178,7 +174,7 @@ namespace SettingManager
 				{
 					throw new MessageException(MessageUtilities.nl 
 						+ "Cannot read setting data for file: "
-						+ SettingsPathAndFile + MessageUtilities.nl
+						+ SettingPathAndFile + MessageUtilities.nl
 						+ "(" + e.Message +")" + MessageUtilities.nl
 						, e.InnerException);
 				}
@@ -189,7 +185,7 @@ namespace SettingManager
 				Save();
 			}
 
-			SetFileExistStatus();
+			SetFileStatus();
 		}
 
 		public dynamic Read(Type type)
@@ -202,7 +198,7 @@ namespace SettingManager
 				{
 					DataContractSerializer ds = new DataContractSerializer(type);
 
-					using (FileStream fs = new FileStream(SettingsPathAndFile, FileMode.Open))
+					using (FileStream fs = new FileStream(SettingPathAndFile, FileMode.Open))
 					{
 						p = ds.ReadObject(fs);
 					}
@@ -242,7 +238,7 @@ namespace SettingManager
 
 //			Settings.Header = new Heading(Settings.ClassVersion);
 
-			using (XmlWriter w = XmlWriter.Create(SettingsPathAndFile, xmlSettings))
+			using (XmlWriter w = XmlWriter.Create(SettingPathAndFile, xmlSettings))
 			{
 				ds.WriteObject(w, Info);
 			}
@@ -257,6 +253,7 @@ namespace SettingManager
 
 		private RstData ResetData;
 
+		// reset the data portion to it's default values
 		public void Reset()
 		{
 			Create();
@@ -276,26 +273,31 @@ namespace SettingManager
 
 		#region + Utilities
 
-		public void SetFileExistStatus()
+		public void SetFileStatus()
 		{
 			// set file exists status
-				if (FileExists())
+			if (FileExists())
+			{
+				SetClassVersionFromFile();
+				SetSystemVersionFromFile();
+
+
+
+				if (!Info.ClassVersionsMatch())
 				{
-					if ( !VersionsMatch())
-					{
-						Status = VERSIONMISMATCH;
-					}
+					Status = VERSIONMISMATCH;
 				}
-				else
-				{
-					Status = DOESNOTEXIST;
-				}
+			}
+			else
+			{
+				Status = DOESNOTEXIST;
+			}
 		}
 
 		// report whether the setting file does exist
 		private bool FileExists()
 		{
-			bool result = FileExists(SettingsPathAndFile);
+			bool result = FileExists(SettingPathAndFile);
 
 			if (result)
 			{
@@ -317,40 +319,50 @@ namespace SettingManager
 			return File.Exists(pathAndFile);
 		}
 
-		public bool VersionsMatch()
-		{
-			Heading.ClassVersionsMatch[(int) Info.FileType] =
-				(GetVersionOfFile()?.Equals(Info.Header.ClassVersion) ?? false);
+//		public bool VersionsMatch()
+//		{
+//			return Info.Header.ClassVersion.Equals(Heading.ClassVersionFromFile);
+//		}
 
-			return Heading.ClassVersionsMatch[(int) Info.FileType];
+		private void SetClassVersionFromFile()
+		{
+
+//			Heading.ClassVersionFromFile[(int) Info.FileType] = 
+			Info.ClassVersionFromFile =
+				GetClassVersionFromFile();
 		}
 
-		// use xml reader to find the version from the file before it
-		// gets read into memory
-		public string GetVersionOfFile()
+		private void SetSystemVersionFromFile()
+		{
+//			Heading.SystemVersionFromFile[(int) Info.FileType] = 
+			Info.SystemVersionFromFile =
+				GetSystemVersionFromFile();
+		}
+
+		// gets the class version from the file
+		private string GetClassVersionFromFile()
 		{
 			if (!FileExists())
 			{
 				return null;
 			}
 
-			using (XmlReader reader = XmlReader.Create(SettingsPathAndFile))
+			using (XmlReader reader = XmlReader.Create(SettingPathAndFile))
 			{
 				while (reader.Read())
 				{
 					if (reader.IsStartElement(nameof(
 						Info.Header.ClassVersion)))
 					{
-						Heading.ClassVersionOfFile[(int)Info.FileType]
-							= reader.ReadString();
-						return Heading.ClassVersionOfFile[(int) Info.FileType];
+						return reader.ReadString();
 					}
 				}
 			}
 			return "";
 		}
 
-		public string GetSystemVersion()
+		// gets the system version from the file
+		private string GetSystemVersionFromFile()
 		{
 			if (Status.Equals(NOPATH) || Status.Equals(DOESNOTEXIST))
 			{
@@ -359,12 +371,12 @@ namespace SettingManager
 
 			// use xml reader to find the version from
 			// the file
-			using (XmlReader reader = XmlReader.Create(SettingsPathAndFile))
+			using (XmlReader reader = XmlReader.Create(SettingPathAndFile))
 			{
 				while (reader.Read())
 				{
 					if (reader.IsStartElement(nameof(
-						UserSettings.Info.Header.SystemVersion)))
+						Info.Header.SystemVersion)))
 					{
 						return reader.ReadString();
 					}
@@ -387,12 +399,13 @@ namespace SettingManager
 		public abstract string ClassVersion { get; }
 		public abstract Heading.SettingFileType  FileType { get; }
 
-		public abstract string ClassVersionOfFile { get; }
-		public abstract bool ClassVersionsMatch { get; }
+		public abstract string ClassVersionFromFile { get; set; }
+		public abstract string SystemVersionFromFile { get; set; }
+		public abstract bool ClassVersionsMatch();
 
-		protected string FileName;
-		protected string RootPath;
-		protected string[] SubFolders;
+		public abstract string FileName { get; }
+		public abstract string RootPath { get; }
+		public abstract string[] SubFolders { get; }
 
 		public SettingBase()
 		{
@@ -403,7 +416,7 @@ namespace SettingManager
 		public const string SETTINGFILEBASE = @".setting.xml";
 
 		// get the path to the setting file
-		public string SettingsPath
+		public string SettingPath
 		{
 			get
 			{
@@ -417,18 +430,18 @@ namespace SettingManager
 		}
 
 		// get the path and the file name for the setting file
-		public string SettingsPathAndFile
+		public string SettingPathAndFile
 		{
 			get
 			{
-				if (!Directory.Exists(SettingsPath))
+				if (!Directory.Exists(SettingPath))
 				{
 					if (!CsUtilities.CreateSubFolders(RootPath, SubFolders))
 					{
 						throw new DirectoryNotFoundException("setting file path");
 					}
 				}
-				return SettingsPath + "\\" + FileName;
+				return SettingPath + "\\" + FileName;
 			}
 		}
 
@@ -520,7 +533,7 @@ namespace SettingManager
 //
 // access thus:
 // for file configuration info:
-// Admin.SettingsPathAndFile (for example)
+// Admin.SettingPathAndFile (for example)
 //
 // for the individual fields:
 // Info.UnCategorizedValue  (for example)
@@ -618,7 +631,7 @@ namespace SettingManager
 //
 // access thus:
 // for file configuration info:
-// Admin.SettingsPathAndFile (for example)
+// Admin.SettingPathAndFile (for example)
 //
 // for the individual fields:
 // Info.AppI  (for example)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using SettingManager;
 
@@ -30,19 +31,21 @@ namespace SettingsManagerV30
 		public static UserSettingInfo22 Info { get; private set; }
 		public static UserSettingData22 Data { get; private set; }
 
-		public static SettingMgrStatus Status => Admin.Status;
-		public static bool Exists => Admin.Exists;
+//		public static SettingMgrStatus Status => Admin.Status;
+//		public static bool Exists => Admin.Exists;
 
 		// initalize and create the setting objects
 		static UserSettings()
 		{
-			Admin = new SettingsMgr<UserSettingInfo22>(ResetClass);
+			Admin = new SettingsMgr<UserSettingInfo22>(ResetData);
 			Info = Admin.Info;
 			Data = Info.Data;
 		}
 
-		public static void ResetClass()
+		public static void ResetData()
 		{
+			// this makes sure the above static class points
+			// to the current data structure
 			Info = Admin.Info;
 		}
 	}

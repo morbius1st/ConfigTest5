@@ -59,7 +59,7 @@
   </ArrayOfStereoType>
   <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
   <Types>
-    <ModelClass Name="abs: SettingsPathFileBase&#xD;&#xA;(IComparable)" IsAbstract="Abstract">
+    <ModelClass Name="abs: SettingBase &#xD;&#xA;(IComparable)" IsAbstract="Abstract">
       <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
       <Attributes>
         <ModelAttribute Name="(abstract) ClassVersion" Type="string" nameAndType="(abstract) ClassVersion : string">
@@ -232,7 +232,7 @@
         </ModelAttribute>
       </Attributes>
       <Operations>
-        <ClassOperation Name="ResetClass()" IsAbstract="false">
+        <ClassOperation Name="ResetData()" IsAbstract="false">
           <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
         </ClassOperation>
       </Operations>
@@ -392,9 +392,95 @@
       <Implementors>
         <Implementation Id="c03460cf-5ee3-4064-80e1-2ff42bc3ddb3">
           <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
-          <ModelClassMoniker Name="//abs: SettingsPathFileBase&#xD;&#xA;(IComparable)" />
+          <ModelClassMoniker Name="//abs: SettingBase &#xD;&#xA;(IComparable)" />
         </Implementation>
       </Implementors>
     </ModelInterface>
+    <ModelClass Name="(Static) Admin&#xD;&#xA;SettingMgr&lt;UserSettingInfo22&gt;">
+      <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+      <AssociationTargets>
+        <Association Id="3e757619-f4fc-4f78-9ef4-273bdf020eb5" SourceMultiplicity="One" SourceRoleName="Public Interface" TargetMultiplicity="One" TargetRoleName="Container">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <ModelClassMoniker Name="//UserSettings (UserSettingInfo22)" />
+        </Association>
+      </AssociationTargets>
+      <Attributes>
+        <ModelAttribute Name="Exists" Type="bool" nameAndType="Exists : bool">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ModelAttribute>
+        <ModelAttribute Name="Info" Type="UserSettingInfo22" nameAndType="Info : UserSettingInfo22">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ModelAttribute>
+        <ModelAttribute Name="Status" Type="SettingMgrStatus" nameAndType="Status : SettingMgrStatus">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ModelAttribute>
+        <ModelAttribute Name="SettingPathAndFile" Type="string" nameAndType="SettingPathAndFile : string">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ModelAttribute>
+      </Attributes>
+      <Operations>
+        <ClassOperation Name="Create(): void" IsAbstract="false">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ClassOperation>
+        <ClassOperation Name="Read(): void" IsAbstract="false">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ClassOperation>
+        <ClassOperation Name="Read(Type): void" IsAbstract="false">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ClassOperation>
+        <ClassOperation Name="Save(): void" IsAbstract="false">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ClassOperation>
+        <ClassOperation Name="SetFileStatus(): void" IsAbstract="false">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ClassOperation>
+        <ClassOperation Name="SyncData(): void" IsAbstract="false">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ClassOperation>
+      </Operations>
+    </ModelClass>
+    <ModelClass Name="(static) Info&#xD;&#xA;UserSettingInfo22">
+      <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+      <AssociationTargets>
+        <Association Id="02f2fee9-6342-4796-92f4-384b0db7f337" SourceMultiplicity="One" SourceRoleName="Public Interface" TargetMultiplicity="One" TargetRoleName="Container">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <ModelClassMoniker Name="//UserSettings (UserSettingInfo22)" />
+        </Association>
+      </AssociationTargets>
+      <Attributes>
+        <ModelAttribute Name="ClassVersion" Type="string" nameAndType="ClassVersion : string">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ModelAttribute>
+        <ModelAttribute Name="Data" Type="UserSettingData22" nameAndType="Data : UserSettingData22">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ModelAttribute>
+        <ModelAttribute Name="ClassVersionFromFile" Type="string" nameAndType="ClassVersionFromFile : string">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ModelAttribute>
+        <ModelAttribute Name="FileType" Type="SettingFileType" nameAndType="FileType : SettingFileType">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ModelAttribute>
+        <ModelAttribute Name="SettingPath" Type="string" nameAndType="SettingPath : string">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ModelAttribute>
+        <ModelAttribute Name="SettingPathAndFile" Type="string" nameAndType="SettingPathAndFile : string">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ModelAttribute>
+        <ModelAttribute Name="SystemVersionFromFile" Type="string" nameAndType="SystemVersionFromFile : string">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ModelAttribute>
+      </Attributes>
+      <Operations>
+        <ClassOperation Name="ClassVersionsMatch(): bool" IsAbstract="false">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ClassOperation>
+        <ClassOperation Name="CompareTo(): bool" IsAbstract="false">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ClassOperation>
+        <ClassOperation Name="Upgrade(): void" IsAbstract="false">
+          <ArrayOfExtensiblePropertyInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </ClassOperation>
+      </Operations>
+    </ModelClass>
   </Types>
 </ModelRoot>

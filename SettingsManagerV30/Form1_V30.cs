@@ -57,11 +57,8 @@ namespace SettingsManagerV30
 		{
 			if (which == 1 || which == 3)
 			{
-				if (UserSettings.Exists)
+				if (UserSettings.Admin.Exists)
 				{
-//					SettingsMgr<UserSettingInfo22> x =
-//						UserSettings.Admin;
-
 					ReplaceTestFileUser();
 
 					TestUs();
@@ -74,13 +71,17 @@ namespace SettingsManagerV30
 				}
 				else
 				{
+					logMsg2(nl);
+					logMsgLn2("SetttingsUser", "saving setting file");
+					logMsg2(nl);
+
 					UserSettings.Admin.Save();
 				}
 			}
 
 			if (which == 2 || which == 3)
 			{
-				if (AppSettings.Exists)
+				if (AppSettings.Admin.Exists)
 				{
 					ReplaceTestFileApp();
 
@@ -94,6 +95,10 @@ namespace SettingsManagerV30
 				}
 				else
 				{
+					logMsg2(nl);
+					logMsgLn2("SetttingsApp", "saving setting file");
+					logMsg2(nl);
+
 					AppSettings.Admin.Save();
 				}
 			}
@@ -102,37 +107,37 @@ namespace SettingsManagerV30
 		private void ReplaceTestFileUser()
 		{
 			string testFileName =
-				UserSettings.Admin.Info.SettingsPath 
+				UserSettings.Admin.Info.SettingPath 
 				+ "\\" + "user.setting.xml.v20";
 
-			File.Delete(UserSettings.Admin.Info.SettingsPathAndFile);
+			File.Delete(UserSettings.Admin.Info.SettingPathAndFile);
 
 			File.Copy(testFileName, 
-				UserSettings.Admin.Info.SettingsPathAndFile);
+				UserSettings.Admin.Info.SettingPathAndFile);
 
 			logMsg2(nl);
 			logMsgLn2("SetttingsUser", "test file replaced");
 			logMsg2(nl);
 
-			UserSettings.Admin.SetFileExistStatus();
+			UserSettings.Admin.SetFileStatus();
 		}
 
 		private void ReplaceTestFileApp()
 		{
 			string testFileName =
-				AppSettings.Admin.Info.SettingsPath 
+				AppSettings.Admin.Info.SettingPath 
 				+ "\\" + "SettingsManagerV30.setting.xml.v20";
 
-			File.Delete(AppSettings.Admin.Info.SettingsPathAndFile);
+			File.Delete(AppSettings.Admin.Info.SettingPathAndFile);
 
 			File.Copy(testFileName, 
-				AppSettings.Admin.Info.SettingsPathAndFile);
+				AppSettings.Admin.Info.SettingPathAndFile);
 
 			logMsg2(nl);
 			logMsgLn2("SetttingsApp", "test file replaced");
 			logMsg2(nl);
 
-			AppSettings.Admin.SetFileExistStatus();
+			AppSettings.Admin.SetFileStatus();
 		}
 
 
@@ -164,30 +169,33 @@ namespace SettingsManagerV30
 		{
 			logMsgLn2("class", "SetttingsUser");
 
-			logMsgLn2("path"                    , UserSettings.Admin.SettingsPathAndFile);
+//			logMsgLn2("class", UserSettings);
+
+			logMsgLn2("path"                    , UserSettings.Info.SettingPathAndFile);
 			logMsgLn2("status"                  , UserSettings.Admin.Status);
 			logMsg2(nl);
-			logMsgLn2("file versions match"     , UserSettings.Admin.VersionsMatch());
-			logMsgLn2("file version (in file)"  , UserSettings.Admin.GetVersionOfFile() ?? "does not exist");
+			logMsgLn2("file versions match"     , UserSettings.Admin.Info.ClassVersionsMatch());
+			logMsgLn2("file version (from file)", UserSettings.Admin.Info.ClassVersionFromFile?? "does not exist");
 			logMsgLn2("file version (in memory)", UserSettings.Info.ClassVersion);
-			logMsgLn2("save date time"          , UserSettings.Admin.SaveDateTime);
-			logMsgLn2("assembly version"        , UserSettings.Admin.AssemblyVersion);
-			logMsgLn2("file notes"              , UserSettings.Admin.SettingFileNotes);
+			logMsgLn2("save date time"          , UserSettings.Info.Header.SaveDateTime);
+			logMsgLn2("assembly version"        , UserSettings.Info.Header.AssemblyVersion);
+			logMsgLn2("file notes"              , UserSettings.Info.Header.Notes);
 			logMsg2(nl);
 		}
 
 		private void InitAp()
 		{
 			logMsgLn2("class", "AppSettings");
-			logMsgLn2("path"					, AppSettings.Admin.SettingsPathAndFile);
+
+			logMsgLn2("path"					, AppSettings.Info.SettingPathAndFile);
 			logMsgLn2("status"					, AppSettings.Admin.Status);
 			logMsg2(nl);
-			logMsgLn2("file versions match"		, AppSettings.Admin.VersionsMatch());
-			logMsgLn2("file version (in file)"	, AppSettings.Admin.GetVersionOfFile() ?? "does not exist");
+			logMsgLn2("file versions match"		, AppSettings.Admin.Info.ClassVersionsMatch());
+			logMsgLn2("file version (from file)", AppSettings.Admin.Info.ClassVersionFromFile ?? "does not exist");
 			logMsgLn2("file version (in memory)", AppSettings.Info.ClassVersion);
-			logMsgLn2("save date time"          , AppSettings.Admin.SaveDateTime);
-			logMsgLn2("assembly version"        , AppSettings.Admin.AssemblyVersion);
-			logMsgLn2("file notes"              , AppSettings.Admin.SettingFileNotes);
+			logMsgLn2("save date time"          , AppSettings.Info.Header.SaveDateTime);
+			logMsgLn2("assembly version"        , AppSettings.Info.Header.AssemblyVersion);
+			logMsgLn2("file notes"              , AppSettings.Info.Header.Notes);
 			logMsg2(nl);
 		}
 
@@ -196,10 +204,10 @@ namespace SettingsManagerV30
 		private void ProcessUserSettings(bool modify)
 		{
 			logMsgLn2(nl);
-			logMsgLn2("user path", UserSettings.Admin.SettingsPathAndFile);
+			logMsgLn2("user path", UserSettings.Info.SettingPathAndFile);
 			logMsgLn2("user before");
 
-			if (UserSettings.Exists)
+			if (UserSettings.Admin.Exists)
 			{
 				UserSettings.Admin.Read();
 				DisplayUserSettingData();
@@ -249,33 +257,34 @@ namespace SettingsManagerV30
 		private void DisplayUserSettingData()
 		{
 
-			logMsgLn2("system version"          , UserSettings.Admin.Info.Header.SystemVersion);
+			logMsgLn2("system version"          , UserSettings.Info.Header.SystemVersion);
 			logMsgLn2("status"                  , UserSettings.Admin.Status);
-			logMsgLn2("file name"               , UserSettings.Admin.SettingsPathAndFile);
-			logMsgLn2("file version (in file)"  , UserSettings.Admin.GetVersionOfFile() ?? "does not exist");
-			logMsgLn2("class version (in memory)", UserSettings.Info.ClassVersion);
-			logMsgLn2("save date time"          , UserSettings.Admin.SaveDateTime);
-			logMsgLn2("assembly version"        , UserSettings.Admin.AssemblyVersion);
-			logMsgLn2("file notes"              , UserSettings.Admin.SettingFileNotes);
-
+			logMsgLn2("path and file"           , UserSettings.Info.SettingPathAndFile);
+			logMsgLn2("path"                    , UserSettings.Info.SettingPath);
+			logMsgLn2("root path"               , UserSettings.Info.RootPath);
+			logMsgLn2("file name"               , UserSettings.Info.FileName);
+			logMsgLn2("file version (from file)", UserSettings.Info.ClassVersionFromFile ?? "does not exist");
+			logMsgLn2("class version (in memory)",UserSettings.Info.ClassVersion);
+			logMsgLn2("save date time"          , UserSettings.Info.Header.SaveDateTime);
+			logMsgLn2("assembly version"        , UserSettings.Info.Header.AssemblyVersion);
+			logMsgLn2("file notes"              , UserSettings.Info.Header.Notes);
 			
 			logMsgLn2("test dict one/IntA"      , UserSettings.Info.Data.TestDictionary3["one"].IntA.ToString());
 			logMsgLn2("test dict one/IntB"      , UserSettings.Info.Data.TestDictionary3["one"].IntB.ToString());
 			logMsgLn2("test dict one/IntC"      , UserSettings.Info.Data.TestDictionary3["one"].IntC.ToString());
 
-
-			logMsgLn2("test int"                , UserSettings.Info.Data.GeneralValues.TestI.ToString());
-			logMsgLn2("test bool"               , UserSettings.Info.Data.GeneralValues.TestB.ToString());
-			logMsgLn2("test double"             , UserSettings.Info.Data.GeneralValues.TestD.ToString());
-			logMsgLn2("test string"             , UserSettings.Info.Data.GeneralValues.TestS);
-			logMsgLn2("test int[0]"             , UserSettings.Info.Data.GeneralValues.TestIs[0].ToString());
-			logMsgLn2("test int[1]"             , UserSettings.Info.Data.GeneralValues.TestIs[1].ToString());
-			logMsgLn2("test str[0]"             , UserSettings.Info.Data.GeneralValues.TestSs[0]);
-			logMsgLn2("test str[1]"             , UserSettings.Info.Data.GeneralValues.TestSs[1]);
-			logMsgLn2("test str[2]"             , UserSettings.Info.Data.GeneralValues.TestSs[2]);
-			logMsgLn2("win height"              , UserSettings.Info.Data.MainWindow.Height.ToString());
-			logMsgLn2("win width"               , UserSettings.Info.Data.MainWindow.Width.ToString());
-			logMsgLn2("uncat value"             , UserSettings.Info.Data.UnCategorizedValue.ToString());
+			logMsgLn2("test int"                , UserSettings.Data.GeneralValues.TestI.ToString());
+			logMsgLn2("test bool"               , UserSettings.Data.GeneralValues.TestB.ToString());
+			logMsgLn2("test double"             , UserSettings.Data.GeneralValues.TestD.ToString());
+			logMsgLn2("test string"             , UserSettings.Data.GeneralValues.TestS);
+			logMsgLn2("test int[0]"             , UserSettings.Data.GeneralValues.TestIs[0].ToString());
+			logMsgLn2("test int[1]"             , UserSettings.Data.GeneralValues.TestIs[1].ToString());
+			logMsgLn2("test str[0]"             , UserSettings.Data.GeneralValues.TestSs[0]);
+			logMsgLn2("test str[1]"             , UserSettings.Data.GeneralValues.TestSs[1]);
+			logMsgLn2("test str[2]"             , UserSettings.Data.GeneralValues.TestSs[2]);
+			logMsgLn2("win height"              , UserSettings.Data.MainWindow.Height.ToString());
+			logMsgLn2("win width"               , UserSettings.Data.MainWindow.Width.ToString());
+			logMsgLn2("uncat value"             , UserSettings.Data.UnCategorizedValue.ToString());
 
 			logMsgLn2();
 		}
@@ -284,10 +293,10 @@ namespace SettingsManagerV30
 		private void ProcessAppSettings(bool modify)
 		{
 			logMsg2(nl);
-			logMsgLn2("app path",AppSettings.Admin.SettingsPathAndFile);
+			logMsgLn2("app path",AppSettings.Info.SettingPathAndFile);
 			logMsgLn2("app before");
 
-			if (AppSettings.Exists)
+			if (AppSettings.Admin.Exists)
 			{
 				AppSettings.Admin.Read();
 
@@ -311,14 +320,17 @@ namespace SettingsManagerV30
 
 		private void DisplayAppSettingData()
 		{
-			logMsgLn2("system version"          , AppSettings.Admin.Info.Header.SystemVersion);
+			logMsgLn2("system version"          , AppSettings.Info.Header.SystemVersion);
 			logMsgLn2("status"                  , AppSettings.Admin.Status);
-			logMsgLn2("file name"               , AppSettings.Admin.SettingsPathAndFile);
-			logMsgLn2("file version (in file)"  , AppSettings.Admin.GetVersionOfFile() ?? "does not exist");
-			logMsgLn2("class version (in memory)", AppSettings.Info.ClassVersion);
-			logMsgLn2("save date time"          , AppSettings.Admin.SaveDateTime);
-			logMsgLn2("assembly version"        , AppSettings.Admin.AssemblyVersion);
-			logMsgLn2("file notes"              , AppSettings.Admin.SettingFileNotes);
+			logMsgLn2("path and file"           , AppSettings.Info.SettingPathAndFile);
+			logMsgLn2("path"                    , AppSettings.Info.SettingPath);
+			logMsgLn2("root path"               , AppSettings.Info.SettingPath);
+			logMsgLn2("file name"               , AppSettings.Info.FileName);
+			logMsgLn2("file version (from file)" ,AppSettings.Info.ClassVersionFromFile ?? "does not exist");
+			logMsgLn2("class version (in memory)",AppSettings.Info.ClassVersion);
+			logMsgLn2("save date time"          , AppSettings.Info.Header.SaveDateTime);
+			logMsgLn2("assembly version"        , AppSettings.Info.Header.AssemblyVersion);
+			logMsgLn2("file notes"              , AppSettings.Info.Header.Notes);
 			logMsg2(nl);
 			logMsgLn2("test string"             , AppSettings.Data.AppS);
 			logMsgLn2("test bool"               , AppSettings.Data.AppB.ToString());
