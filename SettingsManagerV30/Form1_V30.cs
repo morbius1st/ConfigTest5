@@ -55,29 +55,6 @@ namespace SettingsManagerV30
 
 		private void Upgrade(int which)
 		{
-			if (which == 1 || which == 3)
-			{
-				if (UserSettings.Admin.Exists)
-				{
-					ReplaceTestFileUser();
-
-					TestUs();
-
-					UserSettingUpgrade uSup = new UserSettingUpgrade();
-
-					List<SettingBase> Us = uSup.su.SetgClasses;
-
-					uSup.Upgrade();
-				}
-				else
-				{
-					logMsg2(nl);
-					logMsgLn2("SetttingsUser", "saving setting file");
-					logMsg2(nl);
-
-					UserSettings.Admin.Save();
-				}
-			}
 
 			if (which == 2 || which == 3)
 			{
@@ -96,11 +73,89 @@ namespace SettingsManagerV30
 				else
 				{
 					logMsg2(nl);
-					logMsgLn2("SetttingsApp", "saving setting file");
+					logMsgLn2("SetttingsApp", "created");
 					logMsg2(nl);
 
 					AppSettings.Admin.Save();
 				}
+			}
+
+			if (which == 1 || which == 3)
+			{
+				if (UserSettings.Admin.Exists)
+				{
+					ReplaceTestFileUser();
+
+					TestUs();
+
+					UserSettingUpgrade uSup = new UserSettingUpgrade();
+
+					List<SettingBase> Us = uSup.su.SetgClasses;
+
+					uSup.Upgrade();
+				}
+				else
+				{
+					logMsg2(nl);
+					logMsgLn2("SetttingsUser", "created");
+					logMsg2(nl);
+
+					UserSettings.Admin.Save();
+				}
+			}
+		}
+
+
+		private void ProcessAppSettings(bool modify)
+		{
+			logMsg2(nl);
+			logMsgLn2("app path",AppSettings.Info.SettingPathAndFile);
+			logMsgLn2("app before");
+
+			if (AppSettings.Admin.Exists)
+			{
+				AppSettings.Admin.Read();
+
+				DisplayAppSettingData();
+
+				if (modify)
+				{
+					ModifyAndSaveAppSettings();
+
+					logMsgLn2(nl + "app after");
+					DisplayAppSettingData();
+				}
+			}
+			else
+			{
+				logMsgLn2("app setting file", "does not exist");
+			}
+
+//			ResetAndSaveAppSettings();
+		}
+
+		private void ProcessUserSettings(bool modify)
+		{
+			logMsgLn2(nl);
+			logMsgLn2("user path", UserSettings.Info.SettingPathAndFile);
+			logMsgLn2("user before");
+
+			if (UserSettings.Admin.Exists)
+			{
+				UserSettings.Admin.Read();
+				DisplayUserSettingData();
+
+				if (modify)
+				{
+					ModifyAndSaveUserSettings();
+
+					logMsgLn2(nl + "user after");
+					DisplayUserSettingData();
+				}
+			}
+			else
+			{
+				logMsgLn2("user setting file", "does not exist");
 			}
 		}
 
@@ -201,31 +256,6 @@ namespace SettingsManagerV30
 
 		private const int V = 40;
 
-		private void ProcessUserSettings(bool modify)
-		{
-			logMsgLn2(nl);
-			logMsgLn2("user path", UserSettings.Info.SettingPathAndFile);
-			logMsgLn2("user before");
-
-			if (UserSettings.Admin.Exists)
-			{
-				UserSettings.Admin.Read();
-				DisplayUserSettingData();
-
-				if (modify)
-				{
-					ModifyAndSaveUserSettings();
-
-					logMsgLn2(nl + "user after");
-					DisplayUserSettingData();
-				}
-			}
-			else
-			{
-				logMsgLn2("user setting file", "does not exist");
-			}
-		}
-
 		private void ResetUserSettings()
 		{
 			UserSettings.Admin.Reset();
@@ -289,34 +319,6 @@ namespace SettingsManagerV30
 			logMsgLn2();
 		}
 
-
-		private void ProcessAppSettings(bool modify)
-		{
-			logMsg2(nl);
-			logMsgLn2("app path",AppSettings.Info.SettingPathAndFile);
-			logMsgLn2("app before");
-
-			if (AppSettings.Admin.Exists)
-			{
-				AppSettings.Admin.Read();
-
-				DisplayAppSettingData();
-
-				if (modify)
-				{
-					ModifyAndSaveAppSettings();
-
-					logMsgLn2(nl + "app after");
-					DisplayAppSettingData();
-				}
-			}
-			else
-			{
-				logMsgLn2("app setting file", "does not exist");
-			}
-
-//			ResetAndSaveAppSettings();
-		}
 
 		private void DisplayAppSettingData()
 		{

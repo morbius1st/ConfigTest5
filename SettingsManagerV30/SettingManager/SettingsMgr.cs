@@ -241,7 +241,11 @@ namespace SettingManager
 			using (XmlWriter w = XmlWriter.Create(SettingPathAndFile, xmlSettings))
 			{
 				ds.WriteObject(w, Info);
+
+				w.Close();
 			}
+
+			SetFileStatus();
 
 			// since file and memory match
 			Status = SAVED;
@@ -280,8 +284,6 @@ namespace SettingManager
 			{
 				SetClassVersionFromFile();
 				SetSystemVersionFromFile();
-
-
 
 				if (!Info.ClassVersionsMatch())
 				{
@@ -452,6 +454,90 @@ namespace SettingManager
 
 		public abstract void Upgrade(SettingBase prior);
 	}
+
+	[DataContract]
+	// define file type specific information: User
+	public abstract class UsrSettingBase : SettingBase
+	{
+		private static string _classVersionFromFile;
+		private static string _systemVersionFromFile;
+
+		private static readonly string _FileName = @"user" + SettingBase.SETTINGFILEBASE;
+		private static readonly string _RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+		private static readonly string[] _SubFolders =
+		{
+			CsUtilities.CompanyName,
+			CsUtilities.AssemblyName
+		};
+
+		public override string   FileName   => _FileName;
+		public override string   RootPath   => _RootPath;
+		public override string[] SubFolders => _SubFolders;
+
+		public override string ClassVersionFromFile
+		{
+			get => _classVersionFromFile;
+			set => _classVersionFromFile = value;
+		}
+
+		public override string SystemVersionFromFile
+		{
+			get => _systemVersionFromFile;
+			set => _systemVersionFromFile = value;
+		}
+
+		public override bool ClassVersionsMatch()
+		{
+			return Header.ClassVersion.Equals(_classVersionFromFile);
+		}
+
+		public override Heading.SettingFileType FileType => Heading.SettingFileType.USER;
+	}
+
+	[DataContract]
+	// define file type specific information: App
+	public abstract class AppSettingBase : SettingBase
+	{
+		private static string _classVersionFromFile;
+		private static string _systemVersionFromFile;
+
+		private static readonly string _FileName = CsUtilities.AssemblyName + SettingBase.SETTINGFILEBASE;
+		private static readonly string _RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+		private static readonly string[] _SubFolders =
+		{
+			CsUtilities.CompanyName,
+			CsUtilities.AssemblyName,
+			"AppSettings"
+		};
+
+		public override string   FileName   => _FileName;
+		public override string   RootPath   => _RootPath;
+		public override string[] SubFolders => _SubFolders;
+
+		public override string ClassVersionFromFile
+		{
+			get => _classVersionFromFile;
+			set => _classVersionFromFile = value;
+		}
+
+		public override string SystemVersionFromFile
+		{
+			get => _systemVersionFromFile;
+			set => _systemVersionFromFile = value;
+		}
+
+		public override bool ClassVersionsMatch()
+		{
+			return Header.ClassVersion.Equals(_classVersionFromFile);
+		}
+
+		public override Heading.SettingFileType FileType => Heading.SettingFileType.APP;
+	}
+
+
+
 
 	#endregion
 
