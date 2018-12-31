@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Text;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using SettingManager;
@@ -26,38 +28,13 @@ namespace SettingsManagerV30
 			MessageUtilities.OutLocation = MessageUtilities.OutputLocation.TEXT_BOX;
 			MessageUtilities.RichTxtBox = rtbMessasge;
 
+			Upgrade(3);
 
-			if (UserSettings.Exists)
-			{
-				UserSettingUpgrade uSup = new UserSettingUpgrade();
+//			InitAp();
 
-				List<SettingBase> Us = uSup.su.SetgClasses;
+//			InitUs();
 
-				uSup.Upgrade();
-			}
-			else
-			{
-				UserSettings.Admin.Save();
-			}
-
-			if (AppSettings.Exists)
-			{
-				AppSettingUpgrade aSup = new AppSettingUpgrade();
-
-				List<SettingBase> As = aSup.su.SetgClasses;
-
-				aSup.Upgrade();
-			}
-			else
-			{
-				AppSettings.Admin.Save();
-			}
-
-			InitAp();
-
-			InitUs();
-
-			//			Test1();
+			
 		}
 
 		private void button1_Click(object sender, EventArgs e)
@@ -76,6 +53,113 @@ namespace SettingsManagerV30
 			}
 		}
 
+		private void Upgrade(int which)
+		{
+			if (which == 1 || which == 3)
+			{
+				if (UserSettings.Exists)
+				{
+//					SettingsMgr<UserSettingInfo22> x =
+//						UserSettings.Admin;
+
+					ReplaceTestFileUser();
+
+					TestUs();
+
+					UserSettingUpgrade uSup = new UserSettingUpgrade();
+
+					List<SettingBase> Us = uSup.su.SetgClasses;
+
+					uSup.Upgrade();
+				}
+				else
+				{
+					UserSettings.Admin.Save();
+				}
+			}
+
+			if (which == 2 || which == 3)
+			{
+				if (AppSettings.Exists)
+				{
+					ReplaceTestFileApp();
+
+					TestAp();
+
+					AppSettingUpgrade aSup = new AppSettingUpgrade();
+
+					List<SettingBase> As = aSup.su.SetgClasses;
+
+					aSup.Upgrade();
+				}
+				else
+				{
+					AppSettings.Admin.Save();
+				}
+			}
+		}
+
+		private void ReplaceTestFileUser()
+		{
+			string testFileName =
+				UserSettings.Admin.Info.SettingsPath 
+				+ "\\" + "user.setting.xml.v20";
+
+			File.Delete(UserSettings.Admin.Info.SettingsPathAndFile);
+
+			File.Copy(testFileName, 
+				UserSettings.Admin.Info.SettingsPathAndFile);
+
+			logMsg2(nl);
+			logMsgLn2("SetttingsUser", "test file replaced");
+			logMsg2(nl);
+
+			UserSettings.Admin.SetFileExistStatus();
+		}
+
+		private void ReplaceTestFileApp()
+		{
+			string testFileName =
+				AppSettings.Admin.Info.SettingsPath 
+				+ "\\" + "SettingsManagerV30.setting.xml.v20";
+
+			File.Delete(AppSettings.Admin.Info.SettingsPathAndFile);
+
+			File.Copy(testFileName, 
+				AppSettings.Admin.Info.SettingsPathAndFile);
+
+			logMsg2(nl);
+			logMsgLn2("SetttingsApp", "test file replaced");
+			logMsg2(nl);
+
+			AppSettings.Admin.SetFileExistStatus();
+		}
+
+
+
+		private void TestUs()
+		{
+			SettingsMgr<UserSettingInfo22> admin = UserSettings.Admin;
+
+			UserSettingInfo21 x = new UserSettingInfo21();
+
+			logMsgLn2("class", "SettingsUser");
+			logMsg2(nl);
+
+		}
+
+		private void TestAp()
+		{
+			SettingsMgr<AppSettingInfo22> admin = AppSettings.Admin;
+
+			AppSettingInfo21 x = new AppSettingInfo21();
+
+			logMsgLn2("class", "SettingsApp");
+			logMsg2(nl);
+
+		}
+
+
 		private void InitUs()
 		{
 			logMsgLn2("class", "SetttingsUser");
@@ -84,7 +168,7 @@ namespace SettingsManagerV30
 			logMsgLn2("status"                  , UserSettings.Admin.Status);
 			logMsg2(nl);
 			logMsgLn2("file versions match"     , UserSettings.Admin.VersionsMatch());
-			logMsgLn2("file version (in file)"  , UserSettings.Admin.GetFileClassVersion() ?? "does not exist");
+			logMsgLn2("file version (in file)"  , UserSettings.Admin.GetVersionOfFile() ?? "does not exist");
 			logMsgLn2("file version (in memory)", UserSettings.Info.ClassVersion);
 			logMsgLn2("save date time"          , UserSettings.Admin.SaveDateTime);
 			logMsgLn2("assembly version"        , UserSettings.Admin.AssemblyVersion);
@@ -99,7 +183,7 @@ namespace SettingsManagerV30
 			logMsgLn2("status"					, AppSettings.Admin.Status);
 			logMsg2(nl);
 			logMsgLn2("file versions match"		, AppSettings.Admin.VersionsMatch());
-			logMsgLn2("file version (in file)"	, AppSettings.Admin.GetFileClassVersion() ?? "does not exist");
+			logMsgLn2("file version (in file)"	, AppSettings.Admin.GetVersionOfFile() ?? "does not exist");
 			logMsgLn2("file version (in memory)", AppSettings.Info.ClassVersion);
 			logMsgLn2("save date time"          , AppSettings.Admin.SaveDateTime);
 			logMsgLn2("assembly version"        , AppSettings.Admin.AssemblyVersion);
@@ -165,10 +249,10 @@ namespace SettingsManagerV30
 		private void DisplayUserSettingData()
 		{
 
-			logMsgLn2("system version"          , UserSettings.Admin.Info.Heading.SystemVersion);
+			logMsgLn2("system version"          , UserSettings.Admin.Info.Header.SystemVersion);
 			logMsgLn2("status"                  , UserSettings.Admin.Status);
 			logMsgLn2("file name"               , UserSettings.Admin.SettingsPathAndFile);
-			logMsgLn2("file version (in file)"  , UserSettings.Admin.GetFileClassVersion() ?? "does not exist");
+			logMsgLn2("file version (in file)"  , UserSettings.Admin.GetVersionOfFile() ?? "does not exist");
 			logMsgLn2("class version (in memory)", UserSettings.Info.ClassVersion);
 			logMsgLn2("save date time"          , UserSettings.Admin.SaveDateTime);
 			logMsgLn2("assembly version"        , UserSettings.Admin.AssemblyVersion);
@@ -227,10 +311,10 @@ namespace SettingsManagerV30
 
 		private void DisplayAppSettingData()
 		{
-			logMsgLn2("system version"          , AppSettings.Admin.Info.Heading.SystemVersion);
+			logMsgLn2("system version"          , AppSettings.Admin.Info.Header.SystemVersion);
 			logMsgLn2("status"                  , AppSettings.Admin.Status);
 			logMsgLn2("file name"               , AppSettings.Admin.SettingsPathAndFile);
-			logMsgLn2("file version (in file)"  , AppSettings.Admin.GetFileClassVersion() ?? "does not exist");
+			logMsgLn2("file version (in file)"  , AppSettings.Admin.GetVersionOfFile() ?? "does not exist");
 			logMsgLn2("class version (in memory)", AppSettings.Info.ClassVersion);
 			logMsgLn2("save date time"          , AppSettings.Admin.SaveDateTime);
 			logMsgLn2("assembly version"        , AppSettings.Admin.AssemblyVersion);

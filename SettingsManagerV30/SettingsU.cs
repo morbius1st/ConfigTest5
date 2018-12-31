@@ -1,82 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using SettingManager;
+using UtilityLibrary;
+using static UtilityLibrary.MessageUtilities2;
 
 
 namespace SettingsManagerV30
 {
-	[DataContract]
-	public abstract class SettingBase : SettingsPathFileBase, IComparable<SettingBase>
-	{
-		public abstract string ClassVersionOfFile { get; }
-		public abstract bool ClassVersionsMatch { get; }
-
-		public abstract bool IsUserSettings { get; set; }
-
-		public SettingBase()
-		{
-			Heading = new Header(ClassVersion);
-			Heading.Notes = "Created in Version " + ClassVersion;
-
-			if (IsUserSettings)
-			{
-				FileName   = UserPathAndFile.FileName;
-				RootPath   = UserPathAndFile.RootPath;
-				SubFolders = UserPathAndFile.SubFolders;
-			}
-			else
-
-			{
-				FileName   = AppPathAndFile.FileName;
-				RootPath   = AppPathAndFile.RootPath;
-				SubFolders = AppPathAndFile.SubFolders;
-			}
-		}
-
-//		protected abstract string CLASSVERSION { get; }
-
-		public int CompareTo(SettingBase other)
-		{
-			return String.Compare(ClassVersion, other.ClassVersion, StringComparison.Ordinal);
-		}
-
-//		public override string ClassVersion
-//		{
-//			get => CLASSVERSION;
-//			set { }
-//		}
-
-		public abstract void Upgrade(SettingBase prior);
-	}
-
+	// define file type specific information: User
 	[DataContract]
 	public abstract class UsrSettingBase : SettingBase
 	{
-		public override Header.SettingFileType FileType =>
-			Header.SettingFileType.USER;
+		public UsrSettingBase()
+		{
+			FileName   =@"user" + SettingBase.SETTINGFILEBASE;
+			RootPath   = 
+				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			SubFolders = new string[]
+			{
+				CsUtilities.CompanyName,
+				CsUtilities.AssemblyName
+			};
+		}
 
-		public override bool IsUserSettings { get; set; } = true;
+		public override Heading.SettingFileType FileType =>
+			Heading.SettingFileType.USER;
 
 		public override string ClassVersionOfFile => 
-			Header.ClassVersionOfFile[(int) FileType];
+			Heading.ClassVersionOfFile[(int) FileType];
 		public override bool ClassVersionsMatch => 
-			Header.ClassVersionsMatch[(int) FileType];
+			Heading.ClassVersionsMatch[(int) FileType];
 	}
 	
+	// define file type specific information: App
 	[DataContract]
 	public abstract class AppSettingBase : SettingBase
 	{
-		public override Header.SettingFileType FileType =>
-			Header.SettingFileType.APP;
-
-		public override bool IsUserSettings { get; set; } = false;
+		public AppSettingBase()
+		{
+			FileName   = 
+				CsUtilities.AssemblyName + SettingBase.SETTINGFILEBASE;
+			RootPath   = 
+				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			SubFolders = new string[]
+			{
+				CsUtilities.CompanyName,
+				CsUtilities.AssemblyName,
+				"AppSettings"
+			};
+		}
+		public override Heading.SettingFileType FileType =>
+			Heading.SettingFileType.APP;
 
 		public override string ClassVersionOfFile =>
-			Header.ClassVersionOfFile[(int) FileType];
+			Heading.ClassVersionOfFile[(int) FileType];
 		public override bool ClassVersionsMatch =>
-			Header.ClassVersionsMatch[(int) FileType];
+			Heading.ClassVersionsMatch[(int) FileType];
 	}
 
 
@@ -134,6 +114,8 @@ namespace SettingsManagerV30
 		{
 			if (!SetgClasses[0].ClassVersionsMatch)
 			{
+				logMsgLn2("upgrading", "class versions do not match - upgrade");
+
 				List<SettingBase> Us1 = SetgClasses;
 
 				SetgClasses.Sort();
@@ -142,11 +124,17 @@ namespace SettingsManagerV30
 
 				Admin.Save();
 			}
+			else
+			{
+				logMsgLn2("upgrading", "class versions do match - do nothing");
+			}
 		}
 
 		private void Process(ITest Admin)
 		{
 			List<SettingBase> Us1 = SetgClasses;
+
+			string v = SetgClasses[0].Header.VersionOfFile;
 
 			for (int i = 0; i < SetgClasses.Count; i++)
 			{
@@ -154,10 +142,15 @@ namespace SettingsManagerV30
 
 				if (j == 0)
 				{
+					logMsgLn2("upgrading", "from this version: " +
+						SetgClasses[i].ClassVersion);
 					SetgClasses[i] = Admin.Read(SetgClasses[i].GetType());
 				} 
 				else if (j > 0)
 				{
+					logMsgLn2("upgrading", "to this version: " +
+						SetgClasses[i].ClassVersion);
+
 					SetgClasses[i].Upgrade(SetgClasses[i - 1]);
 				}
 			}

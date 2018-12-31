@@ -44,15 +44,14 @@ namespace SettingsManagerV30
 		public UserSettingData21 Data = new UserSettingData21();
 
 		public override string ClassVersion => "2.1";
-		//		protected override string CLASSVERSION => "2.1";
 
 		// upgrade the prior version to this version
 		public override void Upgrade(SettingBase prior)
 		{
 			UserSettingInfo20 p = (UserSettingInfo20) prior;
 
-			Heading.Notes = 
-				p.Heading.Notes + " :: updated to v" + ClassVersion;
+			Header.Notes = 
+				p.Header.Notes + " :: updated to v" + ClassVersion;
 
 			Data.UnCategorizedValue  = p.Data.UnCategorizedValue;
 			Data.GeneralValues.TestB = p.Data.GeneralValues.TestB;

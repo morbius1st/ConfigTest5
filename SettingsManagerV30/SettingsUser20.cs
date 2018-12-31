@@ -39,7 +39,6 @@ namespace SettingsManagerV30
 		public UserSettingData20 Data = new UserSettingData20();
 
 		public override string ClassVersion => "2.0";
-		//		protected override string CLASSVERSION => "2.0";
 
 		// this is the base of the chain - this has nothing to upgrade from
 		public override void Upgrade(SettingBase prior)

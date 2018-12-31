@@ -39,8 +39,9 @@ namespace SettingsManagerV30
 			this.rtbMessasge.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.rtbMessasge.BackColor = System.Drawing.SystemColors.ControlLight;
-			this.rtbMessasge.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.rtbMessasge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.rtbMessasge.Font = new System.Drawing.Font("Droid Sans Mono", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.rtbMessasge.ForeColor = System.Drawing.Color.White;
 			this.rtbMessasge.Location = new System.Drawing.Point(0, 0);
 			this.rtbMessasge.Margin = new System.Windows.Forms.Padding(4);
 			this.rtbMessasge.Name = "rtbMessasge";

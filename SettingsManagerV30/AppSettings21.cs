@@ -38,15 +38,14 @@ namespace SettingsManagerV30
 		public AppSettingData21 Data = new AppSettingData21();
 
 		public override string ClassVersion => "2.1";
-//		protected override string CLASSVERSION { get; } = "2.1";
 
 		// upgrade from 2.0 to 2.1
 		public override void Upgrade(SettingBase prior)
 		{
 			AppSettingInfo20 p = (AppSettingInfo20) prior;
 
-			Heading.Notes =
-				p.Heading.Notes + " :: updated to v" + ClassVersion;
+			Header.Notes =
+				p.Header.Notes + " :: updated to v" + ClassVersion;
 
 			Data.AppI = p.Data.AppI;
 			Data.AppB = p.Data.AppB;
