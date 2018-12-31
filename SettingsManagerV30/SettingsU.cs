@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Text;
 using SettingManager;
 using UtilityLibrary;
 using static UtilityLibrary.MessageUtilities2;
@@ -12,51 +13,81 @@ namespace SettingsManagerV30
 	[DataContract]
 	public abstract class UsrSettingBase : SettingBase
 	{
-		public UsrSettingBase()
+		private static string classVersionFromFile;
+		private static string systemVersionFromFile;
+
+		private static readonly string _FileName = @"user" + SettingBase.SETTINGFILEBASE;
+		private static readonly string _RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+		private static readonly string[] _SubFolders =
 		{
-			FileName   =@"user" + SettingBase.SETTINGFILEBASE;
-			RootPath   = 
-				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			SubFolders = new string[]
-			{
-				CsUtilities.CompanyName,
-				CsUtilities.AssemblyName
-			};
+			CsUtilities.CompanyName,
+			CsUtilities.AssemblyName
+		};
+
+		public override string FileName => _FileName;
+		public override string RootPath => _RootPath;
+		public override string[] SubFolders => _SubFolders;
+
+		public override string ClassVersionFromFile
+		{
+			get => classVersionFromFile; 
+			set => classVersionFromFile = value;
+		}
+		
+		public override string SystemVersionFromFile
+		{
+			get => systemVersionFromFile; 
+			set => systemVersionFromFile = value;
+		}
+
+		public override bool ClassVersionsMatch()
+		{
+			return Header.ClassVersion.Equals(classVersionFromFile);
 		}
 
 		public override Heading.SettingFileType FileType =>
 			Heading.SettingFileType.USER;
-
-		public override string ClassVersionOfFile => 
-			Heading.ClassVersionOfFile[(int) FileType];
-		public override bool ClassVersionsMatch => 
-			Heading.ClassVersionsMatch[(int) FileType];
 	}
 	
 	// define file type specific information: App
 	[DataContract]
 	public abstract class AppSettingBase : SettingBase
 	{
-		public AppSettingBase()
+		private static string classVersionFromFile;
+		private static string systemVersionFromFile;
+
+		private static readonly string _FileName = CsUtilities.AssemblyName + SettingBase.SETTINGFILEBASE;
+		private static readonly string _RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+		private static readonly string[] _SubFolders =
 		{
-			FileName   = 
-				CsUtilities.AssemblyName + SettingBase.SETTINGFILEBASE;
-			RootPath   = 
-				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			SubFolders = new string[]
-			{
-				CsUtilities.CompanyName,
-				CsUtilities.AssemblyName,
-				"AppSettings"
-			};
+			CsUtilities.CompanyName,
+			CsUtilities.AssemblyName,
+			"AppSettings"
+		};
+
+		public override string FileName => _FileName;
+		public override string RootPath => _RootPath;
+		public override string[] SubFolders => _SubFolders;
+
+		public override string ClassVersionFromFile
+		{
+			get => classVersionFromFile; 
+			set => classVersionFromFile = value;
 		}
+		
+		public override string SystemVersionFromFile
+		{
+			get => systemVersionFromFile; 
+			set => systemVersionFromFile = value;
+		}
+
+		public override bool ClassVersionsMatch()
+		{
+			return Header.ClassVersion.Equals(classVersionFromFile);
+		}
+
 		public override Heading.SettingFileType FileType =>
 			Heading.SettingFileType.APP;
-
-		public override string ClassVersionOfFile =>
-			Heading.ClassVersionOfFile[(int) FileType];
-		public override bool ClassVersionsMatch =>
-			Heading.ClassVersionsMatch[(int) FileType];
 	}
 
 
@@ -112,7 +143,7 @@ namespace SettingsManagerV30
 
 		public void Upgrade()
 		{
-			if (!SetgClasses[0].ClassVersionsMatch)
+			if (!SetgClasses[0].ClassVersionsMatch())
 			{
 				logMsgLn2("upgrading", "class versions do not match - upgrade");
 
@@ -134,11 +165,12 @@ namespace SettingsManagerV30
 		{
 			List<SettingBase> Us1 = SetgClasses;
 
-			string v = SetgClasses[0].Header.VersionOfFile;
+			string v = SetgClasses[0].ClassVersionFromFile;
 
 			for (int i = 0; i < SetgClasses.Count; i++)
 			{
-				int j = String.Compare(SetgClasses[i].ClassVersion, SetgClasses[0].ClassVersionOfFile, StringComparison.Ordinal);
+				int j = String.Compare(SetgClasses[i].ClassVersion, 
+					SetgClasses[i].ClassVersionFromFile, StringComparison.Ordinal);
 
 				if (j == 0)
 				{

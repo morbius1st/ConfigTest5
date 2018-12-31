@@ -15,8 +15,8 @@ namespace SettingsManagerV30
 		public static AppSettingInfo22 Info { get; private set; }
 		public static AppSettingData22 Data { get; private set; }
 
-		public static SettingMgrStatus Status => Admin.Status;
-		public static bool Exists => Admin.Exists;
+//		public static SettingMgrStatus Status => Admin.Status;
+//		public static bool Exists => Admin.Exists;
 
 		// initalize and create the setting objects
 		static AppSettings()
