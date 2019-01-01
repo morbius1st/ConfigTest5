@@ -62,6 +62,9 @@ namespace SettingsManagerV30
 
 			if (which == 2 || which == 3)
 			{
+				logMsg2(nl);
+				logMsgLn2("SetttingsApp", "process");
+
 				if (!AppSettings.Admin.Exists)
 				{
 					logMsg2(nl);
@@ -71,7 +74,6 @@ namespace SettingsManagerV30
 				}
 				else
 				{
-
 					if (AppSettings.Admin.Status != SettingMgrStatus.VERSIONMISMATCH)
 					{
 						ReplaceTestFileApp2();
@@ -90,6 +92,8 @@ namespace SettingsManagerV30
 
 			if (which == 1 || which == 3)
 			{
+				logMsg2(nl);
+				logMsgLn2("SetttingsApp", "process");
 
 				if (!UserSettings.Admin.Exists)
 				{
