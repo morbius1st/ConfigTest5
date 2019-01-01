@@ -55,7 +55,7 @@ namespace SettingsManagerV30
 			// to the current data structure
 //			Info = Admin.Info;
 
-			Admin = new SettingsMgr<UserSettingInfo22>(ResetData);
+//			Admin = new SettingsMgr<UserSettingInfo22>(ResetData);
 			Info  = Admin.Info;
 			Data  = Info.Data;
 
@@ -63,18 +63,18 @@ namespace SettingsManagerV30
 			logMsgLn2("at UserSettings reset", "status| " + Admin.Status);
 		}
 
-		public static List<SettingBase> Upgrade(SettingBase me)
-		{
-			logMsgLn2();
-			logMsgLn2("at UserSettingInfo22", "upgrade");
-
-			List<SettingBase> settings = new List<SettingBase>();
-			settings.Add(me);
-			settings.Add(new UserSettingInfo21());
-			settings.Add(new UserSettingInfo20());
-
-			return settings;
-		}
+//		public static List<SettingBase> Upgrade(SettingBase me)
+//		{
+//			logMsgLn2();
+//			logMsgLn2("at UserSettingInfo22", "upgrade");
+//
+//			List<SettingBase> settings = new List<SettingBase>();
+//			settings.Add(me);
+//			settings.Add(new UserSettingInfo21());
+//			settings.Add(new UserSettingInfo20());
+//
+//			return settings;
+//		}
 	}
 
 

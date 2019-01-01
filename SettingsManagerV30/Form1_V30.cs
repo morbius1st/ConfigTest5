@@ -62,8 +62,25 @@ namespace SettingsManagerV30
 
 			if (which == 2 || which == 3)
 			{
-				ReplaceTestFileApp2();
-				AppSettings.Admin.Reset();
+				if (!AppSettings.Admin.Exists)
+				{
+					logMsg2(nl);
+					logMsgLn2("SetttingsApp", "created");
+
+					AppSettings.Admin.Save();
+				}
+				else
+				{
+
+					if (AppSettings.Admin.Status != SettingMgrStatus.VERSIONMISMATCH)
+					{
+						ReplaceTestFileApp2();
+						AppSettings.Admin.Read();
+//						AppSettings.Admin.Reset();
+					}
+				}
+
+
 				AppSettings.Admin.SetFileStatus();
 
 				logMsgLn2();
@@ -73,8 +90,26 @@ namespace SettingsManagerV30
 
 			if (which == 1 || which == 3)
 			{
-				ReplaceTestFileUser2();
-				UserSettings.Admin.Reset();
+
+				if (!UserSettings.Admin.Exists)
+				{
+					logMsg2(nl);
+					logMsgLn2("SetttingsApp", "created");
+
+					UserSettings.Admin.Save();
+				}
+				else
+				{
+
+					if (UserSettings.Admin.Status != SettingMgrStatus.VERSIONMISMATCH)
+					{
+						ReplaceTestFileUser2();
+						UserSettings.Admin.Read();
+//						UserSettings.Admin.Reset();
+					}
+				}
+
+
 				UserSettings.Admin.SetFileStatus();
 
 				logMsgLn2();

@@ -141,29 +141,32 @@ namespace SettingManager
 //					Save();
 //				}
 
-				List<SettingBase> settings = null;
-
-				switch (Info.FileType)
+				if (Status == VERSIONMISMATCH)
 				{
-				case Heading.SettingFileType.APP:
-					{
-						settings =
-							GetMatchingClasses<AppSettingBase>();
-						break;
-					}
-				case Heading.SettingFileType.USER:
-					{
-						settings =
-							GetMatchingClasses<UserSettingBase>();
-						break;
-					}
-				}
+					List<SettingBase> settings = null;
 
-				if (settings != null)
-				{
-					Upgrade(settings);
+					switch (Info.FileType)
+					{
+					case Heading.SettingFileType.APP:
+						{
+							settings =
+								GetMatchingClasses<AppSettingBase>();
+							break;
+						}
+					case Heading.SettingFileType.USER:
+						{
+							settings =
+								GetMatchingClasses<UserSettingBase>();
+							break;
+						}
+					}
 
-					Save();
+					if (settings != null)
+					{
+						Upgrade(settings);
+
+						Save();
+					}
 				}
 
 			}
@@ -308,7 +311,7 @@ namespace SettingManager
 			{
 				ds.WriteObject(w, Info);
 
-				w.Close();
+//				w.Close();
 			}
 
 			SetFileStatus();

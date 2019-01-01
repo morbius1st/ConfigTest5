@@ -68,7 +68,7 @@ namespace SettingsManagerV30
 		{
 //			Info = Admin.Info;
 
-			Admin = new SettingsMgr<AppSettingInfo22>(ResetClass);
+//			Admin = new SettingsMgr<AppSettingInfo22>(ResetClass);
 			Info = Admin.Info;
 			Data = Info.Data;
 
@@ -76,18 +76,18 @@ namespace SettingsManagerV30
 			logMsgLn2("at AppSettings reset", "status| " + Admin.Status);
 		}
 
-		public static List<SettingBase> Upgrade(SettingBase me)
-		{
-			logMsgLn2();
-			logMsgLn2("at AppSettingInfo22", "upgrade");
-
-			List<SettingBase> settings = new List<SettingBase>();
-			settings.Add(me);
-			settings.Add(new AppSettingInfo21());
-			settings.Add(new AppSettingInfo20());
-
-			return settings;
-		}
+//		public static List<SettingBase> Upgrade(SettingBase me)
+//		{
+//			logMsgLn2();
+//			logMsgLn2("at AppSettingInfo22", "upgrade");
+//
+//			List<SettingBase> settings = new List<SettingBase>();
+//			settings.Add(me);
+//			settings.Add(new AppSettingInfo21());
+//			settings.Add(new AppSettingInfo20());
+//
+//			return settings;
+//		}
 
 	}
 
