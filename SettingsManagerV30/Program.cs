@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 
+using static UtilityLibrary.MessageUtilities2;
+
 namespace SettingsManagerV30
 {
 	static class Program
@@ -18,7 +20,7 @@ namespace SettingsManagerV30
 			Application.SetCompatibleTextRenderingDefault(false);
 
 			// run and test
-			Application.Run(new Form1_V30());
+			Application.Run( new Form1_V30());
 		}
 	}
 }

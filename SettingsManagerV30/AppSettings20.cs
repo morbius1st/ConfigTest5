@@ -1,5 +1,8 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 using SettingManager;
+
+using static UtilityLibrary.MessageUtilities2;
 
 namespace SettingsManagerV30
 {
@@ -35,8 +38,13 @@ namespace SettingsManagerV30
 
 		public override string ClassVersion => "2.0";
 
+		public List<AppSettingBase> GetUpgradeList<AppSettingBase>()
+		{
+			return null;
+		}
+
 		// upgrade from pre 2.0 to 2.0 - n/a
-		public override void Upgrade(SettingBase prior)
+		public override void UpgradeFromPrior(SettingBase prior)
 		{
 		}
 	}

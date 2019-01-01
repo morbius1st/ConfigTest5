@@ -2,6 +2,8 @@
 using System.Runtime.Serialization;
 using SettingManager;
 
+using static UtilityLibrary.MessageUtilities2;
+
 // projname: SettingsManagerV30
 // itemname: UserSettingInfo21
 // username: jeffs
@@ -38,15 +40,20 @@ namespace SettingsManagerV30
 	}
 
 	[DataContract(Name = "UserSettingInfo21")]
-	public class UserSettingInfo21 : UsrSettingBase
+	public class UserSettingInfo21 : UserSettingBase
 	{
 		[DataMember]
 		public UserSettingData21 Data = new UserSettingData21();
 
 		public override string ClassVersion => "2.1";
 
+		public List<SettingBase> GetUpgradeList()
+		{
+			return null;
+		}
+
 		// upgrade the prior version to this version
-		public override void Upgrade(SettingBase prior)
+		public override void UpgradeFromPrior(SettingBase prior)
 		{
 			UserSettingInfo20 p = (UserSettingInfo20) prior;
 

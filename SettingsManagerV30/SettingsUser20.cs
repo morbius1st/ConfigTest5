@@ -1,5 +1,8 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 using SettingManager;
+
+using static UtilityLibrary.MessageUtilities2;
 
 // projname: SettingsManagerV30
 // itemname: UserSettingInfo20
@@ -33,15 +36,20 @@ namespace SettingsManagerV30
 	}
 
 	[DataContract(Name = "UserSettingInfo20")]
-	public class UserSettingInfo20 : UsrSettingBase
+	public class UserSettingInfo20 : UserSettingBase
 	{
 		[DataMember]
 		public UserSettingData20 Data = new UserSettingData20();
 
 		public override string ClassVersion => "2.0";
 
+		public List<SettingBase> GetUpgradeList()
+		{
+			return null;
+		}
+
 		// this is the base of the chain - this has nothing to upgrade from
-		public override void Upgrade(SettingBase prior)
+		public override void UpgradeFromPrior(SettingBase prior)
 		{
 		}
 	}

@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 using SettingManager;
+
+using static UtilityLibrary.MessageUtilities2;
 
 // projname: SettingsManagerV30
 // itemname: UserSettingInfo22
@@ -40,13 +43,37 @@ namespace SettingsManagerV30
 			Admin = new SettingsMgr<UserSettingInfo22>(ResetData);
 			Info = Admin.Info;
 			Data = Info.Data;
+
+			logMsgLn2();
+			logMsgLn2("at ctor UserSettings", "status| " + Admin.Status);
+
 		}
 
 		public static void ResetData()
 		{
 			// this makes sure the above static class points
 			// to the current data structure
-			Info = Admin.Info;
+//			Info = Admin.Info;
+
+			Admin = new SettingsMgr<UserSettingInfo22>(ResetData);
+			Info  = Admin.Info;
+			Data  = Info.Data;
+
+			logMsgLn2();
+			logMsgLn2("at UserSettings reset", "status| " + Admin.Status);
+		}
+
+		public static List<SettingBase> Upgrade(SettingBase me)
+		{
+			logMsgLn2();
+			logMsgLn2("at UserSettingInfo22", "upgrade");
+
+			List<SettingBase> settings = new List<SettingBase>();
+			settings.Add(me);
+			settings.Add(new UserSettingInfo21());
+			settings.Add(new UserSettingInfo20());
+
+			return settings;
 		}
 	}
 
@@ -83,15 +110,75 @@ namespace SettingsManagerV30
 			};
 	}
 
+
+	// sample sub-class of dictionary to provide names to elements
+	[CollectionDataContract(Name = "CustomDict", KeyName = "key", ValueName = "data", ItemName = "row")]
+	public class CustDict<T1, T2> : Dictionary<T1, T2>
+	{
+	}
+
+	// sample struct / data
+	public struct TestStruct
+	{
+		[DataMember(Name = "line1")]
+		public int IntA;
+
+		[DataMember(Name = "line2")]
+		public int IntB;
+
+		[DataMember(Name = "line3")]
+		public int IntC;
+
+		public TestStruct(int a,
+			int b,
+			int c)
+		{
+			IntA = a;
+			IntB = b;
+			IntC = c;
+		}
+	}
+
+	// sample class / data
+	public class GeneralValues
+	{
+		public int      TestI  = 0;
+		public bool     TestB  = false;
+		public double   TestD  = 0.0;
+		public string   TestS  = "this is a test";
+		public int[]    TestIs = new[] { 20, 30 };
+		public string[] TestSs = new[] { "user 1", "user 2", "user 3" };
+	}
+
+	// sample class / data
+	public class Window1
+	{
+		public int Height = 50;
+		public int Width  = 100;
+	}
+
+
 	[DataContract(Name = "UserSettingInfo22")]
-	public class UserSettingInfo22 : UsrSettingBase
+	public class UserSettingInfo22 : UserSettingBase
 	{
 		[DataMember]
 		public UserSettingData22 Data = new UserSettingData22();
 
 		public override string ClassVersion => "2.2";
 
-		public override void Upgrade(SettingBase prior)
+		public List<UserSettingBase> UpgradeList(UserSettingBase me)
+		{
+			logMsgLn2();
+			logMsgLn2("at UserSettingInfo22", "upgrading");
+
+			List<UserSettingBase> settings = new List<UserSettingBase>();
+			settings.Add(new UserSettingInfo22());
+			settings.Add(new UserSettingInfo21());
+			settings.Add(new UserSettingInfo20());
+
+			return settings;
+		}
+		public override void UpgradeFromPrior(SettingBase prior)
 		{
 			UserSettingInfo21 p = (UserSettingInfo21) prior;
 
@@ -124,51 +211,7 @@ namespace SettingsManagerV30
 				}
 			}
 		}
-	}
 
-	// sample sub-class of dictionary to provide names to elements
-	[CollectionDataContract(Name = "CustomDict", KeyName = "key", ValueName = "data", ItemName = "row")]
-	public class CustDict<T1, T2> : Dictionary<T1, T2>
-	{
-	}
-	// sample struct / data
-	public struct TestStruct
-	{
-		[DataMember(Name = "line1")]
-		public int IntA;
-
-		[DataMember(Name = "line2")]
-		public int IntB;
-
-		[DataMember(Name = "line3")]
-		public int IntC;
-
-		public TestStruct(int a,
-			int b,
-			int c)
-		{
-			IntA = a;
-			IntB = b;
-			IntC = c;
-		}
-	}
-
-	// sample class / data
-	public class GeneralValues
-	{
-		public int TestI = 0;
-		public bool TestB = false;
-		public double TestD = 0.0;
-		public string TestS = "this is a test";
-		public int[] TestIs = new[] { 20, 30 };
-		public string[] TestSs = new[] { "user 1", "user 2", "user 3" };
-	}
-
-	// sample class / data
-	public class Window1
-	{
-		public int Height = 50;
-		public int Width = 100;
 	}
 
 }

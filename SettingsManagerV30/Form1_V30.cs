@@ -4,6 +4,7 @@ using System.Drawing.Text;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Input;
 using SettingManager;
 using UtilityLibrary;
 using static UtilityLibrary.MessageUtilities2;
@@ -26,15 +27,17 @@ namespace SettingsManagerV30
 			rtbMessasge.Select(0,0);
 
 			MessageUtilities.OutLocation = MessageUtilities.OutputLocation.TEXT_BOX;
+//			MessageUtilities.OutLocation = MessageUtilities.OutputLocation.DEBUG;
 			MessageUtilities.RichTxtBox = rtbMessasge;
 
-			Upgrade(3);
+		}
 
-//			InitAp();
+		private void button2_Click(object sender,
+			EventArgs e)
+		{
+			Status(3);
 
-//			InitUs();
-
-			
+//			Upgrade(3);
 		}
 
 		private void button1_Click(object sender, EventArgs e)
@@ -50,6 +53,32 @@ namespace SettingsManagerV30
 				logMsgLn2(nl + "EXCEPTION" + nl);
 				logMsgLn2(ex.Message + nl);
 				logMsgLn2(ex.InnerException + nl);
+			}
+		}
+
+		public void Status(int which)
+		{
+			logMsgLn2("at \"status\"");
+
+			if (which == 2 || which == 3)
+			{
+				ReplaceTestFileApp2();
+				AppSettings.Admin.Reset();
+				AppSettings.Admin.SetFileStatus();
+
+				logMsgLn2();
+				logMsgLn2("at form", "status: " + AppSettings.Admin.Status);
+
+			}
+
+			if (which == 1 || which == 3)
+			{
+				ReplaceTestFileUser2();
+				UserSettings.Admin.Reset();
+				UserSettings.Admin.SetFileStatus();
+
+				logMsgLn2();
+				logMsgLn2("at form", "status: " + UserSettings.Admin.Status);
 			}
 		}
 
@@ -161,38 +190,47 @@ namespace SettingsManagerV30
 
 		private void ReplaceTestFileUser()
 		{
-			string testFileName =
-				UserSettings.Admin.Info.SettingPath 
-				+ "\\" + "user.setting.xml.v20";
-
-			File.Delete(UserSettings.Admin.Info.SettingPathAndFile);
-
-			File.Copy(testFileName, 
-				UserSettings.Admin.Info.SettingPathAndFile);
-
-			logMsg2(nl);
-			logMsgLn2("SetttingsUser", "test file replaced");
-			logMsg2(nl);
+			ReplaceTestFileUser2();
 
 			UserSettings.Admin.SetFileStatus();
 		}
 
+		// hard pathed to insure SettingMgr is not created now
+		private void ReplaceTestFileUser2()
+		{
+			string path = @"C:\Users\jeffs\AppData\Roaming\CyberStudio\SettingsManagerV30";
+			string pathAndFile = path + @"\user.setting.xml";
+
+			string testFileName = path + @"\user.setting.xml.v20";
+
+			File.Delete(pathAndFile);
+
+			File.Copy(testFileName, pathAndFile);
+
+			logMsg2(nl);
+			logMsgLn2("SetttingsUser", "test file replaced");
+		}
+
 		private void ReplaceTestFileApp()
 		{
-			string testFileName =
-				AppSettings.Admin.Info.SettingPath 
-				+ "\\" + "SettingsManagerV30.setting.xml.v20";
+			ReplaceTestFileApp2();
+			AppSettings.Admin.SetFileStatus();
+		}
 
-			File.Delete(AppSettings.Admin.Info.SettingPathAndFile);
+		// hard pathed to insure SettingMgr is not created now
+		private void ReplaceTestFileApp2()
+		{
+			string path        = @"C:\Users\jeffs\AppData\Roaming\CyberStudio\SettingsManagerV30\AppSettings";
+			string pathAndFile = path + @"\SettingsManagerV30.setting.xml";
 
-			File.Copy(testFileName, 
-				AppSettings.Admin.Info.SettingPathAndFile);
+			string testFileName = path + @"\SettingsManagerV30.setting.xml.v20";
+
+			File.Delete(pathAndFile);
+
+			File.Copy(testFileName, pathAndFile);
 
 			logMsg2(nl);
 			logMsgLn2("SetttingsApp", "test file replaced");
-			logMsg2(nl);
-
-			AppSettings.Admin.SetFileStatus();
 		}
 
 
@@ -229,7 +267,7 @@ namespace SettingsManagerV30
 			logMsgLn2("path"                    , UserSettings.Info.SettingPathAndFile);
 			logMsgLn2("status"                  , UserSettings.Admin.Status);
 			logMsg2(nl);
-			logMsgLn2("file versions match"     , UserSettings.Admin.Info.ClassVersionsMatch());
+			logMsgLn2("file versions match"     , UserSettings.Admin.Info.ClassVersionsMatch);
 			logMsgLn2("file version (from file)", UserSettings.Admin.Info.ClassVersionFromFile?? "does not exist");
 			logMsgLn2("file version (in memory)", UserSettings.Info.ClassVersion);
 			logMsgLn2("save date time"          , UserSettings.Info.Header.SaveDateTime);
@@ -245,7 +283,7 @@ namespace SettingsManagerV30
 			logMsgLn2("path"					, AppSettings.Info.SettingPathAndFile);
 			logMsgLn2("status"					, AppSettings.Admin.Status);
 			logMsg2(nl);
-			logMsgLn2("file versions match"		, AppSettings.Admin.Info.ClassVersionsMatch());
+			logMsgLn2("file versions match"		, AppSettings.Admin.Info.ClassVersionsMatch);
 			logMsgLn2("file version (from file)", AppSettings.Admin.Info.ClassVersionFromFile ?? "does not exist");
 			logMsgLn2("file version (in memory)", AppSettings.Info.ClassVersion);
 			logMsgLn2("save date time"          , AppSettings.Info.Header.SaveDateTime);

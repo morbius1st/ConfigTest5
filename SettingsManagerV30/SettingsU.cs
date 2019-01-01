@@ -12,13 +12,6 @@ namespace SettingsManagerV30
 	
 	public class UserSettingUpgrade
 	{
-		private static List<string> l = new List<string>(10);
-
-		public static void register(string name)
-		{
-			l.Add(name);
-		}
-
 		public SettingUpgrade su;
 
 		public UserSettingUpgrade()
@@ -38,13 +31,6 @@ namespace SettingsManagerV30
 
 	public class AppSettingUpgrade
 	{
-		private static List<string> l = new List<string>(10);
-
-		public static void register(string name)
-		{
-			l.Add(name);
-		}
-
 		public SettingUpgrade su;
 
 		public AppSettingUpgrade()
@@ -76,7 +62,7 @@ namespace SettingsManagerV30
 
 		public void Upgrade()
 		{
-			if (!SetgClasses[0].ClassVersionsMatch())
+			if (!SetgClasses[0].ClassVersionsMatch)
 			{
 				logMsgLn2("upgrading", "class versions do not match - upgrade");
 
@@ -116,7 +102,7 @@ namespace SettingsManagerV30
 					logMsgLn2("upgrading", "to this version: " +
 						SetgClasses[i].ClassVersion);
 
-					SetgClasses[i].Upgrade(SetgClasses[i - 1]);
+					SetgClasses[i].UpgradeFromPrior(SetgClasses[i - 1]);
 				}
 			}
 		}
