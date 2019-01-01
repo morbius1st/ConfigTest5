@@ -12,6 +12,13 @@ namespace SettingsManagerV30
 	
 	public class UserSettingUpgrade
 	{
+		private static List<string> l = new List<string>(10);
+
+		public static void register(string name)
+		{
+			l.Add(name);
+		}
+
 		public SettingUpgrade su;
 
 		public UserSettingUpgrade()
@@ -31,6 +38,13 @@ namespace SettingsManagerV30
 
 	public class AppSettingUpgrade
 	{
+		private static List<string> l = new List<string>(10);
+
+		public static void register(string name)
+		{
+			l.Add(name);
+		}
+
 		public SettingUpgrade su;
 
 		public AppSettingUpgrade()

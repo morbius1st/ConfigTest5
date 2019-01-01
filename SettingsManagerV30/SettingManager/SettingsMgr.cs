@@ -105,22 +105,6 @@ namespace SettingManager
 			else
 			{
 				SetFileStatus();
-
-//				// set file exists status
-//				if (FileExists())
-//				{
-//					Status = EXISTS;
-//					Exists = true;
-//
-//					if ( !VersionsMatch())
-//					{
-//						Status = VERSIONMISMATCH;
-//					}
-//				}
-//				else
-//				{
-//					Status = DOESNOTEXIST;
-//				}
 			}
 
 			ResetData = rst;
@@ -459,6 +443,11 @@ namespace SettingManager
 	// define file type specific information: User
 	public abstract class UsrSettingBase : SettingBase
 	{
+		public UsrSettingBase()
+		{
+			UserSettingUpgrade.register(this.GetType().FullName);
+		}
+
 		private static string _classVersionFromFile;
 		private static string _systemVersionFromFile;
 
@@ -499,6 +488,11 @@ namespace SettingManager
 	// define file type specific information: App
 	public abstract class AppSettingBase : SettingBase
 	{
+		public AppSettingBase()
+		{
+			AppSettingUpgrade.register(this.GetType().FullName);
+		}
+
 		private static string _classVersionFromFile;
 		private static string _systemVersionFromFile;
 
