@@ -1,13 +1,10 @@
 ﻿#region  
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Xml;
-using EnvDTE;
-using SettingsManagerV30;
 using static SettingManager.SettingMgrStatus;
 
 using UtilityLibrary;
@@ -45,6 +42,9 @@ namespace SettingManager
 	//	[DataContract]
 	public class Heading
 	{
+		public static string ClassVersionName = nameof(ClassVersion);
+		public static string SystemVersionName = nameof(SystemVersion);
+
 		public enum SettingFileType
 		{
 			APP = 0,
@@ -77,14 +77,15 @@ namespace SettingManager
 
 	public enum SettingMgrStatus
 	{
-		VERSIONMISMATCH = -3,
 		DOESNOTEXIST = -2,
 		NOPATH = -1,
-
-		CREATED = 1,
-		READ = 2,
-		SAVED = 3,
-		EXISTS = 4,
+		
+		CONSTRUCTED = 0,
+		INITIALIZED,
+		CREATED,
+		READ,
+		SAVED,
+		EXISTS
 	}
 
 	public interface ITest
@@ -101,98 +102,39 @@ namespace SettingManager
 	{
 		#region + Constructor
 
+//		public SettingsMgr(RstData rst, [CallerMemberName] string  name = "")
 		public SettingsMgr(RstData rst)
 		{
+			Status = CONSTRUCTED;
+
 			if (String.IsNullOrWhiteSpace(Info.SettingPathAndFile))
 			{
 				Status = NOPATH;
 			}
-			else
-			{
 
-				SetFileStatus();
-
-				logMsgLn2();
-				logMsgLn2("at ctor SettingsMgr", "status| " + Status + 
-					" file type| " + Info.FileType.ToString());
-
-//				List<SettingBase> settings 
-//					= null;
-//
-//				switch (Info.FileType)
-//				{
-//				case Heading.SettingFileType.APP:
-//					{
-//						settings 
-//							= AppSettings.Upgrade(Info);
-//						break;
-//					}
-//				case Heading.SettingFileType.USER:
-//					{
-//						settings = UserSettings.Upgrade(Info);
-//						break;
-//					}
-//				}
-//
-//				if (settings != null)
-//				{
-//					Upgrade(settings);
-//
-//					Save();
-//				}
-
-				if (Status == VERSIONMISMATCH)
-				{
-					List<SettingBase> settings = null;
-
-					switch (Info.FileType)
-					{
-					case Heading.SettingFileType.APP:
-						{
-							settings =
-								GetMatchingClasses<AppSettingBase>();
-							break;
-						}
-					case Heading.SettingFileType.USER:
-						{
-							settings =
-								GetMatchingClasses<UserSettingBase>();
-							break;
-						}
-					}
-
-					if (settings != null)
-					{
-						Upgrade(settings);
-
-						Save();
-					}
-				}
-
-			}
+			logMsgLn2();
+			logMsgLn2("at ctor SettingsMgr", "status| " + Status +
+				" file type| " + Info.FileType.ToString()
+				);
 
 			ResetData = rst;
 		}
 
-		private List<SettingBase> GetMatchingClasses<U>() where U : SettingBase
+		public void initialize()
 		{
-			Type baseType = typeof(T).BaseType;
-
-			List<SettingBase> list = new List<SettingBase>();
-
-			Type[] types = Assembly.GetExecutingAssembly().GetTypes();
-
-			foreach (Type type in types)
+			if (Status != NOPATH)
 			{
-				Type testType = type.BaseType;
+				Status = INITIALIZED;
+				logMsgLn2();
+				logMsgLn2("at SettingsMgr initialize", "status| " + Status +
+					" file type| " + Info.FileType.ToString()
+					);
 
-				if (testType == baseType)
+				if (FileExists())
 				{
-					list.Add((U) Activator.CreateInstance(type));
+					Upgrade();
 				}
 			}
-
-			return list;
 		}
 
 		#endregion
@@ -201,9 +143,9 @@ namespace SettingManager
 
 		public T Info { get; private set; } = new T();
 
-		public SettingMgrStatus Status { get; private set; } = CREATED;
+		public SettingMgrStatus Status { get; private set; }
 
-		public bool Exists { get; private set; } = false;
+//		public static bool Exists { get; }
 
 //		private string SettingPathAndFile { get; set; }
 //		public string SaveDateTime => Info?.Header.SaveDateTime ?? "undefined";
@@ -219,33 +161,40 @@ namespace SettingManager
 			// does the file already exist?
 			if (FileExists())
 			{
-				try
+				if (Info.ClassVersionsMatch)
 				{
-					DataContractSerializer ds = new DataContractSerializer(typeof(T));
-
-					// file exists - get the current values
-					using (FileStream fs = new FileStream(Info.SettingPathAndFile, FileMode.Open))
+					try
 					{
-						Info = (T) ds.ReadObject(fs);
-						SyncData();
-					}
+						DataContractSerializer ds = new DataContractSerializer(typeof(T));
 
-					Status = READ;
+						// file exists - get the current values
+						using (FileStream fs = new FileStream(Info.SettingPathAndFile, FileMode.Open))
+						{
+							Info = (T) ds.ReadObject(fs);
+							SyncData();
+						}
+
+						Status = READ;
+					}
+					// catch malformed XML data file and replace with default
+					catch (System.Runtime.Serialization.SerializationException)
+					{
+						Create();
+						Save();
+					}
+					// catch any other errors
+					catch (Exception e)
+					{
+						throw new MessageException(MessageUtilities.nl
+							+ "Cannot read setting data for file: "
+							+ Info.SettingPathAndFile + MessageUtilities.nl
+							+ "("                     + e.Message + ")" + MessageUtilities.nl
+							, e.InnerException);
+					}
 				}
-				// catch malformed XML data file and replace with default
-				catch (System.Runtime.Serialization.SerializationException)
+				else
 				{
-					Create();
-					Save();
-				}
-				// catch any other errors
-				catch (Exception e)
-				{
-					throw new MessageException(MessageUtilities.nl 
-						+ "Cannot read setting data for file: "
-						+ Info.SettingPathAndFile + MessageUtilities.nl
-						+ "(" + e.Message +")" + MessageUtilities.nl
-						, e.InnerException);
+					Upgrade();
 				}
 			}
 			else
@@ -254,7 +203,7 @@ namespace SettingManager
 				Save();
 			}
 
-			SetFileStatus();
+//			SetFileStatus();
 		}
 
 		public dynamic Read(Type type)
@@ -314,7 +263,7 @@ namespace SettingManager
 //				w.Close();
 			}
 
-			SetFileStatus();
+//			SetFileStatus();
 
 			// since file and memory match
 			Status = SAVED;
@@ -324,7 +273,126 @@ namespace SettingManager
 
 		#region +Upgrade
 
-		private void Upgrade(List<SettingBase> settings)
+		public void Upgrade()
+		{
+			if (!Info.ClassVersionsMatch)
+			{
+				List<SettingBase> settings = null;
+
+				switch (Info.FileType)
+				{
+				case Heading.SettingFileType.APP:
+					{
+						settings =
+							GetMatchingClasses<AppSettingBase>();
+						break;
+					}
+				case Heading.SettingFileType.USER:
+					{
+						settings =
+							GetMatchingClasses<UserSettingBase>();
+						break;
+					}
+				}
+
+				if (settings != null)
+				{
+					UpgradeList(settings);
+
+					Save();
+				}
+			}
+		}
+
+
+		#endregion
+
+		#region +Reset
+
+		private RstData ResetData;
+
+		// reset the data portion to it's default values
+		public void Reset()
+		{
+			Create();
+
+			ResetData?.Invoke();
+		}
+
+		public void SyncData()
+		{
+			if (ResetData != null)
+			{
+				ResetData?.Invoke();
+			}
+		}
+
+		#endregion
+
+		#region + Utilities
+
+//		public void SetFileStatus()
+//		{
+//			// set file exists status
+//			if (FileExists())
+//			{
+//				if (!Info.ClassVersionsMatch)
+//				{
+//					Status = VERSIONMISMATCH;
+//				}
+//			}
+//		}
+
+		// report whether the setting file does exist
+		private bool FileExists()
+		{
+			bool result = Info.Exists;
+
+			if (result)
+			{
+				Status = EXISTS;
+			}
+			else
+			{
+				Status = DOESNOTEXIST;
+			}
+
+			return result;
+		}
+
+		// use reflection to create a list of classes of matching type
+		// that may be used to upgrade the existing class to the
+		// current version
+		private List<SettingBase> GetMatchingClasses<U>() where U : SettingBase
+		{
+			Type baseType = typeof(T).BaseType;
+
+			List<SettingBase> list = new List<SettingBase>();
+
+			list.Add(Info);
+
+			Type[] types = Assembly.GetExecutingAssembly().GetTypes();
+
+			// scan the list of all of the types to find the
+			// few of the correct type
+			foreach (Type type in types)
+			{
+				if (type == Info.GetType()) continue;
+
+				Type testType = type.BaseType;
+
+				if (testType == baseType)
+				{
+					list.Add((U) Activator.CreateInstance(type));
+				}
+			}
+
+			return list;
+		}
+
+		// based on a list of matching setting of prior versions
+		// upgrade the existing to the current version
+		private void UpgradeList(List<SettingBase> settings)
 		{
 			if (settings == null || settings.Count < 2)
 			{
@@ -367,141 +435,78 @@ namespace SettingManager
 			}
 		}
 
-		#endregion
-
-		#region +Reset
-
-		private RstData ResetData;
-
-		// reset the data portion to it's default values
-		public void Reset()
-		{
-			Create();
-
-			ResetData?.Invoke();
-		}
-
-		public void SyncData()
-		{
-			if (ResetData != null)
-			{
-				ResetData?.Invoke();
-			}
-		}
-
-		#endregion
-
-		#region + Utilities
-
-		public void SetFileStatus()
-		{
-			// set file exists status
-			if (FileExists())
-			{
-				SetClassVersionFromFile();
-				SetSystemVersionFromFile();
-
-				if (!Info.ClassVersionsMatch)
-				{
-					Status = VERSIONMISMATCH;
-				}
-			}
-			else
-			{
-				Status = DOESNOTEXIST;
-			}
-		}
-
-		// report whether the setting file does exist
-		private bool FileExists()
-		{
-			bool result = FileExists(Info.SettingPathAndFile);
-
-			if (result)
-			{
-				Status = EXISTS;
-				Exists = true;
-			}
-			else
-			{
-				Status = DOESNOTEXIST;
-				Exists = false;
-			}
-
-			return result;
-		}
 		
-		// report whether the setting file does exist
-		public static bool FileExists(string pathAndFile)
-		{
-			return File.Exists(pathAndFile);
-		}
+//		// report whether the setting file does exist
+//		public static bool FileExists(string pathAndFile)
+//		{
+//			return File.Exists(pathAndFile);
+//		}
 
 //		public bool VersionsMatch()
 //		{
 //			return Info.Header.ClassVersion.Equals(Heading.ClassVersionFromFile);
 //		}
 
-		private void SetClassVersionFromFile()
-		{
-
-//			Heading.ClassVersionFromFile[(int) Info.FileType] = 
-			Info.ClassVersionFromFile =
-				GetClassVersionFromFile();
-		}
-
-		private void SetSystemVersionFromFile()
-		{
-//			Heading.SystemVersionFromFile[(int) Info.FileType] = 
-			Info.SystemVersionFromFile =
-				GetSystemVersionFromFile();
-		}
-
-		// gets the class version from the file
-		private string GetClassVersionFromFile()
-		{
-			if (!FileExists())
-			{
-				return null;
-			}
-
-			using (XmlReader reader = XmlReader.Create(Info.SettingPathAndFile))
-			{
-				while (reader.Read())
-				{
-					if (reader.IsStartElement(nameof(
-						Info.Header.ClassVersion)))
-					{
-						return reader.ReadString();
-					}
-				}
-			}
-			return "";
-		}
-
-		// gets the system version from the file
-		private string GetSystemVersionFromFile()
-		{
-			if (Status.Equals(NOPATH) || Status.Equals(DOESNOTEXIST))
-			{
-				return null;
-			}
-
-			// use xml reader to find the version from
-			// the file
-			using (XmlReader reader = XmlReader.Create(Info.SettingPathAndFile))
-			{
-				while (reader.Read())
-				{
-					if (reader.IsStartElement(nameof(
-						Info.Header.SystemVersion)))
-					{
-						return reader.ReadString();
-					}
-				}
-			}
-			return null;
-		}
+//		private void SetClassVersionFromFile()
+//		{
+//
+////			Heading.ClassVersionFromFile[(int) Info.FileType] = 
+//			Info.ClassVersionFromFile =
+//				GetClassVersionFromFile();
+//		}
+//
+//		private void SetSystemVersionFromFile()
+//		{
+////			Heading.SystemVersionFromFile[(int) Info.FileType] = 
+//			Info.SystemVersionFromFile =
+//				GetSystemVersionFromFile();
+//		}
+//
+//		// gets the class version from the file
+//		private string GetClassVersionFromFile()
+//		{
+//			if (!FileExists())
+//			{
+//				return null;
+//			}
+//
+//			using (XmlReader reader = XmlReader.Create(Info.SettingPathAndFile))
+//			{
+//				while (reader.Read())
+//				{
+//					if (reader.IsStartElement(nameof(
+//						Info.Header.ClassVersion)))
+//					{
+//						return reader.ReadString();
+//					}
+//				}
+//			}
+//			return "";
+//		}
+//
+//		// gets the system version from the file
+//		private string GetSystemVersionFromFile()
+//		{
+//			if (Status.Equals(NOPATH) || Status.Equals(DOESNOTEXIST))
+//			{
+//				return null;
+//			}
+//
+//			// use xml reader to find the version from
+//			// the file
+//			using (XmlReader reader = XmlReader.Create(Info.SettingPathAndFile))
+//			{
+//				while (reader.Read())
+//				{
+//					if (reader.IsStartElement(nameof(
+//						Info.Header.SystemVersion)))
+//					{
+//						return reader.ReadString();
+//					}
+//				}
+//			}
+//			return null;
+//		}
 
 		#endregion
 	}
@@ -514,15 +519,20 @@ namespace SettingManager
 	{
 		[DataMember] public Heading Header;
 
-		public abstract string ClassVersion { get; }
 		public abstract Heading.SettingFileType  FileType { get; }
-
-		public abstract string ClassVersionFromFile { get; set; }
-		public abstract string SystemVersionFromFile { get; set; }
 		public abstract bool ClassVersionsMatch { get; }
+
+		public abstract string ClassVersion { get; }
+		public abstract string ClassVersionFromFile { get; }
+		public abstract string SystemVersionFromFile { get; }
 		public abstract string FileName { get; }
 		public abstract string RootPath { get; }
 		public abstract string[] SubFolders { get; }
+
+		public abstract string SettingPath { get; }
+		public abstract string SettingPathAndFile { get; }
+
+		public abstract bool Exists { get; }
 
 		public SettingBase()
 		{
@@ -530,37 +540,37 @@ namespace SettingManager
 			Header.Notes = "Created in Version " + ClassVersion;
 		}
 
-		public const string SETTINGFILEBASE = @".setting.xml";
+//		public const string SETTINGFILEBASE = @".setting.xml";
 
-		// get the path to the setting file
-		public string SettingPath
-		{
-			get
-			{
-				if (SubFolders == null)
-				{
-					return RootPath;
-				}
-				return CsUtilities.SubFolder(SubFolders.Length - 1,
-					RootPath, SubFolders);
-			}
-		}
-
-		// get the path and the file name for the setting file
-		public string SettingPathAndFile
-		{
-			get
-			{
-				if (!Directory.Exists(SettingPath))
-				{
-					if (!CsUtilities.CreateSubFolders(RootPath, SubFolders))
-					{
-						throw new DirectoryNotFoundException("setting file path");
-					}
-				}
-				return SettingPath + "\\" + FileName;
-			}
-		}
+//		// get the path to the setting file
+//		public string SettingPath
+//		{
+//			get
+//			{
+//				if (SubFolders == null)
+//				{
+//					return RootPath;
+//				}
+//				return CsUtilities.SubFolder(SubFolders.Length - 1,
+//					RootPath, SubFolders);
+//			}
+//		}
+//
+//		// get the path and the file name for the setting file
+//		public string SettingPathAndFile
+//		{
+//			get
+//			{
+//				if (!Directory.Exists(SettingPath))
+//				{
+//					if (!CsUtilities.CreateSubFolders(RootPath, SubFolders))
+//					{
+//						throw new DirectoryNotFoundException("setting file path");
+//					}
+//				}
+//				return SettingPath + "\\" + FileName;
+//			}
+//		}
 
 		public int CompareTo(SettingBase other)
 		{
@@ -575,35 +585,40 @@ namespace SettingManager
 	// define file type specific information: User
 	public abstract class UserSettingBase : SettingBase
 	{
-		private static string _classVersionFromFile;
-		private static string _systemVersionFromFile;
+//		private static string _classVersionFromFile;
+//		private static string _systemVersionFromFile;
+//
+//		private static readonly string _FileName = @"user" + SettingBase.SETTINGFILEBASE;
+//		private static readonly string _RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+//
+//		private static readonly string[] _SubFolders =
+//		{
+//			CsUtilities.CompanyName,
+//			CsUtilities.AssemblyName
+//		};
 
-		private static readonly string _FileName = @"user" + SettingBase.SETTINGFILEBASE;
-		private static readonly string _RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+		public override bool Exists => PathAndFile.User.Exists;
 
-		private static readonly string[] _SubFolders =
-		{
-			CsUtilities.CompanyName,
-			CsUtilities.AssemblyName
-		};
+		public override string SettingPath => PathAndFile.User.SettingPath;
+		public override string SettingPathAndFile => PathAndFile.User.SettingPathAndFile;
 
-		public override string   FileName   => _FileName;
-		public override string   RootPath   => _RootPath;
-		public override string[] SubFolders => _SubFolders;
+		public override string FileName => PathAndFile.User.FileName;
+		public override string RootPath => PathAndFile.User.RootPath;
+		public override string[] SubFolders => PathAndFile.User.SubFolders;
 
-		public override string ClassVersionFromFile
-		{
-			get => _classVersionFromFile;
-			set => _classVersionFromFile = value;
-		}
+		public override string ClassVersionFromFile => PathAndFile.User.ClassVersionFromFile;
+//		{
+//			get => _classVersionFromFile;
+//			set => _classVersionFromFile = value;
+//		}
 
-		public override string SystemVersionFromFile
-		{
-			get => _systemVersionFromFile;
-			set => _systemVersionFromFile = value;
-		}
+		public override string SystemVersionFromFile => PathAndFile.User.SystemVersionFromFile;
+//		{
+//			get => _systemVersionFromFile;
+//			set => _systemVersionFromFile = value;
+//		}
 
-		public override bool ClassVersionsMatch => Header.ClassVersion.Equals(_classVersionFromFile);
+		public override bool ClassVersionsMatch => Header.ClassVersion.Equals(ClassVersionFromFile);
 
 		public override Heading.SettingFileType FileType => Heading.SettingFileType.USER;
 	}
@@ -612,41 +627,168 @@ namespace SettingManager
 	// define file type specific information: App
 	public abstract class AppSettingBase : SettingBase
 	{
-		private static string _classVersionFromFile;
-		private static string _systemVersionFromFile;
+//		private static string _classVersionFromFile;
+//		private static string _systemVersionFromFile;
+//
+//		private static readonly string _FileName = CsUtilities.AssemblyName + SettingBase.SETTINGFILEBASE;
+//		private static readonly string _RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+//
+//		private static readonly string[] _SubFolders =
+//		{
+//			CsUtilities.CompanyName,
+//			CsUtilities.AssemblyName,
+//			"AppSettings"
+//		};
 
-		private static readonly string _FileName = CsUtilities.AssemblyName + SettingBase.SETTINGFILEBASE;
-		private static readonly string _RootPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+		public override bool Exists => PathAndFile.App.Exists;
 
-		private static readonly string[] _SubFolders =
-		{
-			CsUtilities.CompanyName,
-			CsUtilities.AssemblyName,
-			"AppSettings"
-		};
+		public override string SettingPath        => PathAndFile.App.SettingPath;
+		public override string SettingPathAndFile => PathAndFile.App.SettingPathAndFile;
 
-		public override string   FileName   => _FileName;
-		public override string   RootPath   => _RootPath;
-		public override string[] SubFolders => _SubFolders;
+		public override string   FileName   => PathAndFile.App.FileName;
+		public override string   RootPath   => PathAndFile.App.RootPath;
+		public override string[] SubFolders => PathAndFile.App.SubFolders;
 
-		public override string ClassVersionFromFile
-		{
-			get => _classVersionFromFile;
-			set => _classVersionFromFile = value;
-		}
+		public override string ClassVersionFromFile => PathAndFile.App.ClassVersionFromFile;
+//		{
+//			get => _classVersionFromFile;
+//			set => _classVersionFromFile = value;
+//		}
 
-		public override string SystemVersionFromFile
-		{
-			get => _systemVersionFromFile;
-			set => _systemVersionFromFile = value;
-		}
+		public override string SystemVersionFromFile => PathAndFile.App.SystemVersionFromFile;
+//		{
+//			get => _systemVersionFromFile;
+//			set => _systemVersionFromFile = value;
+//		}
 
-		public override bool ClassVersionsMatch => Header.ClassVersion.Equals(_classVersionFromFile);
+		public override bool ClassVersionsMatch => Header.ClassVersion.Equals(ClassVersionFromFile);
 
 		public override Heading.SettingFileType FileType => Heading.SettingFileType.APP;
 	}
 
 	#endregion
+
+	#region + Path File and Utilities
+
+	public static class PathAndFile
+	{
+		internal static AppPathAndFile  App  = new AppPathAndFile();
+		internal static UserPathAndFile User = new UserPathAndFile();
+
+		private const string SETTINGFILEBASE = @".setting.xml";
+
+		internal interface IPathAndFile
+		{
+			string   FileName   { get; }
+			string   RootPath   { get; }
+			string[] SubFolders { get; }
+
+			string ClassVersionFromFile  { get; }
+			string SystemVersionFromFile { get; }
+
+			bool Exists { get; }
+		}
+
+		internal abstract class PathAndFileBase : IPathAndFile
+		{
+			public abstract string   FileName              { get; }
+			public abstract string   RootPath              { get; }
+			public abstract string[] SubFolders            { get; }
+			public abstract string   ClassVersionFromFile  { get; }
+			public abstract string   SystemVersionFromFile { get; }
+
+			public bool Exists => File.Exists(SettingPathAndFile);
+
+			public string SettingPath
+			{
+				get
+				{
+					if (SubFolders == null)
+					{
+						return RootPath;
+					}
+
+					return CsUtilities.SubFolder(SubFolders.Length - 1,
+						RootPath, SubFolders);
+				}
+			}
+
+			// get the path and the file name for the setting file
+			public string SettingPathAndFile
+			{
+				get
+				{
+					if (!Directory.Exists(SettingPath))
+					{
+						if (!CsUtilities.CreateSubFolders(RootPath, SubFolders))
+						{
+							throw new DirectoryNotFoundException("setting file path");
+						}
+					}
+
+					return SettingPath + "\\" + FileName;
+				}
+			}
+
+			public string GetVersionFromFile(string elementName)
+			{
+				return CsUtilities.ScanXmlForElementValue(SettingPathAndFile, elementName);
+			}
+		}
+
+		internal class AppPathAndFile : PathAndFileBase
+		{
+			private static string   _FileName   { get; set; }
+			private static string   _RootPath   { get; set; }
+			private static string[] _SubFolders { get; set; }
+
+			public override string FileName => _FileName =
+				CsUtilities.AssemblyName + SETTINGFILEBASE;
+
+			public override string RootPath => _RootPath =
+				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+			public override string[] SubFolders => _SubFolders =
+				new string []
+				{
+					CsUtilities.CompanyName,
+					CsUtilities.AssemblyName,
+					"AppSettings"
+				};
+
+			public override string ClassVersionFromFile => GetVersionFromFile(Heading.ClassVersionName);
+
+			public override string SystemVersionFromFile => GetVersionFromFile(Heading.SystemVersionName);
+		}
+
+		internal class UserPathAndFile : PathAndFileBase
+		{
+			private static string   _FileName   { get; set; }
+			private static string   _RootPath   { get; set; }
+			private static string[] _SubFolders { get; set; }
+
+			public override string FileName => _FileName =
+				@"user" + SETTINGFILEBASE;
+
+			public override string RootPath => _RootPath =
+				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+			public override string[] SubFolders => _SubFolders =
+				new string []
+				{
+					CsUtilities.CompanyName,
+					CsUtilities.AssemblyName
+				};
+
+			public override string ClassVersionFromFile => GetVersionFromFile(Heading.ClassVersionName);
+
+			public override string SystemVersionFromFile => GetVersionFromFile(Heading.SystemVersionName);
+		}
+	}
+
+
+	#endregion
+
 
 }
 

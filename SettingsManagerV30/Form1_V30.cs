@@ -16,8 +16,6 @@ namespace SettingsManagerV30
 
 	public partial class Form1_V30 : Form
 	{
-
-
 		public static string nl = Environment.NewLine;
 
 		public Form1_V30()
@@ -35,7 +33,9 @@ namespace SettingsManagerV30
 		private void button2_Click(object sender,
 			EventArgs e)
 		{
-			Status(3);
+//			Files();
+
+			Status(2);
 
 //			Upgrade(3);
 		}
@@ -56,69 +56,100 @@ namespace SettingsManagerV30
 			}
 		}
 
+		public void Files()
+		{
+			logMsg2(nl);
+			logMsgLn2("AppPathAndFile", "values");
+
+			logMsgLn2("SettingPathAndFile", PathAndFile.App.SettingPathAndFile);
+			logMsgLn2("exists", PathAndFile.App.Exists);
+			logMsgLn2("FileName", PathAndFile.App.FileName);
+			logMsgLn2("RootPath", PathAndFile.App.RootPath);
+			logMsgLn2("SettingPath", PathAndFile.App.SettingPath);
+			logMsgLn2("ClassVersionFromFile", PathAndFile.App.ClassVersionFromFile);
+
+			logMsg2(nl);
+			logMsgLn2("AppPathAndFile", "values");
+
+			logMsgLn2("SettingPathAndFile", PathAndFile.User.SettingPathAndFile);
+			logMsgLn2("exists", PathAndFile.User.Exists);
+			logMsgLn2("FileName", PathAndFile.User.FileName);
+			logMsgLn2("RootPath", PathAndFile.User.RootPath);
+			logMsgLn2("SettingPath", PathAndFile.User.SettingPath);
+			logMsgLn2("ClassVersionFromFile", PathAndFile.User.ClassVersionFromFile);
+
+		}
+
+
 		public void Status(int which)
 		{
 			logMsgLn2("at \"status\"");
 
-			if (which == 2 || which == 3)
+			// option 1 = delete and provide new
+			if (which == 1)
 			{
+				logMsgLn2("@1A");
 				logMsg2(nl);
-				logMsgLn2("SetttingsApp", "process");
 
-				if (!AppSettings.Admin.Exists)
-				{
-					logMsg2(nl);
-					logMsgLn2("SetttingsApp", "created");
 
-					AppSettings.Admin.Save();
-				}
-				else
+				if (PathAndFile.App.Exists)
 				{
-					if (AppSettings.Admin.Status != SettingMgrStatus.VERSIONMISMATCH)
-					{
-						ReplaceTestFileApp2();
-						AppSettings.Admin.Read();
-//						AppSettings.Admin.Reset();
-					}
+					logMsgLn2();
+					logMsgLn2("SetttingsApp", "delete");
+					DeleteAppSettingFile();
 				}
 
-
-				AppSettings.Admin.SetFileStatus();
+				if (PathAndFile.User.Exists)
+				{
+					logMsgLn2();
+					logMsgLn2("SetttingsUser", "delete");
+					DeleteUserSettingFile();
+				}
 
 				logMsgLn2();
-				logMsgLn2("at form", "status: " + AppSettings.Admin.Status);
+				logMsgLn2("SetttingsApp", "create");
+				AppSettings.Admin.Create();
+				logMsgLn2("create status", AppSettings.Admin.Status);
 
-			}
-
-			if (which == 1 || which == 3)
-			{
-				logMsg2(nl);
-				logMsgLn2("SetttingsApp", "process");
-
-				if (!UserSettings.Admin.Exists)
-				{
-					logMsg2(nl);
-					logMsgLn2("SetttingsApp", "created");
-
-					UserSettings.Admin.Save();
-				}
-				else
-				{
-
-					if (UserSettings.Admin.Status != SettingMgrStatus.VERSIONMISMATCH)
-					{
-						ReplaceTestFileUser2();
-						UserSettings.Admin.Read();
-//						UserSettings.Admin.Reset();
-					}
-				}
-
-
-				UserSettings.Admin.SetFileStatus();
+				logMsgLn2("SetttingsApp", "saving");
+				AppSettings.Admin.Save();
+				logMsgLn2("save status", AppSettings.Admin.Status);
 
 				logMsgLn2();
-				logMsgLn2("at form", "status: " + UserSettings.Admin.Status);
+				logMsgLn2("SetttingsUser", "create");
+				UserSettings.Admin.Create();
+				logMsgLn2("create status", UserSettings.Admin.Status);
+
+				logMsgLn2();
+				logMsgLn2("SetttingsUser", "saving");
+				UserSettings.Admin.Save();
+				logMsgLn2("save status", UserSettings.Admin.Status);
+
+
+			} 
+			else if (which == 2)
+			{
+				logMsgLn2();
+				logMsgLn2("SetttingsApp", "replace");
+				ReplaceTestFileApp2();
+
+				logMsgLn2();
+				logMsgLn2("SetttingsUser", "replace");
+				ReplaceTestFileUser2();
+
+				logMsgLn2();
+				logMsgLn2("SetttingsApp", "initialize");
+				AppSettings.Admin.initialize();
+				logMsgLn2("status", AppSettings.Admin.Status);
+
+				logMsgLn2();
+				logMsgLn2("SetttingsUser", "initialize");
+				UserSettings.Admin.initialize();
+				logMsgLn2("status", UserSettings.Admin.Status);
 			}
+
+			logMsgLn2();
+			logMsgLn2("status", "complete");
 		}
 
 		private void Upgrade(int which)
@@ -126,7 +157,7 @@ namespace SettingsManagerV30
 
 			if (which == 2 || which == 3)
 			{
-				if (AppSettings.Admin.Exists)
+				if (PathAndFile.App.Exists)
 				{
 					ReplaceTestFileApp();
 
@@ -142,7 +173,7 @@ namespace SettingsManagerV30
 				{
 					logMsg2(nl);
 					logMsgLn2("SetttingsApp", "created");
-					logMsg2(nl);
+
 
 					AppSettings.Admin.Save();
 				}
@@ -150,7 +181,7 @@ namespace SettingsManagerV30
 
 			if (which == 1 || which == 3)
 			{
-				if (UserSettings.Admin.Exists)
+				if (PathAndFile.User.Exists)
 				{
 					ReplaceTestFileUser();
 
@@ -166,7 +197,7 @@ namespace SettingsManagerV30
 				{
 					logMsg2(nl);
 					logMsgLn2("SetttingsUser", "created");
-					logMsg2(nl);
+
 
 					UserSettings.Admin.Save();
 				}
@@ -176,11 +207,11 @@ namespace SettingsManagerV30
 
 		private void ProcessAppSettings(bool modify)
 		{
-			logMsg2(nl);
+			logMsgLn2();
 			logMsgLn2("app path",AppSettings.Info.SettingPathAndFile);
 			logMsgLn2("app before");
 
-			if (AppSettings.Admin.Exists)
+			if (PathAndFile.App.Exists)
 			{
 				AppSettings.Admin.Read();
 
@@ -190,7 +221,8 @@ namespace SettingsManagerV30
 				{
 					ModifyAndSaveAppSettings();
 
-					logMsgLn2(nl + "app after");
+					logMsgLn2();
+					logMsgLn2("app after");
 					DisplayAppSettingData();
 				}
 			}
@@ -204,11 +236,11 @@ namespace SettingsManagerV30
 
 		private void ProcessUserSettings(bool modify)
 		{
-			logMsgLn2(nl);
+			logMsgLn2();
 			logMsgLn2("user path", UserSettings.Info.SettingPathAndFile);
 			logMsgLn2("user before");
 
-			if (UserSettings.Admin.Exists)
+			if (PathAndFile.User.Exists)
 			{
 				UserSettings.Admin.Read();
 				DisplayUserSettingData();
@@ -217,7 +249,8 @@ namespace SettingsManagerV30
 				{
 					ModifyAndSaveUserSettings();
 
-					logMsgLn2(nl + "user after");
+					logMsgLn2();
+					logMsgLn2("user after");
 					DisplayUserSettingData();
 				}
 			}
@@ -231,47 +264,56 @@ namespace SettingsManagerV30
 		{
 			ReplaceTestFileUser2();
 
-			UserSettings.Admin.SetFileStatus();
+//			UserSettings.Admin.SetFileStatus();
 		}
 
 		// hard pathed to insure SettingMgr is not created now
 		private void ReplaceTestFileUser2()
 		{
-			string path = @"C:\Users\jeffs\AppData\Roaming\CyberStudio\SettingsManagerV30";
-			string pathAndFile = path + @"\user.setting.xml";
+//			string path = @"C:\Users\jeffs\AppData\Roaming\CyberStudio\SettingsManagerV30";
+//			string pathAndFile = path + @"\user.setting.xml";
 
-			string testFileName = path + @"\user.setting.xml.v20";
+			string testFileName = PathAndFile.User.SettingPath + @"\user.setting.xml.v20";
 
-			File.Delete(pathAndFile);
+			DeleteUserSettingFile();
 
-			File.Copy(testFileName, pathAndFile);
+			File.Copy(testFileName, PathAndFile.User.SettingPathAndFile);
 
 			logMsg2(nl);
 			logMsgLn2("SetttingsUser", "test file replaced");
 		}
 
+		private void DeleteUserSettingFile()
+		{
+			File.Delete(PathAndFile.User.SettingPathAndFile);
+		}
+
 		private void ReplaceTestFileApp()
 		{
 			ReplaceTestFileApp2();
-			AppSettings.Admin.SetFileStatus();
+//			AppSettings.Admin.SetFileStatus();
 		}
 
 		// hard pathed to insure SettingMgr is not created now
 		private void ReplaceTestFileApp2()
 		{
-			string path        = @"C:\Users\jeffs\AppData\Roaming\CyberStudio\SettingsManagerV30\AppSettings";
-			string pathAndFile = path + @"\SettingsManagerV30.setting.xml";
+//			string path = @"C:\Users\jeffs\AppData\Roaming\CyberStudio\SettingsManagerV30\AppSettings";
+//			string pathAndFile = path + @"\SettingsManagerV30.setting.xml";
 
-			string testFileName = path + @"\SettingsManagerV30.setting.xml.v20";
+			string testFileName = PathAndFile.App.SettingPath + @"\SettingsManagerV30.setting.xml.v20";
 
-			File.Delete(pathAndFile);
+			DeleteAppSettingFile();
 
-			File.Copy(testFileName, pathAndFile);
+			File.Copy(testFileName, PathAndFile.App.SettingPathAndFile);
 
 			logMsg2(nl);
 			logMsgLn2("SetttingsApp", "test file replaced");
 		}
 
+		private void DeleteAppSettingFile()
+		{
+			File.Delete(PathAndFile.App.SettingPathAndFile);
+		}
 
 
 		private void TestUs()
@@ -280,8 +322,8 @@ namespace SettingsManagerV30
 
 			UserSettingInfo21 x = new UserSettingInfo21();
 
-			logMsgLn2("class", "SettingsUser");
 			logMsg2(nl);
+			logMsgLn2("class", "SettingsUser");
 
 		}
 
@@ -291,8 +333,8 @@ namespace SettingsManagerV30
 
 			AppSettingInfo21 x = new AppSettingInfo21();
 
-			logMsgLn2("class", "SettingsApp");
 			logMsg2(nl);
+			logMsgLn2("class", "SettingsApp");
 
 		}
 

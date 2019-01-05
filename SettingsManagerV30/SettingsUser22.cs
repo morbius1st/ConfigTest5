@@ -40,6 +40,7 @@ namespace SettingsManagerV30
 		// initalize and create the setting objects
 		static UserSettings()
 		{
+//			Admin = new SettingsMgr<UserSettingInfo22>(ResetData);
 			Admin = new SettingsMgr<UserSettingInfo22>(ResetData);
 			Info = Admin.Info;
 			Data = Info.Data;

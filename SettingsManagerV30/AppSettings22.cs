@@ -7,35 +7,35 @@ using static UtilityLibrary.MessageUtilities2;
 
 namespace SettingsManagerV30
 {
-	public static class UpgradeLists
-	{
-		public static List<AppSettingBase> GetUpgradeListA()
-		{
-			logMsgLn2();
-			logMsgLn2("at AppSettingInfo22", "Upgrading");
-
-			List<AppSettingBase> settings = new List<AppSettingBase>();
-			settings.Add(new AppSettingInfo22());
-			settings.Add(new AppSettingInfo21());
-			settings.Add(new AppSettingInfo20());
-
-			return settings;
-		}
-
-
-		public static List<UserSettingBase> GetUpgradeListU()
-		{
-			logMsgLn2();
-			logMsgLn2("at UserSettingInfo22", "Upgrading");
-
-			List<UserSettingBase> settings = new List<UserSettingBase>();
-			settings.Add(new UserSettingInfo22());
-			settings.Add(new UserSettingInfo21());
-			settings.Add(new UserSettingInfo20());
-
-			return settings;
-		}
-	}
+//	public static class UpgradeLists
+//	{
+//		public static List<AppSettingBase> GetUpgradeListA()
+//		{
+//			logMsgLn2();
+//			logMsgLn2("at AppSettingInfo22", "Upgrading");
+//
+//			List<AppSettingBase> settings = new List<AppSettingBase>();
+//			settings.Add(new AppSettingInfo22());
+//			settings.Add(new AppSettingInfo21());
+//			settings.Add(new AppSettingInfo20());
+//
+//			return settings;
+//		}
+//
+//
+//		public static List<UserSettingBase> GetUpgradeListU()
+//		{
+//			logMsgLn2();
+//			logMsgLn2("at UserSettingInfo22", "Upgrading");
+//
+//			List<UserSettingBase> settings = new List<UserSettingBase>();
+//			settings.Add(new UserSettingInfo22());
+//			settings.Add(new UserSettingInfo21());
+//			settings.Add(new UserSettingInfo20());
+//
+//			return settings;
+//		}
+//	}
 
 
 	public static class AppSettings
@@ -55,6 +55,7 @@ namespace SettingsManagerV30
 		// initalize and create the setting objects
 		static AppSettings()
 		{
+//			Admin = new SettingsMgr<AppSettingInfo22>(ResetClass);
 			Admin = new SettingsMgr<AppSettingInfo22>(ResetClass);
 			Info = Admin.Info;
 			Data = Info.Data;
