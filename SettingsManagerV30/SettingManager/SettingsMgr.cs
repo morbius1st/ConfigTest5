@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Xml;
@@ -90,7 +91,7 @@ namespace SettingManager
 	{
 		#region + Constructor
 
-		public SettingsMgr(RstData rst)
+		public SettingsMgr(RstData rst, bool autoUpgrade)
 		{
 			Status = CONSTRUCTED;
 
@@ -103,8 +104,10 @@ namespace SettingManager
 			logMsgLn2();
 			logMsgLn2("at ctor SettingsMgr", "status| " + Status +
 				" file type| " + Info.FileType.ToString()
+			+ "  autoupgrade?| " + AutoUpgrade + " :: " + AllowAutoUpgrade
 				);
 #endif
+			AutoUpgrade = autoUpgrade;
 
 			_resetData = rst;
 		}
@@ -118,6 +121,7 @@ namespace SettingManager
 				logMsgLn2();
 				logMsgLn2("at SettingsMgr initialize", "status| " + Status +
 					" file type| " + Info.FileType.ToString()
+					+ "  autoupgrade?| " + AutoUpgrade + " :: " + AllowAutoUpgrade
 					);
 #endif
 
@@ -135,6 +139,12 @@ namespace SettingManager
 		public T Info { get; private set; } = new T();
 
 		public SettingMgrStatus Status { get; private set; }
+
+		public bool AutoUpgrade { get; set; } = false;
+
+		public static bool AllowAutoUpgrade { get; set; } = false;
+
+		public static bool CanAutoUpgrade { get; set; } = false;
 
 		#endregion
 
@@ -421,6 +431,8 @@ namespace SettingManager
 	{
 		[DataMember] public Heading Header;
 
+		public abstract bool AllowAutoUpgrade { get; set; }
+
 		public abstract Heading.SettingFileType  FileType { get; }
 		public abstract bool ClassVersionsMatch { get; }
 
@@ -447,6 +459,8 @@ namespace SettingManager
 	// define file type specific information: User
 	public abstract class UserSettingBase : SettingBase
 	{
+		public override bool AllowAutoUpgrade { get; set; }
+
 		public override bool Exists => PathAndFile.User.Exists;
 
 		public override string SettingPath => PathAndFile.User.SettingPath;
@@ -469,6 +483,8 @@ namespace SettingManager
 	// define file type specific information: App
 	public abstract class AppSettingBase : SettingBase
 	{
+		public override bool AllowAutoUpgrade { get; set; }
+
 		public override bool Exists => PathAndFile.App.Exists;
 
 		public override string SettingPath        => PathAndFile.App.SettingPath;

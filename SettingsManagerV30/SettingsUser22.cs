@@ -28,14 +28,17 @@ namespace SettingsManagerV30
 		// initialize and create the setting objects
 		static UserSettings()
 		{
-			Admin = new SettingsMgr<UserSettingInfo22>(ResetData);
+			//			SettingsMgr<UserSettingInfo22>.AllowAutoUpgrade = false;
+
+			Admin = new SettingsMgr<UserSettingInfo22>(ResetData, true);
 			Info = Admin.Info;
 			Data = Info.Data;
 
 			logMsgLn2();
-			logMsgLn2("at ctor UserSettings", "status| " + Admin.Status);
+			logMsgLn2("at ctor UserSettings", "status| " + Admin.Status
+				+ "  autoupgrade| " + Admin.AutoUpgrade
+				+ " :: " + SettingsMgr<AppSettingInfo22>.AllowAutoUpgrade);
 			logMsgLn2();
-
 		}
 
 		public static void ResetData()
@@ -48,10 +51,68 @@ namespace SettingsManagerV30
 			logMsgLn2();
 			logMsgLn2("at UserSettings reset", "status| " + Admin.Status);
 		}
+
+
+		public static bool CanAutoUpgrade
+		{
+			get => SettingsMgr<UserSettingInfo22>.CanAutoUpgrade;
+			set => SettingsMgr<UserSettingInfo22>.CanAutoUpgrade = value;
+		}
 	}
 
 	// this is the actual data set saved to the user's configuration file
 	// this is unique for each program
+	[DataContract(Name = "UserSettingInfo22")]
+	public class UserSettingInfo22 : UserSettingBase
+	{
+		public UserSettingInfo22()
+		{
+#if DEBUG
+			logMsgLn2();
+			logMsgLn2("at ctor UserSettingInfo22", "status| " + "creating");
+#endif
+		}
+
+		[DataMember]
+		public UserSettingData22 Data = new UserSettingData22();
+
+		public override string ClassVersion => "2.2";
+
+		public override void UpgradeFromPrior(SettingBase prior)
+		{
+			UserSettingInfo21 p = (UserSettingInfo21) prior;
+
+			Header.Notes =
+				p.Header.Notes + " :: updated to v" + ClassVersion;
+
+			Data.UnCategorizedValue2 = p.Data.UnCategorizedValue2;
+			Data.UnCategorizedValue  = p.Data.UnCategorizedValue;
+			Data.GeneralValues.TestB = p.Data.GeneralValues.TestB;
+			Data.GeneralValues.TestD = p.Data.GeneralValues.TestD;
+			Data.GeneralValues.TestI = p.Data.GeneralValues.TestI;
+			Data.GeneralValues.TestS = p.Data.GeneralValues.TestS;
+			Data.MainWindow.Height   = p.Data.MainWindow.Height;
+			Data.MainWindow.Width    = p.Data.MainWindow.Width;
+
+			for (int i = 0; i < Data.GeneralValues.TestIs.Length; i++)
+			{
+				Data.GeneralValues.TestIs[i] =
+					p.Data.GeneralValues.TestIs[i];
+			}
+
+			p.Data.GeneralValues.TestSs.CopyTo(Data.GeneralValues.TestSs, 0);
+
+			foreach (KeyValuePair<string, TestStruct> kvp in p.Data.TestDictionary3)
+			{
+				if (Data.TestDictionary3.ContainsKey(kvp.Key))
+				{
+					Data.TestDictionary3[kvp.Key] =
+						p.Data.TestDictionary3[kvp.Key];
+				}
+			}
+		}
+	}
+
 	[DataContract(Name = "UserSettingData22")]
 	public class UserSettingData22
 	{
@@ -107,57 +168,6 @@ namespace SettingsManagerV30
 			IntA = a;
 			IntB = b;
 			IntC = c;
-		}
-	}
-
-	[DataContract(Name = "UserSettingInfo22")]
-	public class UserSettingInfo22 : UserSettingBase
-	{
-		public UserSettingInfo22()
-		{
-#if DEBUG
-			logMsgLn2();
-			logMsgLn2("at UserSettingInfo22", "at ctor");
-#endif
-		}
-
-		[DataMember]
-		public UserSettingData22 Data = new UserSettingData22();
-
-		public override string ClassVersion => "2.2";
-
-		public override void UpgradeFromPrior(SettingBase prior)
-		{
-			UserSettingInfo21 p = (UserSettingInfo21) prior;
-
-			Header.Notes =
-				p.Header.Notes + " :: updated to v" + ClassVersion;
-
-			Data.UnCategorizedValue2 = p.Data.UnCategorizedValue2;
-			Data.UnCategorizedValue  = p.Data.UnCategorizedValue;
-			Data.GeneralValues.TestB = p.Data.GeneralValues.TestB;
-			Data.GeneralValues.TestD = p.Data.GeneralValues.TestD;
-			Data.GeneralValues.TestI = p.Data.GeneralValues.TestI;
-			Data.GeneralValues.TestS = p.Data.GeneralValues.TestS;
-			Data.MainWindow.Height   = p.Data.MainWindow.Height;
-			Data.MainWindow.Width    = p.Data.MainWindow.Width;
-
-			for (int i = 0; i < Data.GeneralValues.TestIs.Length; i++)
-			{
-				Data.GeneralValues.TestIs[i] =
-					p.Data.GeneralValues.TestIs[i];
-			}
-
-			p.Data.GeneralValues.TestSs.CopyTo(Data.GeneralValues.TestSs, 0);
-
-			foreach (KeyValuePair<string, TestStruct> kvp in p.Data.TestDictionary3)
-			{
-				if (Data.TestDictionary3.ContainsKey(kvp.Key))
-				{
-					Data.TestDictionary3[kvp.Key] =
-						p.Data.TestDictionary3[kvp.Key];
-				}
-			}
 		}
 	}
 

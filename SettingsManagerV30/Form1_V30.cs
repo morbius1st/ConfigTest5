@@ -35,7 +35,7 @@ namespace SettingsManagerV30
 		private void button2_Click(object sender,
 			EventArgs e)
 		{
-			int which = 1;
+			int which = 5;
 
 			switch (which)
 			{
@@ -58,6 +58,11 @@ namespace SettingsManagerV30
 				{
 					Reset();
 					break;
+				}			
+			case 5:
+				{
+					UpgradeControl();
+					break;
 				}
 			}
 		}
@@ -79,6 +84,126 @@ namespace SettingsManagerV30
 		}
 
 		#endregion
+
+		#region +UpgradeControl
+
+		private void UpgradeControl()
+		{
+			logMsgLn2();
+			logMsgLn2("at UpgradeControl", "start");
+
+			logMsgLn2();
+			logMsgLn2("at UpgradeControl", "AppSettings| replace");
+			ReplaceTestFileApp2();
+
+			logMsgLn2();
+			logMsgLn2("at UpgradeControl", "UserSettings| replace");
+			ReplaceTestFileUser2();
+
+			logMsgLn2(nl +  nl);
+
+			// test allowautoupgrade
+			logMsgLn2("at UpgradeControl", "test allowautoupgrade");
+			logMsgLn2("at UpgradeControl", "AppSettings| set allowautoupgrade");
+			SettingsMgr<AppSettingInfo22>.AllowAutoUpgrade = true;
+			SettingsMgr<UserSettingInfo22>.AllowAutoUpgrade = false;
+
+			logMsgLn2();
+			logMsgLn2("at UpgradeControl", "AppSettings| get allowautoupgrade"
+				+ " :: " + SettingsMgr<AppSettingInfo22>.AllowAutoUpgrade);
+			logMsgLn2("at UpgradeControl", "UserSettings| get allowautoupgrade (verify)"
+				+ " :: " + SettingsMgr<UserSettingInfo22>.AllowAutoUpgrade);
+
+			// test CanAutoUpgrade
+			// this also creates the object
+			logMsgLn2();
+			logMsgLn2("at UpgradeControl", "test CanAutoUpgrade");
+			logMsgLn2("at UpgradeControl", "AppSettings| set CanAutoUpgrade");
+			AppSettings.CanAutoUpgrade = true;
+			UserSettings.CanAutoUpgrade = false;
+
+			logMsgLn2();
+			logMsgLn2("at UpgradeControl", "AppSettings| get CanAutoUpgrade"
+				+ " :: " + AppSettings.CanAutoUpgrade);
+			logMsgLn2("at UpgradeControl", "UserSettings| get CanAutoUpgrade (verify)"
+				+ " :: " + UserSettings.CanAutoUpgrade);
+
+			// AutoUpgrade
+			// since ths does create the object - do this last
+			logMsgLn2();
+			logMsgLn2("at UpgradeControl", "test AutoUpgrade");
+			logMsgLn2("at UpgradeControl", "AppSettings| set AutoUpgrade");
+			// the object is created 
+			AppSettings.Admin.AutoUpgrade = true;
+			logMsgLn2("at UpgradeControl", "AppSettings| get AutoUpgrade"
+				+ " :: " + AppSettings.Admin.AutoUpgrade);
+
+			// display status
+			logMsgLn2();
+			logMsgLn2("at UpgradeControl", "*** AppSettings| get status");
+			logMsgLn2("at UpgradeControl",
+					"*** AppSettings| status| " + AppSettings.Admin.Status
+				+ "  autoupgrade?| " + AppSettings.Admin.AutoUpgrade
+				+ " :: allow| " + SettingsMgr<AppSettingInfo22>.AllowAutoUpgrade
+				+ " :: can| " + AppSettings.CanAutoUpgrade
+					);
+
+
+
+
+			logMsgLn2(nl +  nl);
+
+			// test allowautoupgrade
+			logMsgLn2("at UpgradeControl", "test allowautoupgrade");
+			logMsgLn2("at UpgradeControl", "UserSettings| set allowautoupgrade");
+			SettingsMgr<UserSettingInfo22>.AllowAutoUpgrade = true;
+			SettingsMgr<AppSettingInfo22>.AllowAutoUpgrade = false;
+
+			logMsgLn2();
+			logMsgLn2("at UpgradeControl", "UserSettings| get allowautoupgrade"
+				+ " :: " + SettingsMgr<UserSettingInfo22>.AllowAutoUpgrade);
+			logMsgLn2("at UpgradeControl", "AppSettings| get allowautoupgrade (verify)"
+				+ " :: " + SettingsMgr<AppSettingInfo22>.AllowAutoUpgrade);
+
+			// test CanAutoUpgrade
+			// this also creates the object
+			logMsgLn2();
+			logMsgLn2("at UpgradeControl", "test CanAutoUpgrade");
+			logMsgLn2("at UpgradeControl", "UserSettings| set CanAutoUpgrade");
+			UserSettings.CanAutoUpgrade = true;
+			AppSettings.CanAutoUpgrade = false;
+
+			logMsgLn2();
+			logMsgLn2("at UpgradeControl", "UserSettings| get CanAutoUpgrade (verify)"
+				+ " :: " + UserSettings.CanAutoUpgrade);
+			logMsgLn2("at UpgradeControl", "AppSettings| get CanAutoUpgrade"
+				+ " :: " + AppSettings.CanAutoUpgrade);
+
+			// test AutoUpgrade
+			// since ths does create the object - do this last
+			logMsgLn2();
+			logMsgLn2("at UpgradeControl", "test AutoUpgrade");
+			logMsgLn2("at UpgradeControl", "UserSettings| set AutoUpgrade");
+			// the object is created
+			UserSettings.Admin.AutoUpgrade = true;
+			logMsgLn2("at UpgradeControl", "UserSettings| get AutoUpgrade"
+				+ " :: " + UserSettings.Admin.AutoUpgrade);
+
+
+			// display status
+			logMsgLn2();
+			logMsgLn2("at UpgradeControl",  "*** UserSettings| get status");
+			logMsgLn2("at UpgradeControl",
+					"*** UserSettings| status| " + UserSettings.Admin.Status
+				+ "  autoupgrade?| " + UserSettings.Admin.AutoUpgrade
+				+ " :: allow| " + SettingsMgr<UserSettingInfo22>.AllowAutoUpgrade
+				+ " :: can| " + UserSettings.CanAutoUpgrade
+					);
+
+		}
+
+		#endregion
+
 
 		#region +Reset
 

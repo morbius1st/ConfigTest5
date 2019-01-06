@@ -9,6 +9,7 @@ namespace SettingsManagerV30
 {
 	public static class AppSettings
 	{
+
 		// this is the primary data structure - it holds the settings
 		// configuration information as well as the setting data
 		public static SettingsMgr<AppSettingInfo22> Admin { get; private set; }
@@ -21,12 +22,15 @@ namespace SettingsManagerV30
 		// initialize and create the setting objects
 		static AppSettings()
 		{
-			Admin = new SettingsMgr<AppSettingInfo22>(ResetClass);
+			Admin = new SettingsMgr<AppSettingInfo22>(ResetClass, false);
 			Info = Admin.Info;
 			Data = Info.Data;
 
 			logMsgLn2();
-			logMsgLn2("at ctor AppSettings", "status| " + Admin.Status);
+			logMsgLn2("at ctor AppSettings", "status| " + Admin.Status
+				+ "  autoupgrade| " + Admin.AutoUpgrade
+				+ " :: " + SettingsMgr<AppSettingInfo22>.AllowAutoUpgrade
+				);
 			logMsgLn2();
 		}
 
@@ -39,38 +43,16 @@ namespace SettingsManagerV30
 			logMsgLn2();
 			logMsgLn2("at AppSettings reset", "status| " + Admin.Status);
 		}
+
+		public static bool CanAutoUpgrade
+		{
+			get => SettingsMgr<AppSettingInfo22>.CanAutoUpgrade;
+			set => SettingsMgr<AppSettingInfo22>.CanAutoUpgrade = value;
+		}
 	}
 
 	// this is the actual data set saved to the user's configuration file
 	// this is unique for each program
-	[DataContract(Name = "AppSettingData22")]
-	public class AppSettingData22
-	{
-		[DataMember(Order = 1)]
-		public int AppI { get; set; } = 0;
-
-		[DataMember(Order = 2)]
-		public bool AppB { get; set; } = false;
-
-		[DataMember(Order = 3)]
-		public double AppD { get; set; } = 0.0;
-
-		[DataMember(Order = 4)]
-		public string AppS { get; set; } = "this is an App";
-
-		[DataMember(Order = 5)]
-		public int[] AppIs { get; set; } = new[] {20, 30};
-
-		[DataMember(Order = 20)]
-		public int AppI20 { get; set; } = 0;
-
-		[DataMember(Order = 21)]
-		public bool AppB21 { get; set; } = false;
-
-		[DataMember(Order = 22)]
-		public double AppD22 { get; set; } = 0.0;
-	}
-	
 	[DataContract(Name = "AppSettingInfo22")]
 	public class AppSettingInfo22 : AppSettingBase
 	{
@@ -78,7 +60,7 @@ namespace SettingsManagerV30
 		{
 #if DEBUG
 			logMsgLn2();
-			logMsgLn2("at AppSettingInfo22", "at ctor");
+			logMsgLn2("at ctor AppSettingInfo22", "status| " + "creating");
 #endif
 		}
 
@@ -107,9 +89,34 @@ namespace SettingsManagerV30
 			{
 				Data.AppIs[i] = p.Data.AppIs[i];
 			}
-
 		}
+	}
 
+	[DataContract(Name = "AppSettingData22")]
+	public class AppSettingData22
+	{
+		[DataMember(Order = 1)]
+		public int AppI { get; set; } = 0;
 
+		[DataMember(Order = 2)]
+		public bool AppB { get; set; } = false;
+
+		[DataMember(Order = 3)]
+		public double AppD { get; set; } = 0.0;
+
+		[DataMember(Order = 4)]
+		public string AppS { get; set; } = "this is an App";
+
+		[DataMember(Order = 5)]
+		public int[] AppIs { get; set; } = new[] {20, 30};
+
+		[DataMember(Order = 20)]
+		public int AppI20 { get; set; } = 0;
+
+		[DataMember(Order = 21)]
+		public bool AppB21 { get; set; } = false;
+
+		[DataMember(Order = 22)]
+		public double AppD22 { get; set; } = 0.0;
 	}
 }
