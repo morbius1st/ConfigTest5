@@ -14,17 +14,8 @@ using static UtilityLibrary.MessageUtilities2;
 
 namespace SettingsManagerV30
 {
-//	public static class UserSettings_22
-//	{
-//		static UserSettings_22()
-//		{
-//			SettingUpgrade.SetgClasses.Add(new UserSettingInfo22());
-//		}
-//	}
-
 	public static class UserSettings
 	{
-
 		// this is the primary data structure - it holds the settings
 		// configuration information as well as the setting data
 		public static SettingsMgr<UserSettingInfo22> Admin { get; private set; }
@@ -34,19 +25,16 @@ namespace SettingsManagerV30
 		public static UserSettingInfo22 Info { get; private set; }
 		public static UserSettingData22 Data { get; private set; }
 
-//		public static SettingMgrStatus Status => Admin.Status;
-//		public static bool Exists => Admin.Exists;
-
-		// initalize and create the setting objects
+		// initialize and create the setting objects
 		static UserSettings()
 		{
-//			Admin = new SettingsMgr<UserSettingInfo22>(ResetData);
 			Admin = new SettingsMgr<UserSettingInfo22>(ResetData);
 			Info = Admin.Info;
 			Data = Info.Data;
 
 			logMsgLn2();
 			logMsgLn2("at ctor UserSettings", "status| " + Admin.Status);
+			logMsgLn2();
 
 		}
 
@@ -54,30 +42,13 @@ namespace SettingsManagerV30
 		{
 			// this makes sure the above static class points
 			// to the current data structure
-//			Info = Admin.Info;
-
-//			Admin = new SettingsMgr<UserSettingInfo22>(ResetData);
 			Info  = Admin.Info;
 			Data  = Info.Data;
 
 			logMsgLn2();
 			logMsgLn2("at UserSettings reset", "status| " + Admin.Status);
 		}
-
-//		public static List<SettingBase> Upgrade(SettingBase me)
-//		{
-//			logMsgLn2();
-//			logMsgLn2("at UserSettingInfo22", "upgrade");
-//
-//			List<SettingBase> settings = new List<SettingBase>();
-//			settings.Add(me);
-//			settings.Add(new UserSettingInfo21());
-//			settings.Add(new UserSettingInfo20());
-//
-//			return settings;
-//		}
 	}
-
 
 	// this is the actual data set saved to the user's configuration file
 	// this is unique for each program
@@ -111,7 +82,6 @@ namespace SettingsManagerV30
 			};
 	}
 
-
 	// sample sub-class of dictionary to provide names to elements
 	[CollectionDataContract(Name = "CustomDict", KeyName = "key", ValueName = "data", ItemName = "row")]
 	public class CustDict<T1, T2> : Dictionary<T1, T2>
@@ -140,45 +110,22 @@ namespace SettingsManagerV30
 		}
 	}
 
-	// sample class / data
-	public class GeneralValues
-	{
-		public int      TestI  = 0;
-		public bool     TestB  = false;
-		public double   TestD  = 0.0;
-		public string   TestS  = "this is a test";
-		public int[]    TestIs = new[] { 20, 30 };
-		public string[] TestSs = new[] { "user 1", "user 2", "user 3" };
-	}
-
-	// sample class / data
-	public class Window1
-	{
-		public int Height = 50;
-		public int Width  = 100;
-	}
-
-
 	[DataContract(Name = "UserSettingInfo22")]
 	public class UserSettingInfo22 : UserSettingBase
 	{
+		public UserSettingInfo22()
+		{
+#if DEBUG
+			logMsgLn2();
+			logMsgLn2("at UserSettingInfo22", "at ctor");
+#endif
+		}
+
 		[DataMember]
 		public UserSettingData22 Data = new UserSettingData22();
 
 		public override string ClassVersion => "2.2";
 
-		public List<UserSettingBase> UpgradeList(UserSettingBase me)
-		{
-			logMsgLn2();
-			logMsgLn2("at UserSettingInfo22", "upgrading");
-
-			List<UserSettingBase> settings = new List<UserSettingBase>();
-			settings.Add(new UserSettingInfo22());
-			settings.Add(new UserSettingInfo21());
-			settings.Add(new UserSettingInfo20());
-
-			return settings;
-		}
 		public override void UpgradeFromPrior(SettingBase prior)
 		{
 			UserSettingInfo21 p = (UserSettingInfo21) prior;
@@ -212,7 +159,22 @@ namespace SettingsManagerV30
 				}
 			}
 		}
-
 	}
 
+	public class GeneralValues
+	{
+		public int      TestI  = 0;
+		public bool     TestB  = false;
+		public double   TestD  = 0.0;
+		public string   TestS  = "this is a test";
+		public int[]    TestIs = new[] { 20, 30 };
+		public string[] TestSs = new[] { "user 1", "user 2", "user 3" };
+	}
+
+	// sample class / data
+	public class Window1
+	{
+		public int Height = 50;
+		public int Width  = 100;
+	}
 }

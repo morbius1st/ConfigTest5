@@ -7,37 +7,6 @@ using static UtilityLibrary.MessageUtilities2;
 
 namespace SettingsManagerV30
 {
-//	public static class UpgradeLists
-//	{
-//		public static List<AppSettingBase> GetUpgradeListA()
-//		{
-//			logMsgLn2();
-//			logMsgLn2("at AppSettingInfo22", "Upgrading");
-//
-//			List<AppSettingBase> settings = new List<AppSettingBase>();
-//			settings.Add(new AppSettingInfo22());
-//			settings.Add(new AppSettingInfo21());
-//			settings.Add(new AppSettingInfo20());
-//
-//			return settings;
-//		}
-//
-//
-//		public static List<UserSettingBase> GetUpgradeListU()
-//		{
-//			logMsgLn2();
-//			logMsgLn2("at UserSettingInfo22", "Upgrading");
-//
-//			List<UserSettingBase> settings = new List<UserSettingBase>();
-//			settings.Add(new UserSettingInfo22());
-//			settings.Add(new UserSettingInfo21());
-//			settings.Add(new UserSettingInfo20());
-//
-//			return settings;
-//		}
-//	}
-
-
 	public static class AppSettings
 	{
 		// this is the primary data structure - it holds the settings
@@ -49,47 +18,27 @@ namespace SettingsManagerV30
 		public static AppSettingInfo22 Info { get; private set; }
 		public static AppSettingData22 Data { get; private set; }
 
-//		public static SettingMgrStatus Status => Admin.Status;
-//		public static bool Exists => Admin.Exists;
-
-		// initalize and create the setting objects
+		// initialize and create the setting objects
 		static AppSettings()
 		{
-//			Admin = new SettingsMgr<AppSettingInfo22>(ResetClass);
 			Admin = new SettingsMgr<AppSettingInfo22>(ResetClass);
 			Info = Admin.Info;
 			Data = Info.Data;
 
 			logMsgLn2();
 			logMsgLn2("at ctor AppSettings", "status| " + Admin.Status);
+			logMsgLn2();
 		}
 
 		// if we need to reset to the "factory" default
 		public static void ResetClass()
 		{
-//			Info = Admin.Info;
-
-//			Admin = new SettingsMgr<AppSettingInfo22>(ResetClass);
 			Info = Admin.Info;
 			Data = Info.Data;
 
 			logMsgLn2();
 			logMsgLn2("at AppSettings reset", "status| " + Admin.Status);
 		}
-
-//		public static List<SettingBase> Upgrade(SettingBase me)
-//		{
-//			logMsgLn2();
-//			logMsgLn2("at AppSettingInfo22", "upgrade");
-//
-//			List<SettingBase> settings = new List<SettingBase>();
-//			settings.Add(me);
-//			settings.Add(new AppSettingInfo21());
-//			settings.Add(new AppSettingInfo20());
-//
-//			return settings;
-//		}
-
 	}
 
 	// this is the actual data set saved to the user's configuration file
@@ -125,11 +74,18 @@ namespace SettingsManagerV30
 	[DataContract(Name = "AppSettingInfo22")]
 	public class AppSettingInfo22 : AppSettingBase
 	{
+		public AppSettingInfo22()
+		{
+#if DEBUG
+			logMsgLn2();
+			logMsgLn2("at AppSettingInfo22", "at ctor");
+#endif
+		}
+
 		[DataMember]
 		public AppSettingData22 Data = new AppSettingData22();
 
 		public override string ClassVersion => "2.2";
-
 
 		public override void UpgradeFromPrior(SettingBase prior)
 		{

@@ -33,15 +33,18 @@ namespace SettingsManagerV30
 	[DataContract(Name = "AppSettingInfo20")]
 	public class AppSettingInfo20 : AppSettingBase
 	{
+		public AppSettingInfo20()
+		{
+#if DEBUG
+			logMsgLn2();
+			logMsgLn2("at AppSettingInfo20", "at ctor");
+#endif
+		}
+
 		[DataMember]
 		public AppSettingData20 Data = new AppSettingData20();
 
 		public override string ClassVersion => "2.0";
-
-		public List<AppSettingBase> GetUpgradeList<AppSettingBase>()
-		{
-			return null;
-		}
 
 		// upgrade from pre 2.0 to 2.0 - n/a
 		public override void UpgradeFromPrior(SettingBase prior)

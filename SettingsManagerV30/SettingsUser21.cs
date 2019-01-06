@@ -10,7 +10,6 @@ using static UtilityLibrary.MessageUtilities2;
 
 namespace SettingsManagerV30
 {
-
 	// this is the actual data set saved to the user's configuration file
 	// this is unique for each program
 	[DataContract(Name = "UserSettingData21")]
@@ -42,15 +41,18 @@ namespace SettingsManagerV30
 	[DataContract(Name = "UserSettingInfo21")]
 	public class UserSettingInfo21 : UserSettingBase
 	{
+		public UserSettingInfo21()
+		{
+#if DEBUG
+			logMsgLn2();
+			logMsgLn2("at UserSettingInfo21", "at ctor");
+#endif
+		}
+
 		[DataMember]
 		public UserSettingData21 Data = new UserSettingData21();
 
 		public override string ClassVersion => "2.1";
-
-		public List<SettingBase> GetUpgradeList()
-		{
-			return null;
-		}
 
 		// upgrade the prior version to this version
 		public override void UpgradeFromPrior(SettingBase prior)

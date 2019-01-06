@@ -30,22 +30,44 @@ namespace SettingsManagerV30
 
 		}
 
+		#region +Controls
+
 		private void button2_Click(object sender,
 			EventArgs e)
 		{
-//			Files();
+			int which = 1;
 
-			Status(2);
-
-//			Upgrade(3);
+			switch (which)
+			{
+			case 1:
+				{
+					Files();
+					break;
+				}
+			case 2:
+				{
+					Status(2);
+					break;
+				}
+			case 3:
+				{
+					SubclassTest();
+					break;
+				}
+			case 4:
+				{
+					Reset();
+					break;
+				}
+			}
 		}
 
 		private void button1_Click(object sender, EventArgs e)
 		{
 			try
 			{
-				ProcessAppSettings(false);
-				ProcessUserSettings(false);
+				ProcessAppSettings(true);
+				ProcessUserSettings(true);
 
 			}
 			catch (Exception ex)
@@ -55,6 +77,20 @@ namespace SettingsManagerV30
 				logMsgLn2(ex.InnerException + nl);
 			}
 		}
+
+		#endregion
+
+		#region +Reset
+
+		private void Reset()
+		{
+			ResetAndSaveAppSettings();
+			ResetAndSaveUserSettings();
+		}
+
+		#endregion
+
+		#region +Files
 
 		public void Files()
 		{
@@ -77,9 +113,12 @@ namespace SettingsManagerV30
 			logMsgLn2("RootPath", PathAndFile.User.RootPath);
 			logMsgLn2("SettingPath", PathAndFile.User.SettingPath);
 			logMsgLn2("ClassVersionFromFile", PathAndFile.User.ClassVersionFromFile);
-
 		}
+		
 
+		#endregion
+
+		#region +Status
 
 		public void Status(int which)
 		{
@@ -139,12 +178,12 @@ namespace SettingsManagerV30
 
 				logMsgLn2();
 				logMsgLn2("SetttingsApp", "initialize");
-				AppSettings.Admin.initialize();
+				AppSettings.Admin.Initialize();
 				logMsgLn2("status", AppSettings.Admin.Status);
 
 				logMsgLn2();
 				logMsgLn2("SetttingsUser", "initialize");
-				UserSettings.Admin.initialize();
+				UserSettings.Admin.Initialize();
 				logMsgLn2("status", UserSettings.Admin.Status);
 			}
 
@@ -152,57 +191,24 @@ namespace SettingsManagerV30
 			logMsgLn2("status", "complete");
 		}
 
-		private void Upgrade(int which)
+		#endregion
+
+		#region +SubclassTest
+
+		private void SubclassTest()
 		{
+			logMsgLn2();
+			logMsgLn2("at SubclassTest", "appsettings");
+			logMsgLn2("appsettings", "classversion| " +
+				AppSettings.Info.ClassVersion);
 
-			if (which == 2 || which == 3)
-			{
-				if (PathAndFile.App.Exists)
-				{
-					ReplaceTestFileApp();
-
-					TestAp();
-
-					AppSettingUpgrade aSup = new AppSettingUpgrade();
-
-					List<SettingBase> As = aSup.su.SetgClasses;
-
-					aSup.Upgrade();
-				}
-				else
-				{
-					logMsg2(nl);
-					logMsgLn2("SetttingsApp", "created");
-
-
-					AppSettings.Admin.Save();
-				}
-			}
-
-			if (which == 1 || which == 3)
-			{
-				if (PathAndFile.User.Exists)
-				{
-					ReplaceTestFileUser();
-
-					TestUs();
-
-					UserSettingUpgrade uSup = new UserSettingUpgrade();
-
-					List<SettingBase> Us = uSup.su.SetgClasses;
-
-					uSup.Upgrade();
-				}
-				else
-				{
-					logMsg2(nl);
-					logMsgLn2("SetttingsUser", "created");
-
-
-					UserSettings.Admin.Save();
-				}
-			}
+			logMsgLn2();
+			logMsgLn2("at SubclassTest", "UserSettings");
+			logMsgLn2("UserSettings", "classversion| " +
+				UserSettings.Info.ClassVersion);
 		}
+
+		#endregion
 
 
 		private void ProcessAppSettings(bool modify)
@@ -213,6 +219,9 @@ namespace SettingsManagerV30
 
 			if (PathAndFile.App.Exists)
 			{
+				logMsgLn2();
+				logMsgLn2("admin", "read");
+
 				AppSettings.Admin.Read();
 
 				DisplayAppSettingData();
@@ -222,7 +231,7 @@ namespace SettingsManagerV30
 					ModifyAndSaveAppSettings();
 
 					logMsgLn2();
-					logMsgLn2("app after");
+					logMsgLn2("app after modify");
 					DisplayAppSettingData();
 				}
 			}
@@ -230,8 +239,6 @@ namespace SettingsManagerV30
 			{
 				logMsgLn2("app setting file", "does not exist");
 			}
-
-//			ResetAndSaveAppSettings();
 		}
 
 		private void ProcessUserSettings(bool modify)
@@ -242,6 +249,9 @@ namespace SettingsManagerV30
 
 			if (PathAndFile.User.Exists)
 			{
+				logMsgLn2();
+				logMsgLn2("admin", "read");
+
 				UserSettings.Admin.Read();
 				DisplayUserSettingData();
 
@@ -250,7 +260,7 @@ namespace SettingsManagerV30
 					ModifyAndSaveUserSettings();
 
 					logMsgLn2();
-					logMsgLn2("user after");
+					logMsgLn2("user after modify");
 					DisplayUserSettingData();
 				}
 			}
@@ -260,19 +270,9 @@ namespace SettingsManagerV30
 			}
 		}
 
-		private void ReplaceTestFileUser()
-		{
-			ReplaceTestFileUser2();
-
-//			UserSettings.Admin.SetFileStatus();
-		}
-
 		// hard pathed to insure SettingMgr is not created now
 		private void ReplaceTestFileUser2()
 		{
-//			string path = @"C:\Users\jeffs\AppData\Roaming\CyberStudio\SettingsManagerV30";
-//			string pathAndFile = path + @"\user.setting.xml";
-
 			string testFileName = PathAndFile.User.SettingPath + @"\user.setting.xml.v20";
 
 			DeleteUserSettingFile();
@@ -288,18 +288,9 @@ namespace SettingsManagerV30
 			File.Delete(PathAndFile.User.SettingPathAndFile);
 		}
 
-		private void ReplaceTestFileApp()
-		{
-			ReplaceTestFileApp2();
-//			AppSettings.Admin.SetFileStatus();
-		}
-
 		// hard pathed to insure SettingMgr is not created now
 		private void ReplaceTestFileApp2()
 		{
-//			string path = @"C:\Users\jeffs\AppData\Roaming\CyberStudio\SettingsManagerV30\AppSettings";
-//			string pathAndFile = path + @"\SettingsManagerV30.setting.xml";
-
 			string testFileName = PathAndFile.App.SettingPath + @"\SettingsManagerV30.setting.xml.v20";
 
 			DeleteAppSettingFile();
@@ -315,67 +306,7 @@ namespace SettingsManagerV30
 			File.Delete(PathAndFile.App.SettingPathAndFile);
 		}
 
-
-		private void TestUs()
-		{
-			SettingsMgr<UserSettingInfo22> admin = UserSettings.Admin;
-
-			UserSettingInfo21 x = new UserSettingInfo21();
-
-			logMsg2(nl);
-			logMsgLn2("class", "SettingsUser");
-
-		}
-
-		private void TestAp()
-		{
-			SettingsMgr<AppSettingInfo22> admin = AppSettings.Admin;
-
-			AppSettingInfo21 x = new AppSettingInfo21();
-
-			logMsg2(nl);
-			logMsgLn2("class", "SettingsApp");
-
-		}
-
-
-		private void InitUs()
-		{
-			logMsgLn2("class", "SetttingsUser");
-
-//			logMsgLn2("class", UserSettings);
-
-			logMsgLn2("path"                    , UserSettings.Info.SettingPathAndFile);
-			logMsgLn2("status"                  , UserSettings.Admin.Status);
-			logMsg2(nl);
-			logMsgLn2("file versions match"     , UserSettings.Admin.Info.ClassVersionsMatch);
-			logMsgLn2("file version (from file)", UserSettings.Admin.Info.ClassVersionFromFile?? "does not exist");
-			logMsgLn2("file version (in memory)", UserSettings.Info.ClassVersion);
-			logMsgLn2("save date time"          , UserSettings.Info.Header.SaveDateTime);
-			logMsgLn2("assembly version"        , UserSettings.Info.Header.AssemblyVersion);
-			logMsgLn2("file notes"              , UserSettings.Info.Header.Notes);
-			logMsg2(nl);
-		}
-
-		private void InitAp()
-		{
-			logMsgLn2("class", "AppSettings");
-
-			logMsgLn2("path"					, AppSettings.Info.SettingPathAndFile);
-			logMsgLn2("status"					, AppSettings.Admin.Status);
-			logMsg2(nl);
-			logMsgLn2("file versions match"		, AppSettings.Admin.Info.ClassVersionsMatch);
-			logMsgLn2("file version (from file)", AppSettings.Admin.Info.ClassVersionFromFile ?? "does not exist");
-			logMsgLn2("file version (in memory)", AppSettings.Info.ClassVersion);
-			logMsgLn2("save date time"          , AppSettings.Info.Header.SaveDateTime);
-			logMsgLn2("assembly version"        , AppSettings.Info.Header.AssemblyVersion);
-			logMsgLn2("file notes"              , AppSettings.Info.Header.Notes);
-			logMsg2(nl);
-		}
-
-		private const int V = 40;
-
-		private void ResetUserSettings()
+		private void ResetAndSaveUserSettings()
 		{
 			UserSettings.Admin.Reset();
 			UserSettings.Admin.Save();
@@ -384,7 +315,7 @@ namespace SettingsManagerV30
 			DisplayUserSettingData();
 		}
 
-
+		private const int V = 40;
 		private void ModifyAndSaveUserSettings()
 		{
 			UserSettings.Data.GeneralValues.TestB = true;
@@ -405,7 +336,10 @@ namespace SettingsManagerV30
 
 		private void DisplayUserSettingData()
 		{
+			SettingsMgr<UserSettingInfo22> ua = UserSettings.Admin;
 
+
+			logMsgLn2();
 			logMsgLn2("system version"          , UserSettings.Info.Header.SystemVersion);
 			logMsgLn2("status"                  , UserSettings.Admin.Status);
 			logMsgLn2("path and file"           , UserSettings.Info.SettingPathAndFile);
@@ -441,6 +375,7 @@ namespace SettingsManagerV30
 
 		private void DisplayAppSettingData()
 		{
+			logMsgLn2();
 			logMsgLn2("system version"          , AppSettings.Info.Header.SystemVersion);
 			logMsgLn2("status"                  , AppSettings.Admin.Status);
 			logMsgLn2("path and file"           , AppSettings.Info.SettingPathAndFile);
