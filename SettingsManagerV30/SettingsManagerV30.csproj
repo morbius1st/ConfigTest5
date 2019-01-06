@@ -71,7 +71,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingManager\SettingsMgr.cs" />
     <Compile Include="AppSettings22.cs" />
-    <Compile Include="SettingsU.cs" />
     <Compile Include="SettingsUser20.cs" />
     <Compile Include="SettingsUser21.cs" />
     <Compile Include="SettingsUser22.cs" />
