@@ -103,6 +103,7 @@ namespace SettingManager
 			logMsgLn2();
 			logMsgLn2("at ctor SettingsMgr", "status| " + Status +
 				" file type| " + Info.FileType.ToString()
+				+ "  CanAutoUpgrade?| " + CanAutoUpgrade
 				);
 #endif
 
@@ -115,15 +116,22 @@ namespace SettingManager
 			{
 				Status = INITIALIZED;
 #if DEBUG
+				//this object is created before the value, CanAutoUpgrade, is set
 				logMsgLn2();
 				logMsgLn2("at SettingsMgr initialize", "status| " + Status +
 					" file type| " + Info.FileType.ToString()
+					+ "  CanAutoUpgrade?| " + CanAutoUpgrade
 					);
-#endif
 
+				UpgradeRequired = !Info.ClassVersionsMatch;
+
+#endif
 				if (FileExists())
 				{
-					Upgrade();
+					if (!Info.ClassVersionsMatch && CanAutoUpgrade)
+					{
+						Upgrade();
+					}
 				}
 			}
 		}
@@ -135,6 +143,10 @@ namespace SettingManager
 		public T Info { get; private set; } = new T();
 
 		public SettingMgrStatus Status { get; private set; }
+
+		public bool CanAutoUpgrade { get; set; } = false;
+
+		public bool UpgradeRequired { get; set; } = false;
 
 		#endregion
 
@@ -252,10 +264,16 @@ namespace SettingManager
 
 		#region +Upgrade
 
+		// upgrade from a prior class version to the current class version
+		// this method is less restricted to allow the user to perform
+		// a manual upgrade - if CanAutoUpgrade is false
 		public void Upgrade()
 		{
+			// is an upgrade needed
 			if (!Info.ClassVersionsMatch)
 			{
+				// get a list of prior setting classes from 
+				// which to possible upgrade
 				List<SettingBase> settings = null;
 
 				switch (Info.FileType)
@@ -274,6 +292,7 @@ namespace SettingManager
 					}
 				}
 
+				// if needed, preform upgrade
 				if (settings != null)
 				{
 					UpgradeList(settings);
@@ -281,6 +300,10 @@ namespace SettingManager
 					Save();
 				}
 			}
+
+			// flag whether an upgrade is required
+			// keep current
+			UpgradeRequired = !Info.ClassVersionsMatch;
 		}
 
 

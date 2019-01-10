@@ -32,8 +32,10 @@ namespace SettingsManagerV30
 			Info = Admin.Info;
 			Data = Info.Data;
 
+			// object is created before the value is set
 			logMsgLn2();
-			logMsgLn2("at ctor UserSettings", "status| " + Admin.Status);
+			logMsgLn2("at ctor UserSettings", "status| " + Admin.Status
+				+ "  CanAutoUpgrade?| " + Admin.CanAutoUpgrade);
 			logMsgLn2();
 
 		}
@@ -117,7 +119,7 @@ namespace SettingsManagerV30
 		{
 #if DEBUG
 			logMsgLn2();
-			logMsgLn2("at UserSettingInfo22", "at ctor");
+			logMsgLn2("at ctor UserSettingInfo22", "");
 #endif
 		}
 

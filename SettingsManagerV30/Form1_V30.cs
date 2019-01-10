@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Text;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
-using System.Windows.Input;
 using SettingManager;
+using SettingsManagerV30.Properties;
 using UtilityLibrary;
 using static UtilityLibrary.MessageUtilities2;
 
@@ -35,7 +32,7 @@ namespace SettingsManagerV30
 		private void button2_Click(object sender,
 			EventArgs e)
 		{
-			int which = 1;
+			int which = 5;
 
 			switch (which)
 			{
@@ -57,6 +54,13 @@ namespace SettingsManagerV30
 			case 4:
 				{
 					Reset();
+					break;
+				}
+			case 5:
+				{
+					UpgradeControl(AppSettings.Admin, "AppSettings");
+					
+					UpgradeControl(UserSettings.Admin, "UserSettings");
 					break;
 				}
 			}
@@ -210,6 +214,145 @@ namespace SettingsManagerV30
 
 		#endregion
 
+		#region +UpgradeControl
+
+		private void test<T>(SettingsMgr<T> admin)  where  T : SettingBase, new ()
+		{
+			
+		}
+
+		private void UpgradeControl<T>(SettingsMgr<T> admin, string name) where T: SettingBase, new()
+		{
+
+				logMsgLn2();
+				logMsgLn2("at UpgradeControl", "start");
+
+			for (int i = 0; i < 2; i++)
+			{
+				logMsgLn2(nl);
+				logMsgLn2("at UpgradeControl", name + "| replace");
+				ReplaceTestFileApp2();
+
+				// AppSettings
+
+				// CanAutoUpgrade
+				// since ths does create the object - do this last
+				logMsgLn2();
+				logMsgLn2("at UpgradeControl", "test CanAutoUpgrade");
+				logMsgLn2();
+				logMsgLn2("at UpgradeControl", name + "| set CanAutoUpgrade?| false");
+
+				// the object is created 
+				// but the it is created before the value is set
+				admin.CanAutoUpgrade = false;
+
+				logMsgLn2();
+				logMsgLn2("at UpgradeControl", name + "| get CanAutoUpgrade"
+					+ " :: " + admin.CanAutoUpgrade);
+
+				// display status
+				logMsgLn2();
+				logMsgLn2("at UpgradeControl", "*** "
+					+ name + "| get status");
+				logMsgLn2();
+				logMsgLn2("at UpgradeControl",
+					"*** "
+					+ name + "| status| " + admin.Status
+					+ "  CanAutoUpgrade?| " + admin.CanAutoUpgrade
+					);
+
+				// test upgrade process
+				// auto upgrade
+				logMsgLn2();
+
+				if (i == 0)
+				{
+					logMsgLn2();
+					logMsgLn2("at UpgradeControl", name + "| expect auto upgrade");
+
+					logMsgLn2();
+					logMsgLn2("at UpgradeControl", name + "| set CanAutoUpgrade| true");
+					admin.CanAutoUpgrade = true;
+					logMsgLn2();
+					logMsgLn2("at UpgradeControl", name + "| initialize");
+					admin.Initialize();
+
+					ShowAppStatus(admin, name);
+				}
+				else
+				{
+					logMsgLn2();
+					logMsgLn2("at UpgradeControl", name + "| expect manual upgrade");
+
+					logMsgLn2();
+					logMsgLn2("at UpgradeControl", name + "| set CanAutoUpgrade| false");
+					admin.CanAutoUpgrade = false;
+					logMsgLn2();
+					logMsgLn2("at UpgradeControl", name + "| initialize");
+					admin.Initialize();
+
+					ShowAppStatus(admin, name);
+
+					logMsgLn2();
+					logMsgLn2("at UpgradeControl", name + "| upgrade");
+					admin.Upgrade();
+
+					ShowAppStatus(admin, name);
+				}
+			}
+
+
+
+
+//			logMsgLn2();
+//			logMsgLn2("at UpgradeControl", "UserSettings| replace");
+//			ReplaceTestFileUser2();
+
+//			// UserSettings
+//
+//			logMsgLn2(nl +  nl);
+//
+//			// test CanAutoUpgrade
+//			// since ths does create the object - do this last
+//			logMsgLn2();
+//			logMsgLn2("at UpgradeControl", "test CanAutoUpgrade");
+//			logMsgLn2("at UpgradeControl", "UserSettings| set CanAutoUpgrade");
+//
+//			// the object is created
+//			// but the it is created before the value is set
+//			UserSettings.Admin.CanAutoUpgrade = false;
+//			logMsgLn2("at UpgradeControl", "UserSettings| get CanAutoUpgrade"
+//				+ " :: " + UserSettings.Admin.CanAutoUpgrade);
+//
+//			// display status
+//			logMsgLn2();
+//			logMsgLn2("at UpgradeControl", "*** UserSettings| get status");
+//			logMsgLn2("at UpgradeControl",
+//				"*** UserSettings| status| " + UserSettings.Admin.Status
+//				+ "  CanAutoUpgrade?| " + UserSettings.Admin.CanAutoUpgrade
+//				);
+
+
+
+
+
+		}
+
+		#endregion
+
+		private void ShowAppStatus<T>(SettingsMgr<T> admin, string name)  where  T : SettingBase, new ()
+		{
+			logMsgLn2();
+			logMsgLn2("at UpgradeControl",
+				name + "|              status| " + admin.Status
+				);
+			logMsgLn2("at UpgradeControl",
+				name + "|   upgrade required?| " + admin.UpgradeRequired
+				);
+			logMsgLn2("at UpgradeControl",
+				name + "| ClassVersionsMatch?| " + admin.Info.ClassVersionsMatch
+				);
+		}
 
 		private void ProcessAppSettings(bool modify)
 		{

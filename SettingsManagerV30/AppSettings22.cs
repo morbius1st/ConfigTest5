@@ -26,7 +26,9 @@ namespace SettingsManagerV30
 			Data = Info.Data;
 
 			logMsgLn2();
-			logMsgLn2("at ctor AppSettings", "status| " + Admin.Status);
+			logMsgLn2("at ctor AppSettings", "status| " + Admin.Status
+				+ "  CanAutoUpgrade?| " + Admin.CanAutoUpgrade
+					);
 			logMsgLn2();
 		}
 
@@ -78,7 +80,7 @@ namespace SettingsManagerV30
 		{
 #if DEBUG
 			logMsgLn2();
-			logMsgLn2("at AppSettingInfo22", "at ctor");
+			logMsgLn2("at ctor AppSettingInfo22", "");
 #endif
 		}
 
