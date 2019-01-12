@@ -65,14 +65,14 @@ namespace SettingsManagerV30
 					
 					logMsgLn2("******* at switch", "create AppSettings object ******");
 					logMsgLn2();
-					UpgradeControl<AppSettingInfo22>(APP_SETG);
+					UpgradeControl(AppSettings.Admin, APP_SETG);
 
 					logMsgLn2(nl);
 					logMsgLn2(nl);
 					logMsgLn2("****** at switch", "create UserSettings object ******");
 					logMsgLn2();
 
-					UpgradeControl<UserSettingInfo22>(USER_SETG);
+					UpgradeControl(UserSettings.Admin, USER_SETG);
 					break;
 				}
 			}
@@ -228,145 +228,73 @@ namespace SettingsManagerV30
 
 		#region +UpgradeControl
 
-		private void test<T>(SettingsMgr<T> admin)  where  T : SettingBase, new ()
+		private void UpgradeControl<T>(SettingsMgr<T> admin, string name) where T : SettingBase, new()
 		{
-			
-		}
-
-		private void UpgradeControl<T>(string name) where T : SettingBase, new()
-		{
-			SettingsMgr<T> admin;
-
 			logMsgLn2(nl);
 			logMsgLn2("at UpgradeControl", "**** start ****");
 			string a = "asdf";
 
 			for (int i = 0; i < 2; i++)
 			{
-				logMsgLn2();
-				logMsgLn2("Begin", "***** " + name + " *****");
-
 				logMsgLn2(nl);
+				logMsgLn2("******** Begin", name + " *****");
+
+				logMsgLn2();
 				logMsgLn2("at UpgradeControl", name + "| replace");
-				ReplaceTestFileApp2();
 
-				// AppSettings
-
-				// CanAutoUpgrade
-				// since ths does create the object - do this last
-				logMsgLn2();
-				logMsgLn2("at UpgradeControl", "test CanAutoUpgrade");
-				logMsgLn2();
-				logMsgLn2("at UpgradeControl", name + "| CanAutoUpgrade?| is false by default");
-
-				switch (name)
+				switch (name) 
 				{
 				case APP_SETG:
 					{
-						admin = Admin;
+						ReplaceTestFileApp2();
 						break;
 					}
 				case USER_SETG:
 					{
-						admin = (SettingsMgr <SettingBase> ) UserSettings.Admin;
+						ReplaceTestFileUser2();
 						break;
 					}
 				}
 
-
-				// the object is created 
-				// but the it is created before the value is set
-				admin.CanAutoUpgrade = false;
-
-				logMsgLn2();
-				logMsgLn2("at UpgradeControl", name + "| get CanAutoUpgrade"
-					+ " :: " + admin.CanAutoUpgrade);
-
+				// the object is not created here
 				// display status
 				logMsgLn2();
-				logMsgLn2("at UpgradeControl", "*** "
-					+ name + "| get status");
-				logMsgLn2();
 				logMsgLn2("at UpgradeControl",
-					"*** " + name + "| status| " + admin.Status
-					+ "  CanAutoUpgrade?| " + admin.CanAutoUpgrade
-					);
+					"*** " + name + "| get status| " + admin.Status);
 
 				// test upgrade process
 				// auto upgrade
-				logMsgLn2();
-
 				if (i == 0)
 				{
 					logMsgLn2();
-					logMsgLn2("at UpgradeControl", name + "| expect auto upgrade");
-
-					logMsgLn2();
 					logMsgLn2("at UpgradeControl", name + "| set CanAutoUpgrade| true");
 					admin.CanAutoUpgrade = true;
+
 					logMsgLn2();
-					logMsgLn2("at UpgradeControl", name + "| initialize");
+					logMsgLn2("at UpgradeControl", name + "| initialize | expect auto upgrade");
 					admin.Initialize();
 
-					ShowAppStatus(admin, name);
+//					ShowAppStatus(admin, name);
 				}
 				else
 				{
 					logMsgLn2();
-					logMsgLn2("at UpgradeControl", name + "| expect manual upgrade");
-
-					logMsgLn2();
 					logMsgLn2("at UpgradeControl", name + "| set CanAutoUpgrade| false");
 					admin.CanAutoUpgrade = false;
+
 					logMsgLn2();
-					logMsgLn2("at UpgradeControl", name + "| initialize");
+					logMsgLn2("at UpgradeControl", name + "| initialize | expect manual upgrade");
 					admin.Initialize();
 
-					ShowAppStatus(admin, name);
+//					ShowAppStatus(admin, name);
 
 					logMsgLn2();
-					logMsgLn2("at UpgradeControl", name + "| upgrade");
+					logMsgLn2("at UpgradeControl", name + "| manual upgrade");
 					admin.Upgrade();
 
-					ShowAppStatus(admin, name);
+//					ShowAppStatus(admin, name);
 				}
 			}
-
-
-
-
-//			logMsgLn2();
-//			logMsgLn2("at UpgradeControl", "UserSettings| replace");
-//			ReplaceTestFileUser2();
-
-//			// UserSettings
-//
-//			logMsgLn2(nl +  nl);
-//
-//			// test CanAutoUpgrade
-//			// since ths does create the object - do this last
-//			logMsgLn2();
-//			logMsgLn2("at UpgradeControl", "test CanAutoUpgrade");
-//			logMsgLn2("at UpgradeControl", "UserSettings| set CanAutoUpgrade");
-//
-//			// the object is created
-//			// but the it is created before the value is set
-//			UserSettings.Admin.CanAutoUpgrade = false;
-//			logMsgLn2("at UpgradeControl", "UserSettings| get CanAutoUpgrade"
-//				+ " :: " + UserSettings.Admin.CanAutoUpgrade);
-//
-//			// display status
-//			logMsgLn2();
-//			logMsgLn2("at UpgradeControl", "*** UserSettings| get status");
-//			logMsgLn2("at UpgradeControl",
-//				"*** UserSettings| status| " + UserSettings.Admin.Status
-//				+ "  CanAutoUpgrade?| " + UserSettings.Admin.CanAutoUpgrade
-//				);
-
-
-
-
-
 		}
 
 		#endregion
