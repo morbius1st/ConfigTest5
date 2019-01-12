@@ -37,14 +37,6 @@ namespace SettingsManagerV30
 	[DataContract(Name = "UserSettingInfo20")]
 	public class UserSettingInfo20 : UserSettingBase
 	{
-		public UserSettingInfo20()
-		{
-#if DEBUG
-			logMsgLn2();
-			logMsgLn2("at UserSettingInfo20", "at ctor");
-#endif
-		}
-
 		[DataMember]
 		public UserSettingData20 Data = new UserSettingData20();
 

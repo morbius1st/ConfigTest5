@@ -76,14 +76,6 @@ namespace SettingsManagerV30
 	[DataContract(Name = "AppSettingInfo22")]
 	public class AppSettingInfo22 : AppSettingBase
 	{
-		public AppSettingInfo22()
-		{
-#if DEBUG
-			logMsgLn2();
-			logMsgLn2("at ctor AppSettingInfo22", "");
-#endif
-		}
-
 		[DataMember]
 		public AppSettingData22 Data = new AppSettingData22();
 

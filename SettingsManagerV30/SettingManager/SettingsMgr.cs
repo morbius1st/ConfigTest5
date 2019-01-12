@@ -99,14 +99,6 @@ namespace SettingManager
 				Status = NOPATH;
 			}
 
-#if DEBUG
-			logMsgLn2();
-			logMsgLn2("at ctor SettingsMgr", "status| " + Status +
-				" file type| " + Info.FileType.ToString()
-				+ "  CanAutoUpgrade?| " + CanAutoUpgrade
-				);
-#endif
-
 			_resetData = rst;
 		}
 
@@ -115,17 +107,9 @@ namespace SettingManager
 			if (Status != NOPATH)
 			{
 				Status = INITIALIZED;
-#if DEBUG
-				//this object is created before the value, CanAutoUpgrade, is set
-				logMsgLn2();
-				logMsgLn2("at SettingsMgr initialize", "status| " + Status +
-					" file type| " + Info.FileType.ToString()
-					+ "  CanAutoUpgrade?| " + CanAutoUpgrade
-					);
 
 				UpgradeRequired = !Info.ClassVersionsMatch;
 
-#endif
 				if (FileExists())
 				{
 					if (!Info.ClassVersionsMatch && CanAutoUpgrade)
@@ -190,10 +174,6 @@ namespace SettingManager
 				}
 				else
 				{
-#if DEBUG
-					logMsgLn2();
-					logMsgLn2("at read", "upgrading");
-#endif
 					Upgrade();
 				}
 			}
@@ -384,25 +364,13 @@ namespace SettingManager
 		{
 			if (settings == null || settings.Count < 2)
 			{
-#if DEBUG
-				logMsgLn2("upgrading settings", "nothing to upgrade");
-#endif
 				return;
 			}
 
 			if (Info.ClassVersionsMatch)
 			{
-#if DEBUG
-				logMsgLn2();
-				logMsgLn2("upgrading settings", "class versions do match - do nothing");
-#endif
 				return;
 			}
-
-#if DEBUG
-			logMsgLn2();
-			logMsgLn2("upgrading settings", "class versions do not match");
-#endif
 
 			settings.Sort(); // must be in the correct order from oldest to newest
 
@@ -417,19 +385,10 @@ namespace SettingManager
 				{
 					// found the starting point, read the current setting
 					// file into memory
-#if DEBUG
-					logMsgLn2("upgrading", "from this version: " +
-						settings[i].ClassVersion);
-#endif
-
 					settings[i] = Read(settings[i].GetType());
 				}
 				else
 				{
-#if DEBUG
-					logMsgLn2("upgrading", "to this version: " +
-						settings[i].ClassVersion);
-#endif
 					settings[i].UpgradeFromPrior(settings[i - 1]);
 				}
 			}
@@ -603,222 +562,3 @@ namespace SettingManager
 
 	#endregion
 }
-
-
-
-
-
-// the below are example user setting and app setting files - these are out-of-date
-
-
-
-//	#region Info User
-//	
-//	public static class SettingsUser
-//	{
-//		// this is the primary data structure - it holds the settings
-//		// configuration information as well as the setting data
-//		public static SettingsMgr<UserSettingInfo22> Admin { get; private set; }
-//
-//		// this is just the setting data - this is a shortcut to
-//		// the setting data
-//		public static UserSettingInfo22 Info { get; private set; }
-//
-//		// initalize and create the setting objects
-//		static SettingsUser()
-//		{
-//			Admin = new SettingsMgr<UserSettingInfo22>();
-//			Info = Admin.Info;
-//			Admin.ResetData = ResetData;
-//		}
-//
-//		// reset the settings data to their current value
-//		public static void ResetData()
-//		{
-//			Info = Admin.Info;
-//		}
-//	}
-
-//
-//	#endregion
-
-//	
-//	#region Info App
-//	
-//	public static class AppSettings
-//	{
-//		// this is the primary data structure - it holds the settings
-//		// configuration information as well as the setting data
-//		public static SettingsMgr<AppSettingData22> Admin { get; private set; }
-//
-//		// this is just the setting data - this is a shortcut to
-//		// the setting data
-//		public static AppSettingData22 Info { get; private set; }
-//
-//		// initalize and create the setting objects
-//		static AppSettings()
-//		{
-//			Admin = new SettingsMgr<AppSettingData22>();
-//			Info = Admin.Info;
-//			Admin.ResetData = ResetData;
-//		}
-//
-//		// reset the settings data to their current value
-//		public static void ResetData()
-//		{
-//			Info = Admin.Info;
-//		}
-//	}
-//	
-//	#endregion
-//}
-
-// sample setting data classes
-//
-// **********************
-// user settings: SettingsUserSettings.cs
-// **********************
-//
-// access thus:
-// for file configuration info:
-// Admin.SettingPathAndFile (for example)
-//
-// for the individual fields:
-// Info.UnCategorizedValue  (for example)
-// Info.GeneralValues.TestI  (for example)
-//
-
-//	// this is the actual data set saved to the user's configuration file
-//	// this is unique for each program
-//	[DataContract(Name = "UserSettingInfo22")]
-//	public class UserSettingInfo22 : SettingsPathFileUserBase
-//	{
-//		// this is just the version of this class
-//		public override string ClassVersion { get; }
-//
-//		[DataMember] public int UnCategorizedValue = 1000;
-//		[DataMember] public int UnCategorizedValue2 = 2000;
-//		[DataMember] public GeneralValues GeneralValues = new GeneralValues();
-//
-//		[DataMember]
-//		public Window1 MainWindow { get; set; } = new Window1();
-//
-//		[DataMember(Name = "DictionaryTest3")] public CustDict<string, TestStruct> TestDictionary3 =
-//			new CustDict<string, TestStruct>()
-//			{
-//				{"one", new TestStruct(1, 2, 3)},
-//				{"two", new TestStruct(1, 2, 3)},
-//				{"three", new TestStruct(1, 2, 3)}
-//			};
-//
-//	// provide all of the default values hee
-//	private void SetDefaultValues()
-//	{
-//		ClassVersion = "2.0";
-//		UnCategorizedValue = 1000;
-//		UnCategorizedValue2 = 2000;
-//	}
-//
-//
-//	public UserSettingInfo22()
-//	{
-//		SetDefaultValues();
-//	}
-//
-//	[OnDeserializing]
-//	void OnDeserializing(StreamingContext context)
-//	{
-//		SetDefaultValues();
-//	}
-//
-//	}
-//
-//	// sample sub-class of dictionary to provide names to elements
-//	[CollectionDataContract(Name = "CustomDict", KeyName = "key", ValueName = "data", ItemName = "row")]
-//	public class CustDict<T1, T2> : Dictionary<T1, T2>
-//	{
-//	}
-//	// sample struct / data
-//	public struct TestStruct
-//	{
-//		[DataMember(Name = "line1")] public int IntA;
-//		[DataMember(Name = "line2")] public int IntB;
-//		[DataMember(Name = "line3")] public int IntC;
-//
-//		public TestStruct(int a, int b, int c)
-//		{
-//			IntA = a;
-//			IntB = b;
-//			IntC = c;
-//		}
-//	}
-//
-//	// sample class / data
-//	public class GeneralValues
-//	{
-//		public int TestI = 0;
-//		public bool TestB = false;
-//		public double TestD = 0.0;
-//		public string TestS = "this is a test";
-//		public int[] TestIs = new[] {20, 30};
-//		public string[] TestSs = new[] {"user 1", "user 2", "user 3"};
-//	}
-//
-//	// sample class / data
-//	public class Window1
-//	{
-//		public int Height = 50;
-//		public int Width = 100;
-//	}
-
-//
-//
-// **********************
-// app settings:  SettingsAppSettngs.cs
-// **********************
-//
-// access thus:
-// for file configuration info:
-// Admin.SettingPathAndFile (for example)
-//
-// for the individual fields:
-// Info.AppI  (for example)
-//
-
-//	[DataContract(Name = "AppSettingData22")]
-//	public class AppSettingData22 : SettingsPathFileAppBase
-//	{
-//		// this is the version of this class
-//		public override string ClassVersion { get; } = "1.0";
-//
-//		[DataMember(Order = 1)]
-//		public int AppI { get; set; } = 0;
-//
-//		[DataMember(Order = 2)]
-//		public bool AppB { get; set; } = false;
-//
-//		[DataMember(Order = 3)]
-//		public double AppD { get; set; } = 0.0;
-//
-//		[DataMember(Order = 4)]
-//		public string AppS { get; set; } = "this is an App";
-//
-//		[DataMember(Order = 5)]
-//		public int[] AppIs { get; set; } = new[] {20, 30};
-//
-//		
-//		see usersettings for OnDeserializing & properly setting
-//		default values
-//
-//	}
-
-
-
-
-
-
-
-
-
-
-

@@ -33,14 +33,6 @@ namespace SettingsManagerV30
 	[DataContract(Name = "AppSettingInfo20")]
 	public class AppSettingInfo20 : AppSettingBase
 	{
-		public AppSettingInfo20()
-		{
-#if DEBUG
-			logMsgLn2();
-			logMsgLn2("at AppSettingInfo20", "at ctor");
-#endif
-		}
-
 		[DataMember]
 		public AppSettingData20 Data = new AppSettingData20();
 

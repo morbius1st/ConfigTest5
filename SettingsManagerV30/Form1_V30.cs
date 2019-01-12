@@ -73,6 +73,17 @@ namespace SettingsManagerV30
 					logMsgLn2();
 
 					UpgradeControl(UserSettings.Admin, USER_SETG);
+
+					logMsgLn2(nl);
+					logMsgLn2();
+					logMsgLn2("******* data list", "AppSettings object ******");
+					DisplayAppSettingData();
+
+					logMsgLn2(nl);
+					logMsgLn2();
+					logMsgLn2("******* data list", "UserSettings object ******");
+					DisplayUserSettingData();
+
 					break;
 				}
 			}
@@ -232,7 +243,6 @@ namespace SettingsManagerV30
 		{
 			logMsgLn2(nl);
 			logMsgLn2("at UpgradeControl", "**** start ****");
-			string a = "asdf";
 
 			for (int i = 0; i < 2; i++)
 			{

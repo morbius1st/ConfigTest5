@@ -31,13 +31,6 @@ namespace SettingsManagerV30
 			Admin = new SettingsMgr<UserSettingInfo22>(ResetData);
 			Info = Admin.Info;
 			Data = Info.Data;
-
-			// object is created before the value is set
-			logMsgLn2();
-			logMsgLn2("at ctor UserSettings", "status| " + Admin.Status
-				+ "  CanAutoUpgrade?| " + Admin.CanAutoUpgrade);
-			logMsgLn2();
-
 		}
 
 		public static void ResetData()
@@ -46,9 +39,6 @@ namespace SettingsManagerV30
 			// to the current data structure
 			Info  = Admin.Info;
 			Data  = Info.Data;
-
-			logMsgLn2();
-			logMsgLn2("at UserSettings reset", "status| " + Admin.Status);
 		}
 	}
 
@@ -115,14 +105,6 @@ namespace SettingsManagerV30
 	[DataContract(Name = "UserSettingInfo22")]
 	public class UserSettingInfo22 : UserSettingBase
 	{
-		public UserSettingInfo22()
-		{
-#if DEBUG
-			logMsgLn2();
-			logMsgLn2("at ctor UserSettingInfo22", "");
-#endif
-		}
-
 		[DataMember]
 		public UserSettingData22 Data = new UserSettingData22();
 
