@@ -393,12 +393,14 @@ namespace SettingManager
 			if (Info.ClassVersionsMatch)
 			{
 #if DEBUG
+				logMsgLn2();
 				logMsgLn2("upgrading settings", "class versions do match - do nothing");
 #endif
 				return;
 			}
 
 #if DEBUG
+			logMsgLn2();
 			logMsgLn2("upgrading settings", "class versions do not match");
 #endif
 

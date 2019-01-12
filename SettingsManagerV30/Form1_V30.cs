@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using SettingManager;
 using SettingsManagerV30.Properties;
 using UtilityLibrary;
+using static SettingsManagerV30.AppSettings;
 using static UtilityLibrary.MessageUtilities2;
 
 
@@ -14,6 +15,9 @@ namespace SettingsManagerV30
 	public partial class Form1_V30 : Form
 	{
 		public static string nl = Environment.NewLine;
+
+		private const string USER_SETG = "UserSettings";
+		private const string APP_SETG = "AppSettings";
 
 		public Form1_V30()
 		{
@@ -58,9 +62,17 @@ namespace SettingsManagerV30
 				}
 			case 5:
 				{
-					UpgradeControl(AppSettings.Admin, "AppSettings");
 					
-					UpgradeControl(UserSettings.Admin, "UserSettings");
+					logMsgLn2("******* at switch", "create AppSettings object ******");
+					logMsgLn2();
+					UpgradeControl<AppSettingInfo22>(APP_SETG);
+
+					logMsgLn2(nl);
+					logMsgLn2(nl);
+					logMsgLn2("****** at switch", "create UserSettings object ******");
+					logMsgLn2();
+
+					UpgradeControl<UserSettingInfo22>(USER_SETG);
 					break;
 				}
 			}
@@ -151,12 +163,12 @@ namespace SettingsManagerV30
 
 				logMsgLn2();
 				logMsgLn2("SetttingsApp", "create");
-				AppSettings.Admin.Create();
-				logMsgLn2("create status", AppSettings.Admin.Status);
+				Admin.Create();
+				logMsgLn2("create status", Admin.Status);
 
 				logMsgLn2("SetttingsApp", "saving");
-				AppSettings.Admin.Save();
-				logMsgLn2("save status", AppSettings.Admin.Status);
+				Admin.Save();
+				logMsgLn2("save status", Admin.Status);
 
 				logMsgLn2();
 				logMsgLn2("SetttingsUser", "create");
@@ -182,8 +194,8 @@ namespace SettingsManagerV30
 
 				logMsgLn2();
 				logMsgLn2("SetttingsApp", "initialize");
-				AppSettings.Admin.Initialize();
-				logMsgLn2("status", AppSettings.Admin.Status);
+				Admin.Initialize();
+				logMsgLn2("status", Admin.Status);
 
 				logMsgLn2();
 				logMsgLn2("SetttingsUser", "initialize");
@@ -204,7 +216,7 @@ namespace SettingsManagerV30
 			logMsgLn2();
 			logMsgLn2("at SubclassTest", "appsettings");
 			logMsgLn2("appsettings", "classversion| " +
-				AppSettings.Info.ClassVersion);
+				Info.ClassVersion);
 
 			logMsgLn2();
 			logMsgLn2("at SubclassTest", "UserSettings");
@@ -221,14 +233,19 @@ namespace SettingsManagerV30
 			
 		}
 
-		private void UpgradeControl<T>(SettingsMgr<T> admin, string name) where T: SettingBase, new()
+		private void UpgradeControl<T>(string name) where T : SettingBase, new()
 		{
+			SettingsMgr<T> admin;
 
-				logMsgLn2();
-				logMsgLn2("at UpgradeControl", "start");
+			logMsgLn2(nl);
+			logMsgLn2("at UpgradeControl", "**** start ****");
+			string a = "asdf";
 
 			for (int i = 0; i < 2; i++)
 			{
+				logMsgLn2();
+				logMsgLn2("Begin", "***** " + name + " *****");
+
 				logMsgLn2(nl);
 				logMsgLn2("at UpgradeControl", name + "| replace");
 				ReplaceTestFileApp2();
@@ -240,7 +257,22 @@ namespace SettingsManagerV30
 				logMsgLn2();
 				logMsgLn2("at UpgradeControl", "test CanAutoUpgrade");
 				logMsgLn2();
-				logMsgLn2("at UpgradeControl", name + "| set CanAutoUpgrade?| false");
+				logMsgLn2("at UpgradeControl", name + "| CanAutoUpgrade?| is false by default");
+
+				switch (name)
+				{
+				case APP_SETG:
+					{
+						admin = Admin;
+						break;
+					}
+				case USER_SETG:
+					{
+						admin = (SettingsMgr <SettingBase> ) UserSettings.Admin;
+						break;
+					}
+				}
+
 
 				// the object is created 
 				// but the it is created before the value is set
@@ -256,8 +288,7 @@ namespace SettingsManagerV30
 					+ name + "| get status");
 				logMsgLn2();
 				logMsgLn2("at UpgradeControl",
-					"*** "
-					+ name + "| status| " + admin.Status
+					"*** " + name + "| status| " + admin.Status
 					+ "  CanAutoUpgrade?| " + admin.CanAutoUpgrade
 					);
 
@@ -357,7 +388,7 @@ namespace SettingsManagerV30
 		private void ProcessAppSettings(bool modify)
 		{
 			logMsgLn2();
-			logMsgLn2("app path",AppSettings.Info.SettingPathAndFile);
+			logMsgLn2("app path",Info.SettingPathAndFile);
 			logMsgLn2("app before");
 
 			if (PathAndFile.App.Exists)
@@ -365,7 +396,7 @@ namespace SettingsManagerV30
 				logMsgLn2();
 				logMsgLn2("admin", "read");
 
-				AppSettings.Admin.Read();
+				Admin.Read();
 
 				DisplayAppSettingData();
 
@@ -422,8 +453,8 @@ namespace SettingsManagerV30
 
 			File.Copy(testFileName, PathAndFile.User.SettingPathAndFile);
 
-			logMsg2(nl);
-			logMsgLn2("SetttingsUser", "test file replaced");
+			logMsgLn2();
+			logMsgLn2("at ReplaceTestFileUser2", "test file replaced");
 		}
 
 		private void DeleteUserSettingFile()
@@ -440,8 +471,8 @@ namespace SettingsManagerV30
 
 			File.Copy(testFileName, PathAndFile.App.SettingPathAndFile);
 
-			logMsg2(nl);
-			logMsgLn2("SetttingsApp", "test file replaced");
+			logMsgLn2();
+			logMsgLn2("ReplaceTestFileApp2", "test file replaced");
 		}
 
 		private void DeleteAppSettingFile()
@@ -519,42 +550,42 @@ namespace SettingsManagerV30
 		private void DisplayAppSettingData()
 		{
 			logMsgLn2();
-			logMsgLn2("system version"          , AppSettings.Info.Header.SystemVersion);
-			logMsgLn2("status"                  , AppSettings.Admin.Status);
-			logMsgLn2("path and file"           , AppSettings.Info.SettingPathAndFile);
-			logMsgLn2("path"                    , AppSettings.Info.SettingPath);
-			logMsgLn2("root path"               , AppSettings.Info.SettingPath);
-			logMsgLn2("file name"               , AppSettings.Info.FileName);
-			logMsgLn2("file version (from file)" ,AppSettings.Info.ClassVersionFromFile ?? "does not exist");
-			logMsgLn2("class version (in memory)",AppSettings.Info.ClassVersion);
-			logMsgLn2("save date time"          , AppSettings.Info.Header.SaveDateTime);
-			logMsgLn2("assembly version"        , AppSettings.Info.Header.AssemblyVersion);
-			logMsgLn2("file notes"              , AppSettings.Info.Header.Notes);
+			logMsgLn2("system version"          , Info.Header.SystemVersion);
+			logMsgLn2("status"                  , Admin.Status);
+			logMsgLn2("path and file"           , Info.SettingPathAndFile);
+			logMsgLn2("path"                    , Info.SettingPath);
+			logMsgLn2("root path"               , Info.SettingPath);
+			logMsgLn2("file name"               , Info.FileName);
+			logMsgLn2("file version (from file)" ,Info.ClassVersionFromFile ?? "does not exist");
+			logMsgLn2("class version (in memory)",Info.ClassVersion);
+			logMsgLn2("save date time"          , Info.Header.SaveDateTime);
+			logMsgLn2("assembly version"        , Info.Header.AssemblyVersion);
+			logMsgLn2("file notes"              , Info.Header.Notes);
 			logMsg2(nl);
-			logMsgLn2("test string"             , AppSettings.Data.AppS);
-			logMsgLn2("test bool"               , AppSettings.Data.AppB.ToString());
-			logMsgLn2("test double"             , AppSettings.Data.AppD.ToString());
-			logMsgLn2("test int"                , AppSettings.Data.AppI.ToString());
-			logMsgLn2("test int[0]"             , AppSettings.Data.AppIs[0].ToString());
-			logMsgLn2("test AppI20"             , AppSettings.Data.AppI20.ToString());
+			logMsgLn2("test string"             , Data.AppS);
+			logMsgLn2("test bool"               , Data.AppB.ToString());
+			logMsgLn2("test double"             , Data.AppD.ToString());
+			logMsgLn2("test int"                , Data.AppI.ToString());
+			logMsgLn2("test int[0]"             , Data.AppIs[0].ToString());
+			logMsgLn2("test AppI20"             , Data.AppI20.ToString());
 			logMsg2(nl);
 		}
 
 		private void ModifyAndSaveAppSettings()
 		{
-			AppSettings.Data.AppS = "generic app data " + V;
-			AppSettings.Data.AppB = false;
-			AppSettings.Data.AppD = V + 0.1;
-			AppSettings.Data.AppI = V;
-			AppSettings.Data.AppIs[0] = V;
+			Data.AppS = "generic app data " + V;
+			Data.AppB = false;
+			Data.AppD = V + 0.1;
+			Data.AppI = V;
+			Data.AppIs[0] = V;
 
-			AppSettings.Admin.Save();
+			Admin.Save();
 		}
 
 		private void ResetAndSaveAppSettings()
 		{
-			AppSettings.Admin.Reset();
-			AppSettings.Admin.Save();
+			Admin.Reset();
+			Admin.Save();
 
 			logMsgLn2(nl + "app reset");
 			DisplayAppSettingData();
