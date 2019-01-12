@@ -62,17 +62,16 @@ namespace SettingsManagerV30
 				}
 			case 5:
 				{
-					
 					logMsgLn2("******* at switch", "create AppSettings object ******");
 					logMsgLn2();
-					UpgradeControl(AppSettings.Admin, APP_SETG);
+					UpgradeControl<AppSettingInfo22>(APP_SETG);
 
 					logMsgLn2(nl);
 					logMsgLn2(nl);
 					logMsgLn2("****** at switch", "create UserSettings object ******");
 					logMsgLn2();
 
-					UpgradeControl(UserSettings.Admin, USER_SETG);
+					UpgradeControl<UserSettingInfo22>(USER_SETG);
 
 					logMsgLn2(nl);
 					logMsgLn2();
@@ -239,8 +238,11 @@ namespace SettingsManagerV30
 
 		#region +UpgradeControl
 
-		private void UpgradeControl<T>(SettingsMgr<T> admin, string name) where T : SettingBase, new()
+//		private void UpgradeControl<T>(SettingsMgr<T> admin, string name) where T : SettingBase, new()
+		private void UpgradeControl<T>(string name) where T : SettingBase, new()
 		{
+			SettingsMgr<T> admin = null;
+
 			logMsgLn2(nl);
 			logMsgLn2("at UpgradeControl", "**** start ****");
 
@@ -257,11 +259,19 @@ namespace SettingsManagerV30
 				case APP_SETG:
 					{
 						ReplaceTestFileApp2();
+
+						logMsgLn2();
+						logMsgLn2("at UpgradeControl", name + "| create object");
+						admin = AppSettings.Admin as SettingsMgr<T>;
 						break;
 					}
 				case USER_SETG:
 					{
 						ReplaceTestFileUser2();
+
+						logMsgLn2();
+						logMsgLn2("at UpgradeControl", name + "| create object");
+						admin = UserSettings.Admin as SettingsMgr<T>;
 						break;
 					}
 				}
