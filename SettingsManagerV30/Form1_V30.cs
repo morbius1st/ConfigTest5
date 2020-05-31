@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
-using SettingManager;
+using SettingsManager;
 using SettingsManagerV30.Properties;
 using UtilityLibrary;
 using static SettingsManagerV30.AppSettings;

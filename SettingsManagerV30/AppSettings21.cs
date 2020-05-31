@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using SettingManager;
+using SettingsManager;
 
 using static UtilityLibrary.MessageUtilities2;
 

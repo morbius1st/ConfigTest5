@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using SettingManager;
+using SettingsManager;
 
 using static UtilityLibrary.MessageUtilities2;
 

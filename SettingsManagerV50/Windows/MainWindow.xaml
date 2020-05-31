@@ -1,0 +1,76 @@
+﻿<Window x:Class="SettingsManagerV50.Windows.MainWindow"
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				xmlns:local="clr-namespace:SettingsManagerV50"
+				xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				Name="mainWin"
+				Title="MainWindow"
+				Width="1183.2"
+				Height="916.4"
+				DataContext="{Binding ElementName=mainWin}"
+				Loaded="mainWin_Loaded"
+				mc:Ignorable="d"
+				Background="#222222">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="4*" />
+			<ColumnDefinition Width="2*" />
+		</Grid.ColumnDefinitions>
+
+		<TextBox x:Name="TblkLeft"
+							 Grid.Column="0"
+							 Padding="5"
+							 HorizontalAlignment="Stretch"
+							 VerticalAlignment="Stretch"
+							 FontFamily="Consolas"
+							 FontSize="12"
+							Margin="5"
+	
+							ScrollViewer.IsDeferredScrollingEnabled="True"
+							 ScrollViewer.HorizontalScrollBarVisibility="Visible"
+							 ScrollViewer.VerticalScrollBarVisibility="Visible"
+							 Text="{Binding Path=MessageLeft,
+											 FallbackValue='now is the time'}"
+							 Background="#222222"
+							 Foreground="White" />
+
+		<TextBlock x:Name="TblkRight"
+							 Grid.Column="1"
+							 HorizontalAlignment="Stretch"
+							 VerticalAlignment="Stretch"
+							 Padding="5"
+							 FontFamily="Consolas"
+							 FontSize="12"
+							Margin="5"
+							 ScrollViewer.HorizontalScrollBarVisibility="Visible"
+							
+							 ScrollViewer.VerticalScrollBarVisibility="Visible"
+							 Text="{Binding Path=MessageRight,
+											 FallbackValue='now is the time'}"
+							 Background="#222222"
+							 Foreground="White" />
+
+		<Button x:Name="BtnDebug"
+						Content="Debug"
+						Grid.Column="1"
+						Margin="10"
+						Width="90"
+						Height="32"
+						HorizontalAlignment="Right"
+						VerticalAlignment="Bottom"
+						Click="BtnDebug_OnClick" />
+
+		<Button x:Name="BtnReset"
+						Content="Reset"
+						Grid.Column="1"
+						Margin="0,0,10,60"
+						Width="90"
+						Height="32"
+						HorizontalAlignment="Right"
+						VerticalAlignment="Bottom"
+						Click="BtnReset_OnClick" />
+
+
+	</Grid>
+</Window>
