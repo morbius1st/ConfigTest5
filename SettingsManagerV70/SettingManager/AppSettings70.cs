@@ -12,7 +12,7 @@ namespace SettingsManager
 	public partial class Heading
 	{
 //		public static string SuiteName = "";
-		public static string SuiteName = "SettingManager";
+		public static string SuiteName = "SettingsManager";
 	}
 
 #endregion

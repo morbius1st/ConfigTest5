@@ -9,12 +9,12 @@ using System.Windows;
 
 #endregion
 
-// projname: SettingManager
+// projname: SettingsManager
 // itemname: App
 // username: jeffs
 // created:  6/19/2020 7:50:21 PM
 
-namespace SettingManager
+namespace SettingsManager
 {
 	public partial class App : Application
 	{

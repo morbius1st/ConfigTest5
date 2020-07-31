@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{ECE6DD79-88CF-4A1E-BA74-70E59812A2FD}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>SettingManager</RootNamespace>
-    <AssemblyName>SettingManager</AssemblyName>
+    <RootNamespace>SettingsManager</RootNamespace>
+    <AssemblyName>SettingsManager</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -61,29 +61,29 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.1\AppSettings71.cs">
-      <Link>Settings\Settngs-v71\AppSettings71.cs</Link>
+    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.1\AppSettings.cs">
+      <Link>Settings\Settngs-v71\AppSettings.cs</Link>
     </Compile>
-    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.1\DataSettings71.cs">
-      <Link>Settings\Settngs-v71\DataSettings71.cs</Link>
+    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.1\DataSettings.cs">
+      <Link>Settings\Settngs-v71\DataSettings.cs</Link>
     </Compile>
-    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.1\HeadingSetting71.cs">
-      <Link>Settings\Settngs-v71\HeadingSetting71.cs</Link>
+    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.1\HeadingSetting.cs">
+      <Link>Settings\Settngs-v71\HeadingSetting.cs</Link>
     </Compile>
-    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.1\MachineSettings71.cs">
-      <Link>Settings\Settngs-v71\MachineSettings71.cs</Link>
+    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.1\MachineSettings.cs">
+      <Link>Settings\Settngs-v71\MachineSettings.cs</Link>
     </Compile>
-    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.1\SettingsMgr.-v71.cs">
-      <Link>Settings\Settngs-v71\SettingsMgr.-v71.cs</Link>
+    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.1\SettingsMgr.cs">
+      <Link>Settings\Settngs-v71\SettingsMgr.cs</Link>
     </Compile>
-    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.1\SiteSettings71.cs">
-      <Link>Settings\Settngs-v71\SiteSettings71.cs</Link>
+    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.1\SiteSettings.cs">
+      <Link>Settings\Settngs-v71\SiteSettings.cs</Link>
     </Compile>
-    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.1\SuiteSettings71.cs">
-      <Link>Settings\Settngs-v71\SuiteSettings71.cs</Link>
+    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.1\SuiteSettings.cs">
+      <Link>Settings\Settngs-v71\SuiteSettings.cs</Link>
     </Compile>
-    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.1\UserSettings71.cs">
-      <Link>Settings\Settngs-v71\UserSettings71.cs</Link>
+    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.1\UserSettings.cs">
+      <Link>Settings\Settngs-v71\UserSettings.cs</Link>
     </Compile>
     <Compile Include="D:\Users\Jeff\Documents\Programming\VisualStudioProjects\UtilityLibrary\UtilityLibrary\CsExtensions.cs">
       <Link>.Linked\CsExtensions.cs</Link>
@@ -136,6 +136,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

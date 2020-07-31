@@ -51,7 +51,7 @@ namespace SettingsManagerV70.SampleData
 
 	public class SampleDataPath : PathAndFileBase
 	{
-		public override void Configure()
+		protected override void Configure()
 		{
 //			FileName = @"SampleData.xml";
 //			RootPath =  CsUtilities.AssemblyDirectory;
