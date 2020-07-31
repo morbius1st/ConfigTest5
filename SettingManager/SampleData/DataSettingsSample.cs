@@ -41,7 +41,7 @@ namespace SettingsManagerV70.SampleData
 	{
 		public override string DataClassVersion => "1.0";
 		public override string Description => "sample data file";
-		public override SettingFileType FileType => SettingFileType.OTHER;
+		public override SettingFileType FileType => SettingFileType.DATA;
 		public override void UpgradeFromPrior(SettingInfoBase<Tdata> prior) { }
 	}
 
