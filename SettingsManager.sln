@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SettingsManagerV60", "Setti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SettingsManagerV70", "SettingsManagerV70\SettingsManagerV70.csproj", "{8A571700-28FE-4DE5-9AB7-5CA9A6668595}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SettingManager", "SettingManager\SettingManager.csproj", "{ECE6DD79-88CF-4A1E-BA74-70E59812A2FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{8A571700-28FE-4DE5-9AB7-5CA9A6668595}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A571700-28FE-4DE5-9AB7-5CA9A6668595}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A571700-28FE-4DE5-9AB7-5CA9A6668595}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECE6DD79-88CF-4A1E-BA74-70E59812A2FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECE6DD79-88CF-4A1E-BA74-70E59812A2FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECE6DD79-88CF-4A1E-BA74-70E59812A2FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECE6DD79-88CF-4A1E-BA74-70E59812A2FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,9 +4,9 @@
     <SaveDateTime>2020-04-29 - 13:55 -07:00</SaveDateTime>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <SystemVersion>6.0</SystemVersion>
-    <DataClassVersion>2.0</DataClassVersion>
-    <Notes>Version 2.0</Notes>
-    <Description>Data Storage Info Ver 2.0</Description>
+    <DataClassVersion>1.0</DataClassVersion>
+    <Notes>Version 1.0</Notes>
+    <Description>Data Storage Info Ver 1.0</Description>
   </Header>
   <Data>
     <Description>This is SampleDataData2</Description>
