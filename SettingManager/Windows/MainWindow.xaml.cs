@@ -19,8 +19,8 @@ namespace SettingsManager.Windows
 		public static SampleDataManager2 sd2x { get; set; } = new SampleDataManager2(DATA_NAME2);
 		private SampleDataManager2 sd2;
 
-		private StorageManager<SampleDataData3> ds1;
-		private StorageManager<SampleDataData3> ds2;
+		// private StorageManager<SampleDataData3> ds1;
+		// private StorageManager<SampleDataData3> ds2;
 
 		private static string messageRight;
 		private static string messageLeft;
@@ -96,25 +96,25 @@ namespace SettingsManager.Windows
 			testDataFile();
 		}
 
-		public SampleDataData3 Drx
-		{
-			get
-			{
-				if (ds1 == null) return null;
-
-				return ds1.Data;
-			}
-		}
-
-		public ObservableCollection<SampleItem2> Root
-		{
-			get
-			{
-				if (ds1 == null) return null;
-
-				return ds1.Data.Root;
-			}
-		}
+		// public SampleDataData3 Drx
+		// {
+		// 	get
+		// 	{
+		// 		if (ds1 == null) return null;
+		//
+		// 		return ds1.Data;
+		// 	}
+		// }
+		//
+		// public ObservableCollection<SampleItem2> Root
+		// {
+		// 	get
+		// 	{
+		// 		if (ds1 == null) return null;
+		//
+		// 		return ds1.Data.Root;
+		// 	}
+		// }
 
 		private void testDataFile()
 		{
@@ -184,45 +184,45 @@ namespace SettingsManager.Windows
 
 
 
-		private void testData3()
-		{
-			MsgLeftLine("main window", "testdata3");
-
-			Debug.WriteLine("@mainwindow| testdate3");
-
-			ds1 = new StorageManager<SampleDataData3>();
-			ds2 = new StorageManager<SampleDataData3>();
-			
-			ds1.Configure(
-				@"B:\Programming\VisualStudioProjects\SettingsManager\SettingsManagerV70\SettingsManagerData",
-				@"SampleData1.xml"
-				);
-
-			ds2.Configure(
-				@"B:\Programming\VisualStudioProjects\SettingsManager\SettingsManagerV70\SettingsManagerData",
-				@"SampleData2.xml"
-				);
-
-			MsgLeftLine("main window", "configured");
-			Debug.WriteLine("@mainwindow| configured");
-
-			bool test = ds1.Initialized;
-
-			bool result = ds1.Read();
-
-			MsgLeftLine("main window", "read");
-			Debug.WriteLine("@mainwindow| read");
-
-			OnPropertyChange("Root");
-
-			MsgLeftLine("main window", "property change notification");
-			Debug.WriteLine("@mainwindow| motification");
-
-//			ds1.Data.DataRoot = sd2x.Root;
+// 		private void testData3()
+// 		{
+// 			MsgLeftLine("main window", "testdata3");
 //
-//			test = ds1.Write();
-
-		}
+// 			Debug.WriteLine("@mainwindow| testdate3");
+//
+// 			ds1 = new StorageManager<SampleDataData3>();
+// 			ds2 = new StorageManager<SampleDataData3>();
+// 			
+// 			ds1.Configure(
+// 				@"B:\Programming\VisualStudioProjects\SettingsManager\SettingsManagerV70\SettingsManagerData",
+// 				@"SampleData1.xml"
+// 				);
+//
+// 			ds2.Configure(
+// 				@"B:\Programming\VisualStudioProjects\SettingsManager\SettingsManagerV70\SettingsManagerData",
+// 				@"SampleData2.xml"
+// 				);
+//
+// 			MsgLeftLine("main window", "configured");
+// 			Debug.WriteLine("@mainwindow| configured");
+//
+// 			bool test = ds1.Initialized;
+//
+// 			bool result = ds1.Read();
+//
+// 			MsgLeftLine("main window", "read");
+// 			Debug.WriteLine("@mainwindow| read");
+//
+// 			OnPropertyChange("Root");
+//
+// 			MsgLeftLine("main window", "property change notification");
+// 			Debug.WriteLine("@mainwindow| motification");
+//
+// //			ds1.Data.DataRoot = sd2x.Root;
+// //
+// //			test = ds1.Write();
+//
+// 		}
 
 
 

@@ -2,7 +2,6 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using SettingsManager;
 
 #endregion
 
@@ -13,7 +12,7 @@ using SettingsManager;
 // created:  4/28/2020 1:00:32 PM
 
 
-namespace SettingsManagerV70.SampleData
+namespace SettingsManager.SampleData
 {
 
 	public class StorageManager<T> : INotifyPropertyChanged
