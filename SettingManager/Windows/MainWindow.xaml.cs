@@ -27,8 +27,14 @@ namespace SettingsManager.Windows
 
 		private static MainWindow instance;
 
+
+		// private UserSetg UserSettings = new UserSetg();
+		// private AppSetg AppSettings = new AppSetg();
+		//
+
 		public MainWindow()
 		{
+
 			InitializeComponent();
 
 			instance = this;
@@ -227,22 +233,22 @@ namespace SettingsManager.Windows
 
 
 
-		// this will create a starting data set /  collection
-		private void testData()
-		{
-			SampleDataStore.Admin.Read();
-
-			SD2.Root = sd2x.Root;
-
-			MsgLeftLine("");
-			MsgLeftLine("SampleDataStore| PathAndFile", SampleDataStore.Path.SettingPathAndFile);
-
-			SD2.Root[0].Name = "this is a test and only a test";
-
-			SampleDataStore.Data.DataRoot = SD2.Root;
-			SampleDataStore.Admin.Write();
-
-		}
+		// // this will create a starting data set /  collection
+		// private void testData()
+		// {
+		// 	SampleDataStore.Admin.Read();
+		//
+		// 	SD2.Root = sd2x.Root;
+		//
+		// 	MsgLeftLine("");
+		// 	MsgLeftLine("SampleDataStore| PathAndFile", SampleDataStore.Path.SettingFilePath);
+		//
+		// 	SD2.Root[0].Name = "this is a test and only a test";
+		//
+		// 	SampleDataStore.Data.DataRoot = SD2.Root;
+		// 	SampleDataStore.Admin.Write();
+		//
+		// }
 
 		private void SettingsTest()
 		{
@@ -293,7 +299,7 @@ namespace SettingsManager.Windows
 		{
 			MsgLeftLine(title + "| generic info description", setg.Info.Description);
 			MsgLeftLine(title + "| generic path filename", setg.Path?.FileName ?? "no file name");
-			MsgLeftLine(title + "| generic path SettingPathAndFile", setg.Path?.SettingPathAndFile ?? "no path and file");
+			MsgLeftLine(title + "| generic path SettingFilePath", setg.Path?.SettingFilePath ?? "no path and file");
 
 		}
 
@@ -343,8 +349,8 @@ namespace SettingsManager.Windows
 			{
 				MsgLeftLine("user path: root path", UserSettings.Path.RootFolderPath);
 				MsgLeftLine("user path: file name", UserSettings.Path.FileName);
-				MsgLeftLine("user path: path and file", UserSettings.Path.SettingPathAndFile);
-				MsgLeftLine("user path: has path and file", UserSettings.Path.HasPathAndFile.ToString());
+				MsgLeftLine("user path: path and file", UserSettings.Path.SettingFilePath);
+				MsgLeftLine("user path: has path and file", UserSettings.Path.HasFilePath.ToString());
 				MsgLeftLine("user path: sub-folders");
 				foreach (string pathSubFolder in UserSettings.Path.SubFolders)
 				{
@@ -548,7 +554,6 @@ namespace SettingsManager.Windows
 			MsgLeftLine("");
 
 			SiteSettings.Path.RootFolderPath = SuiteSettings.SiteRootPath;
-//			SiteSettings.Path.RootPath = AppSettings.SiteRootPath;
 
 			SiteSettings.Admin.Read();
 			testSetting("site", SiteSettings.Admin);

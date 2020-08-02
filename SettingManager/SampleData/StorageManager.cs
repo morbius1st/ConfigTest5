@@ -26,7 +26,7 @@ namespace SettingsManager.SampleData
 	// 	// 	StorageMgrInfo<T>, T> DataStore = new 
 	// 	// 		BaseSettings<StorageMgrPath, StorageMgrInfo<T>, T>();
 	//
-	// 	public bool Initialized => DataStore.Admin.Path.HasPathAndFile;
+	// 	public bool Initialized => DataStore.Admin.Path.HasFilePath;
 	//
 	// 	public bool Read()
 	// 	{
@@ -58,7 +58,7 @@ namespace SettingsManager.SampleData
 	// 		DataStore.Admin.Path.RootFolderPath = rootPath;
 	// 		DataStore.Admin.Path.FileName = filename;
 	//
-	// 		DataStore.Admin.Path.ConfigurePathAndFile();
+	// 		DataStore.Admin.Path.ConfigureFilePath();
 	//
 	// 		OnPropertyChange("Initialized");
 	// 	}

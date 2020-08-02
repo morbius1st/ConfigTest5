@@ -14,7 +14,7 @@ using SettingsManager.SampleData;
 // created:  4/27/2020 11:16:38 PM
 
 
-namespace SettingsManagerV70.SampleData
+namespace SettingsManager.SampleData
 {
 #region data class
 
@@ -36,13 +36,13 @@ namespace SettingsManagerV70.SampleData
 #region info class
 
 	[DataContract(Name = "SampleDataInfo", Namespace = "")]
-	public class SampleDataInfo<Tdata> : SettingInfoBase<Tdata>
-		where Tdata : new ()
+	public class SampleDataInfo<TData> : SettingInfoBase<TData>
+		where TData : new ()
 	{
 		public override string DataClassVersion => "1.0";
 		public override string Description => "sample data file";
 		public override SettingFileType FileType => SettingFileType.DATA;
-		public override void UpgradeFromPrior(SettingInfoBase<Tdata> prior) { }
+		public override void UpgradeFromPrior(SettingInfoBase<TData> prior) { }
 	}
 
 #endregion

@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{ECE6DD79-88CF-4A1E-BA74-70E59812A2FD}</ProjectGuid>
+    <ProjectGuid>{B7CFBC82-12FB-4A3D-AFE2-5F56E816BCEA}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>SettingsManager</RootNamespace>
-    <AssemblyName>SettingsManager</AssemblyName>
+    <RootNamespace>WpfSharingTest01</RootNamespace>
+    <AssemblyName>WpfSharingTest01</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -57,41 +57,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Windows\MainWindow.xaml">
+    <Page Include="Windows\MainWindowShare01.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\CsExtensions.cs">
-      <Link>.Linked\CsExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\CsUtilities.cs">
-      <Link>.Linked\CsUtilities.cs</Link>
-    </Compile>
-    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\MessageUtilities.cs">
-      <Link>.Linked\MessageUtilities.cs</Link>
-    </Compile>
-    <Compile Include="..\..\UtilityLibrary\UtilityLibrary\SettingManager\v7.1\SettingsMgr.cs">
-      <Link>.Linked\SettingsMgr.cs</Link>
-    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SampleData\DataSettingSample3.cs" />
-    <Compile Include="SampleData\DataSettingsSample.cs" />
-    <Compile Include="SampleData\SampleData2.cs" />
-    <Compile Include="SampleData\SampleDataManager2.cs" />
-    <Compile Include="SampleData\SampleItem2.cs" />
-    <Compile Include="SampleData\StorageManager.cs" />
-    <Compile Include="SampleData\StoreAndReadSampleData.cs" />
     <Compile Include="Settings\AppSettings.cs" />
-    <Compile Include="Settings\HeadingSetting.cs" />
-    <Compile Include="Settings\MachineSettings.cs" />
-    <Compile Include="Settings\SiteSettings.cs" />
-    <Compile Include="Settings\SuiteSettings.cs" />
     <Compile Include="Settings\UserSettings.cs" />
-    <Compile Include="Windows\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="Windows\MainWindowShare01.xaml.cs">
+      <DependentUpon>MainWindowShare01.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Windows\ResourceFiles\XamlResources\MasterColorList.xaml">
@@ -121,15 +98,16 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="ClassDiagram2.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include=".Linked\" />
     <Folder Include="Windows\ResourceFiles\ImageResources\" />
     <Folder Include="Windows\Support\" />
   </ItemGroup>
+  <Import Project="..\SharedProject01\SharedProject01.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

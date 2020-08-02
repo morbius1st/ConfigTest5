@@ -1,0 +1,126 @@
+﻿<Window
+		x:Class="WpfSharingTest02.Windows.MainWindowShare02"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:local="clr-namespace:WpfSharingTest02.Windows"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		Title="MainWindowShare02"
+		Width="800"
+		Height="450"
+		mc:Ignorable="d"
+		Background="{StaticResource Normal.Window.Background}"
+		x:Name="WinShareTest02"
+		Loaded="MainWindow_OnLoaded"
+		>
+	<Window.Resources>
+
+	</Window.Resources>
+
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="120" />
+		</Grid.ColumnDefinitions>
+
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="80" />
+		</Grid.RowDefinitions>
+
+		<Button
+				Grid.Column="1"
+				Grid.Row="1"
+				Margin="10"
+				Content="Test"
+				Click="ButtonBase_OnClick"
+				/>
+
+
+		<StackPanel 
+					Grid.Column="0"
+					Grid.Row="0"				
+				Orientation="Vertical">
+
+			<Label
+					Margin="0,0,0,5"
+					Padding="5,2,0,2"
+					Background="Black"
+					FontSize="16"
+					Foreground="White"
+					Content="WpfSharingTest02"
+					/>
+
+			<StackPanel Orientation="Horizontal">
+				<Label
+						Margin="0,0,0,5"
+						Padding="5,2,5,2"
+						Background="#222222"
+						Foreground="White"
+						Content="user settings description" />
+
+				<Label
+						Margin="10,0,0,5"
+						Padding="5,2,5,2"
+						Background="#222222"
+						Foreground="White"
+						Content="{Binding ElementName=WinShareTest02, 
+						Path=UserSettingFileDescription, FallbackValue='description'}" />
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal">
+				<Label
+						Margin="0,0,0,5"
+						Padding="5,2,5,2"
+						Background="#222222"
+						Foreground="White"
+						Content="user settings file path" />
+
+				<Label
+						Margin="10,0,0,5"
+						Padding="5,2,5,2"
+						Background="#222222"
+						Foreground="White"
+						Content="{Binding ElementName=WinShareTest02, 
+						Path=UserSettingFilePath, FallbackValue='file path'}" />
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal">
+				<Label
+						Margin="0,0,0,5"
+						Padding="5,2,5,2"
+						Background="#222222"
+						Foreground="White"
+						Content="app settings description" />
+
+				<Label
+						Margin="10,0,0,5"
+						Padding="5,2,5,2"
+						Background="#222222"
+						Foreground="White"
+						Content="{Binding ElementName=WinShareTest02, 
+						Path=AppSettingFileDescription, FallbackValue='description'}" />
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal">
+				<Label
+						Margin="0,0,0,5"
+						Padding="5,2,5,2"
+						Background="#222222"
+						Foreground="White"
+						Content="app settings file path" />
+
+				<Label
+						Margin="10,0,0,5"
+						Padding="5,2,5,2"
+						Background="#222222"
+						Foreground="White"
+						Content="{Binding ElementName=WinShareTest02, 
+						Path=AppSettingFilePath, FallbackValue='file path'}" />
+			</StackPanel>
+
+		</StackPanel>
+	
+
+	</Grid>
+</Window>

@@ -20,6 +20,8 @@ namespace SettingsManager.SampleData
 		private static readonly Lazy<SarMgr> instance =
 			new Lazy<SarMgr>(()=> new SarMgr());
 
+		// SampleDataStr SampleDataStore = new SampleDataStr();
+
 		private SarMgr()
 		{
 
