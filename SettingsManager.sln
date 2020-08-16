@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfSharingTest02", "WpfShar
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedProject01", "SharedProject01\SharedProject01.shproj", "{B6E9FA90-DDEF-4824-83E5-3CA328983871}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SettingsManagerV72", "SettingsManagerProposed\SettingsManagerV72.csproj", "{6C184FFC-83DE-4D46-9375-2B37D05D809C}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SharedProject01\SharedProject01.projitems*{b6e9fa90-ddef-4824-83e5-3ca328983871}*SharedItemsImports = 13
@@ -34,6 +36,10 @@ Global
 		{F8D2565B-47C8-42A3-B9D0-096A35E60C98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8D2565B-47C8-42A3-B9D0-096A35E60C98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8D2565B-47C8-42A3-B9D0-096A35E60C98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C184FFC-83DE-4D46-9375-2B37D05D809C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C184FFC-83DE-4D46-9375-2B37D05D809C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C184FFC-83DE-4D46-9375-2B37D05D809C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C184FFC-83DE-4D46-9375-2B37D05D809C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

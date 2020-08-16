@@ -93,13 +93,13 @@ namespace SettingsManager.Windows
 		{
 			MsgLeftLine("main window", "loaded");
 
-			// SettingsTest();
+			SettingsTest();
 
 			// testData();
 
 			// testData3();
 
-			testDataFile();
+			// testDataFile();
 		}
 
 		// public SampleDataData3 Drx
@@ -258,11 +258,11 @@ namespace SettingsManager.Windows
 
 			int user = 2;
 
-			userTest(user == 0 ? all : user );
-			appTest();
-			suiteTest();
-			machTest();
-			siteTest();
+			userTest(all);
+			// appTest();
+			// suiteTest();
+			// machTest();
+			// siteTest();
 
 //			testReset();
 		}
@@ -309,7 +309,16 @@ namespace SettingsManager.Windows
 		private void userTest(int which)
 		{
 			MsgLeftLine("");
-			UserSettings.Admin.Read();
+
+			try
+			{
+				UserSettings.Admin.Read();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				return;
+			}
 
 			switch (which)
 			{
@@ -368,6 +377,7 @@ namespace SettingsManager.Windows
 			MsgLeftLine("user test", UserSettings.Data.UserSettingsValue.ToString());
 			MsgLeftLine("user test", UserSettings.Info.DataClassVersion);
 			MsgLeftLine("user test", UserSettings.Info.Description);
+			MsgLeftLine("user test", UserSettings.Info.FileType.ToString());
 		}
 
 		private void modifyUser()

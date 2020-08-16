@@ -41,7 +41,12 @@ namespace SettingsManager.SampleData
 	{
 		public override string DataClassVersion => "1.0";
 		public override string Description => "sample data file";
-		public override SettingFileType FileType => SettingFileType.DATA;
+		public override SettingFileType FileType
+		{
+			get => SettingFileType.SETTING_MGR_DATA;
+			set { }
+		}
+
 		public override void UpgradeFromPrior(SettingInfoBase<TData> prior) { }
 	}
 
