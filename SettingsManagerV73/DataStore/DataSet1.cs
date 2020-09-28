@@ -11,30 +11,19 @@ using SettingsManager;
 
 namespace SettingsManager
 {
-#region info class
 
-	// [DataContract(Name = "DataStorage", Namespace = "")]
-	// public class StorageMgrInfo<TData> : StorageMgrInfoBase<TData>
-	// 	where TData : new ()
-	// {
-	// 	[DataMember(Order = 1)]
-	// 	public override string DataClassVersion { get; set; } = "base version";
-	//
-	// 	[DataMember(Order = 2)]
-	// 	public override string Description { get; set; } = "base description";
-	//
-	// 	[DataMember(Order = 3)]
-	// 	public override string Notes { get; set; } = "base notes";
-	// }
-
-#endregion
 #region data class
 
 	// this is the actual data set saved to the user's configuration file
 	// this is unique for each program
 	[DataContract(Namespace = "")]
-	public class DataSet1
+	public class DataSet1 : HeaderData
 	{
+
+		public string SetDataDescription() => "this is a description from the data class";
+		public string SetDataNotes() => "any notes go here";
+		public string SetDataClassVersion() => "data 7.3d";
+
 		[DataMember(Order = 1)]
 		public string SampleDataString1 { get; set; } = "this is a sample string";
 		

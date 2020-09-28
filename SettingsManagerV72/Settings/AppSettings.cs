@@ -1,22 +1,27 @@
 ﻿using System.Runtime.Serialization;
 
-// projname: SettingsManagerV40
-// itemname: AppSettingInfo
 // username: jeffs
 // Created:      -- ()
 
+// ReSharper disable once CheckNamespace
+
 namespace SettingsManager
 {
-
 #region info class
 
-	[DataContract(Name = "AppSettingInfoInfo", Namespace = "")]
+	[DataContract(Name = "AppSettings", Namespace = "")]
 	internal class AppSettingInfo<T> : AppSettingInfoBase<T>
 		where T : new ()
 	{
-		public override string DataClassVersion => "7.0a";
-		public override string Description => "app setting file for WpfSharingTest01";
-		public override void UpgradeFromPrior(SettingInfoBase<T> prior) { }
+		public AppSettingInfo()
+		{
+			// these are specific to this data file
+			DataClassVersion =  "app 7.2a";
+			Description = "app setting file for SettingsManager v7.2";
+			Notes = "any notes go here";
+		}
+
+		internal override void UpgradeFromPrior(SettingInfoBase<T> prior) { }
 	}
 
 #endregion
@@ -25,15 +30,12 @@ namespace SettingsManager
 
 	// this is the actual data set saved to the user's configuration file
 	// this is unique for each program
-	[DataContract(Name = "AppSettingData")]
-	internal class AppSettingData
+	[DataContract(Namespace = "")]
+	public class AppSettingData
 	{
 		[DataMember(Order = 1)]
 		public int AppSettingsValue { get; set; } = 7;
-
-
 	}
 
 #endregion
-
 }

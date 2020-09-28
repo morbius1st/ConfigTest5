@@ -14,11 +14,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)Settings\SiteSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings\SuiteSettings.cs" />
     <Folder Include="$(MSBuildThisFileDirectory).linked\" />
-    <Compile Include="$(MSBuildThisFileDirectory)..\..\UtilityLibrary\UtilityLibrary\CsExtensions.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\UtilityLibrary\UtilityLibrary\FilePath\V3.0\CsFilePath.cs">
+      <Link>.Linked\CsFilePath.cs</Link>
+    </Compile>    
+		<Compile Include="$(MSBuildThisFileDirectory)..\..\UtilityLibrary\UtilityLibrary\CsExtensions.cs">
       <Link>.Linked\CsExtensions.cs</Link>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\..\UtilityLibrary\UtilityLibrary\CsUtilities.cs">
       <Link>.Linked\CsUtilities.cs</Link>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\UtilityLibrary\UtilityLibrary\CsXmlUtilities.cs">
+      <Link>.Linked\CsXmlUtilities.cs</Link>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)..\..\UtilityLibrary\UtilityLibrary\MessageUtilities.cs">
       <Link>.Linked\MessageUtilities.cs</Link>

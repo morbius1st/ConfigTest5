@@ -9,7 +9,7 @@ using SettingsManager;
 
 #endregion
 
-// projname: SettingsManagerProposed
+// projname: SettingsManagerV72
 // itemname: MainWindow
 // username: jeffs
 // created:  8/15/2020 12:20:30 PM
@@ -307,14 +307,14 @@ namespace SettingsManagerV72.Windows
 
 			AddMessage("Data Set 1_1", "configure");
 			ds1_1.Configure(
-				@"C:\Users\jeffs\AppData\Roaming\CyberStudio\SettingsManager\SettingsManagerProposed",
+				@"C:\Users\jeffs\AppData\Roaming\CyberStudio\SettingsManager\SettingsManagerV72",
 				@"DataSet1_1.xml" );
 
 			AddMessage("Data Set 1_1", "configured");
 
 			AddMessage("Data Set 1_2", "configure");
 			ds1_2.Configure(
-				@"C:\Users\jeffs\AppData\Roaming\CyberStudio\SettingsManager\SettingsManagerProposed",
+				@"C:\Users\jeffs\AppData\Roaming\CyberStudio\SettingsManager\SettingsManagerV72",
 				@"DataSet1_2.xml" );
 			AddMessage("Data Set 1_2", "configured");
 
