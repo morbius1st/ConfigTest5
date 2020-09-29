@@ -103,13 +103,13 @@ namespace SettingsManagerV72.Windows
 		{
 			try
 			{
-				// testUser();
-				// testApp();
-				// testSuite();
-				// testMach();
+				testUser();
+				testApp();
+				testSuite();
+				testMach();
 				testSite();
 
-				// testData();
+				testData();
 			}
 			catch (Exception e)
 			{
@@ -136,6 +136,7 @@ namespace SettingsManagerV72.Windows
 			SiteSettings.Admin.Read();
 
 			AddMessage("Site Settings", "Read");
+			AddMessage("Site Settings| path", SiteSettings.Path.SettingFilePath);
 			AddMessage("Site Settings| value", SiteSettings.Data.SiteSettingsValue);
 			AddMessage("Site Settings| file type", SiteSettings.Info.FileType);
 			AddMessage("Site Settings| desc", SiteSettings.Info.Description);
@@ -169,6 +170,7 @@ namespace SettingsManagerV72.Windows
 			MachSettings.Admin.Read();
 
 			AddMessage("Mach Settings", "Read");
+			AddMessage("Mach Settings| path", MachSettings.Path.SettingFilePath);
 			AddMessage("Mach Settings| value", MachSettings.Data.MachSettingsValue);
 			AddMessage("Mach Settings| file type", MachSettings.Info.FileType);
 			AddMessage("Mach Settings| desc", MachSettings.Info.Description);
@@ -202,6 +204,7 @@ namespace SettingsManagerV72.Windows
 			SuiteSettings.Admin.Read();
 
 			AddMessage("Suite Settings", "Read");
+			AddMessage("Suite Settings| path", SuiteSettings.Path.SettingFilePath);
 			AddMessage("Suite Settings| value", SuiteSettings.Data.SuiteSettingsValue);
 			AddMessage("Suite Settings| file type", SuiteSettings.Info.FileType);
 			AddMessage("Suite Settings| desc", SuiteSettings.Info.Description);
@@ -236,6 +239,7 @@ namespace SettingsManagerV72.Windows
 			AppSettings.Admin.Read();
 
 			AddMessage("App Settings", "Read");
+			AddMessage("App Settings| path", AppSettings.Path.SettingFilePath);
 			AddMessage("App Settings| value", AppSettings.Data.AppSettingsValue);
 			AddMessage("App Settings| file type", AppSettings.Info.FileType);
 			AddMessage("App Settings| desc", AppSettings.Info.Description);
@@ -269,6 +273,7 @@ namespace SettingsManagerV72.Windows
 			UserSettings.Admin.Read();
 
 			AddMessage("User Settings", "Read");
+			AddMessage("User Settings| path", UserSettings.Path.SettingFilePath);
 			AddMessage("User Settings| value", UserSettings.Data.UserSettingsValue);
 			AddMessage("User Settings| file type", UserSettings.Info.FileType);
 			AddMessage("User Settings| desc", UserSettings.Info.Description);
@@ -311,12 +316,14 @@ namespace SettingsManagerV72.Windows
 				@"DataSet1_1", @"xml" );
 
 			AddMessage("Data Set 1_1", "configured");
+			AddMessage("Data Set 1_1| location| ", ds1_1.Path.SettingFilePath);
 
 			AddMessage("Data Set 1_2", "configure");
 			ds1_2.Configure(
 				@"C:\Users\jeffs\AppData\Roaming\CyberStudio\SettingsManager\SettingsManagerV72",
 				@"DataSet1_2", @"xml"  );
 			AddMessage("Data Set 1_2", "configured");
+			AddMessage("Data Set 1_2| location| ", ds1_2.Path.SettingFilePath);
 
 			// ds1_1.Admin.Write();
 
