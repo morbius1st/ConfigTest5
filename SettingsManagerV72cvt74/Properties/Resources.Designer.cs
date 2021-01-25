@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SettingsManagerV72.Properties {
+namespace SettingsManagerV72cvt74.Properties {
     using System;
     
     

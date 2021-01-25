@@ -1,16 +1,14 @@
 ﻿using System.Runtime.Serialization;
 
-// Site settings:
-// 	- applies to all machines & all users
-// 	- holds information needed by all machines and, therefore, all users
-// 	- maybe placed on the local or remote machine (specify location in app setting file)
-
+// File:             SiteSettings.cs
+// Created:      -- ()
 
 // ReSharper disable once CheckNamespace
 
 namespace SettingsManager
 {
-#region site data class
+
+#region user data class
 
 	// this is the actual data set saved to the user's configuration file
 	// this is unique for each program
@@ -18,10 +16,10 @@ namespace SettingsManager
 	public class SiteSettingDataFile: IDataFile
 	{
 		[IgnoreDataMember]
-		public string DataFileVersion => "site 7.4si";
+		public string DataFileVersion => "site 7.2cvt4si";
 
 		[IgnoreDataMember]
-		public string DataFileDescription =>"site setting file for SettingsManager v7.4";
+		public string DataFileDescription =>"site setting file for SettingsManager v7.2cvt4";
 
 		[IgnoreDataMember]
 		public string DataFileNotes => "site / any notes go here";

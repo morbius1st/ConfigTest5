@@ -24,7 +24,7 @@ namespace SettingsManagerv74.DataStore.DataSet2
 	// this is the actual data set saved to the user's configuration file
 	// this is unique for each program
 	[DataContract(Namespace = "")]
-	public class DataSet2 : HeaderData
+	public class DataStoreSet2 : IDataFile
 	{
 		[IgnoreDataMember]
 		public string DataFileVersion => "data 7.4d";

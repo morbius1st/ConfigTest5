@@ -10,7 +10,7 @@ namespace SettingsManager
 #region info class
 
 	[DataContract(Name = "SiteSettings", Namespace = "")]
-	internal class SiteSettingInfo<T> : SiteSettingInfoBase<T>
+	public class SiteSettingInfo<T> : SiteSettingInfoBase<T>
 		where T : new ()
 	{
 		public SiteSettingInfo()
@@ -21,7 +21,7 @@ namespace SettingsManager
 			Notes = "any notes goes here";
 		}
 
-		internal override void UpgradeFromPrior(SettingInfoBase<T> prior) { }
+		public override void UpgradeFromPrior(SettingInfoBase<T> prior) { }
 	}
 
 #endregion

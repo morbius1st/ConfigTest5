@@ -1,15 +1,13 @@
 ﻿using System.Runtime.Serialization;
 
-// User settings (per user) 
-//  - user's settings for a specific app
-//	- located in the user's app data folder / app name
-
+// username: jeffs
+// created:  12/23/2018 1:14:35 PM
 
 // ReSharper disable once CheckNamespace
 
-
 namespace SettingsManager
 {
+
 #region user data class
 
 	// this is the actual data set saved to the user's configuration file
@@ -18,10 +16,10 @@ namespace SettingsManager
 	public class UserSettingDataFile : IDataFile
 	{
 		[IgnoreDataMember]
-		public string DataFileVersion => "user 7.4u";
+		public string DataFileVersion => "user 7.2cvt4u";
 
 		[IgnoreDataMember]
-		public string DataFileDescription => "user setting file for SettingsManager v7.4";
+		public string DataFileDescription => "user setting file for SettingsManager v7.2cvt4";
 
 		[IgnoreDataMember]
 		public string DataFileNotes => "user / any notes go here";
@@ -32,6 +30,3 @@ namespace SettingsManager
 
 #endregion
 }
-
-
-// , APP_SETTINGS, SUITE_SETTINGS, MACH_SETTINGS, SITE_SETTINGS

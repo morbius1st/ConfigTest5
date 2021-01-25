@@ -1,0 +1,55 @@
+﻿<Window
+		x:Class="SettingsManagerV72cvt74.Windows.MainWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:local="clr-namespace:SettingsManagerV72cvt74.Windows"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		Name="winMainSetgMgrProposed"
+		Title="MainWindow"
+		Width="1400"
+		Height="850"
+		DataContext="{Binding ElementName=winMainSetgMgrProposed}"
+		Loaded="winMainSetgMgrProposed_Loaded"
+		mc:Ignorable="d"
+		Background="{StaticResource Normal.Window.Background}"
+		>
+	<Window.Resources>
+
+	</Window.Resources>
+
+	<Grid>
+
+		<TextBox
+				x:Name="messages"
+				FontFamily="Droid Sans Mono"
+				FontSize="14"
+				HorizontalScrollBarVisibility="Auto"
+				Text="{Binding TextBoxMessage}"
+				VerticalScrollBarVisibility="Visible"
+				Background="Transparent"
+				Foreground="White"
+				/>
+
+		<Button
+				Content="Exit"
+				Grid.Column="0"
+				Grid.Row="0"
+				Margin="0,0,30,30"
+				Width="Auto"
+				Height="Auto"
+				HorizontalAlignment="Right"
+				VerticalAlignment="Bottom"
+				FontSize="24"
+				FontWeight="Bold"
+				Background="Transparent"
+				Foreground="White"
+				BorderThickness="0"
+				Click="ButtonBase_OnClick"
+				Style="{StaticResource Button.Normal.Style}"
+				/>
+
+
+
+	</Grid>
+</Window>

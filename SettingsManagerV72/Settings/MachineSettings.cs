@@ -10,7 +10,7 @@ namespace SettingsManager
 #region info class
 
 	[DataContract(Name = "MachSettings", Namespace = "")]
-	internal class MachSettingInfo<T> : MachSettingInfoBase<T>
+	public class MachSettingInfo<T> : MachSettingInfoBase<T>
 		where T : new ()
 	{
 		public MachSettingInfo()
@@ -21,7 +21,7 @@ namespace SettingsManager
 			Notes = "any notes go here";
 		}
 
-		internal override void UpgradeFromPrior(SettingInfoBase<T> prior) { }
+		public override void UpgradeFromPrior(SettingInfoBase<T> prior) { }
 	}
 
 #endregion
