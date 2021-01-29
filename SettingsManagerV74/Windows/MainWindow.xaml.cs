@@ -112,34 +112,28 @@ namespace SettingsManagerv74.Windows
 
 				// USER_SETTINGS, APP_SETTINGS, SUITE_SETTINGS, MACH_SETTINGS, SITE_SETTINGS
 
-				// int x = 1;
-				//
-				// SettingsMgr<MachSettingPath, MachSettingInfo<MachSettingDataFile>, MachSettingDataFile> a =
-				// 	MachSettings.Admin;
-				// SettingsMgr<SiteSettingPath, SiteSettingInfo<SiteSettingDataFile>, SiteSettingDataFile> b =
-				// 	SiteSettings.Admin;
 
-
-			#if  USER_SETTINGS
-				testUser();
-			#endif
-
-			#if APP_SETTINGS
-				testApp();
-			#endif
-
-			#if SUITE_SETTINGS
-				testSuite();
-			#endif
-
-			#if MACH_SETTINGS
-				testMach();
-			#endif
-
-			#if SITE_SETTINGS
+			//
+			// #if  USER_SETTINGS
+			// 	testUser();
+			// #endif
+			//
+			// #if APP_SETTINGS
+			// 	testApp();
+			// #endif
+			//
+			// #if SUITE_SETTINGS
+			// 	testSuite();
+			// #endif
+			//
+			// #if MACH_SETTINGS
+			// 	testMach();
+			// #endif
+			//
+			// #if SITE_SETTINGS
 				testSite();
 				testSite2();
-			#endif
+			// #endif
 
 				// data
 				// testData();
@@ -165,9 +159,16 @@ namespace SettingsManagerv74.Windows
 	#if SITE_SETTINGS
 		private void testSite2()
 		{
+			AddMessage(MARKER_DN, MARKER_DN + MARKER_DN);
+
+			AddMessage("Site2", "start");
+
+			Debug.WriteLine("status| " + SiteSettings.Admin.Status);
+
 			try
 			{
-				SiteSettings.Path.RootFolderPath = @"C:\ProgramData\CyberStudio\SettingsManagerV74";
+				SiteSettings.Path.RootFolderPath = @"C:\ProgramData\CyberStudio\SettingsManager";
+				SiteSettings.Path.SubFolders = new [] {"SiteSettings"};
 			}
 			catch (Exception e)
 			{
@@ -179,7 +180,7 @@ namespace SettingsManagerv74.Windows
 				}
 			}
 
-			testSetting(SiteSettings.Admin, "Site", 814, setgDataSite2);
+			testSetting(SiteSettings.Admin, "Site2", 814, setgDataSite2);
 		}
 
 		private void setgDataSite2(string who, int test)
@@ -203,6 +204,10 @@ namespace SettingsManagerv74.Windows
 	#if SITE_SETTINGS
 		private void testSite()
 		{
+			AddMessage(MARKER_DN, MARKER_DN + MARKER_DN);
+
+			AddMessage("Site", "start");
+
 			testSetting(SiteSettings.Admin, "Site", 814, setgDataSite);
 		}
 
@@ -227,6 +232,10 @@ namespace SettingsManagerv74.Windows
 	#if MACH_SETTINGS
 		private void testMach()
 		{
+			AddMessage(MARKER_DN, MARKER_DN + MARKER_DN);
+
+			AddMessage("Mach", "start");
+
 			testSetting(MachSettings.Admin, "Mach", 813, setgDataMach);
 		}
 
@@ -252,6 +261,10 @@ namespace SettingsManagerv74.Windows
 	#if SUITE_SETTINGS
 		private void testSuite()
 		{
+			AddMessage(MARKER_DN, MARKER_DN + MARKER_DN);
+
+			AddMessage("Suite", "start");
+
 			testSetting(SuiteSettings.Admin, "Suite", 812, setgDataSuite);
 		}
 
@@ -276,6 +289,10 @@ namespace SettingsManagerv74.Windows
 	#if APP_SETTINGS
 		private void testApp()
 		{
+			AddMessage(MARKER_DN, MARKER_DN + MARKER_DN);
+
+			AddMessage("App", "start");
+
 			testSetting(AppSettings.Admin, "App", 811, setgDataApp);
 		}
 
@@ -302,6 +319,10 @@ namespace SettingsManagerv74.Windows
 
 		private void testUser()
 		{
+			AddMessage(MARKER_DN, MARKER_DN + MARKER_DN);
+
+			AddMessage("User", "start");
+
 			testSetting(UserSettings.Admin, "User", 810, setgDataUser);
 		}
 
@@ -331,23 +352,23 @@ namespace SettingsManagerv74.Windows
 			AddMessage("Setting File Info", "");
 
 		#if SITE_SETTINGS
-			listSettingFileInfo(SiteSettings.Admin  , "site settings");
+			listSettingFileInfo(SiteSettings.Admin  , "site");
 		#endif
 
 		#if MACH_SETTINGS
-			listSettingFileInfo(MachSettings.Admin  , "mach settings");
+			listSettingFileInfo(MachSettings.Admin  , "mach");
 		#endif
 
 		#if SUITE_SETTINGS
-			listSettingFileInfo(SuiteSettings.Admin , "suite settings");
+			listSettingFileInfo(SuiteSettings.Admin , "suite");
 		#endif
 
 		#if APP_SETTINGS
-			listSettingFileInfo(AppSettings.Admin   , "app settings");
+			listSettingFileInfo(AppSettings.Admin   , "app");
 		#endif
 
 		#if USER_SETTINGS
-			listSettingFileInfo(UserSettings.Admin  , "user settings");
+			listSettingFileInfo(UserSettings.Admin  , "user");
 		#endif
 
 			AddMessage("");
@@ -386,9 +407,7 @@ namespace SettingsManagerv74.Windows
 			where TInfo : SettingInfoBase<TData>, new()
 			where TData : IDataFile, new()
 		{
-			AddMessage(MARKER_DN, MARKER_DN + MARKER_DN);
-
-			AddMessage(who, "start");
+			AddMessage(who + "| status", s.Status);
 
 			try
 			{
